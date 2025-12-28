@@ -81,6 +81,17 @@ function Portfolio() {
             tech: ["Java", "JavaFX", "Canvas API"],
             year: "2024",
             featured: false
+        },
+        {
+            id: 'seneca-lake',
+            type: 'Environmental Science',
+            year: '2024',
+            title: 'Seneca Lake Monitoring',
+            description: 'Real-time monitoring platform displaying live data from a remote buoy on Seneca Lake. Features water quality metrics (temperature, pH, dissolved oxygen) and meteorological data visualization. Built with R and Shiny for powerful statistical analysis and interactive dashboards.',
+            tech: ['R', 'Shiny', 'shinyapps.io', 'Data Visualization', 'Real-Time Data'],
+            demo: null,
+            github: null,
+            external: 'https://flihws.shinyapps.io/SenecaBuoy/'
         }
     ];
 
@@ -447,6 +458,16 @@ function Portfolio() {
                                             View →
                                         </Link>
                                     )}
+                                    {project.external && (
+                                        <a
+                                            href={project.external}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            style={{ color: 'rgb(59, 130, 246)' }}
+                                        >
+                                            View Live →
+                                        </a>
+                                    )}
                                     {project.github && (
                                         <a
                                             href={project.github}
@@ -617,7 +638,7 @@ function Portfolio() {
                                 GitHub
                             </span>
                             <a
-                                href="https://github.com/yourusername"
+                                href="https://github.com/Aden254"
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 style={{ color: 'rgb(59, 130, 246)' }}
@@ -633,7 +654,7 @@ function Portfolio() {
                                 LinkedIn
                             </span>
                             <a
-                                href="https://linkedin.com/in/yourprofile"
+                                href="https://www.linkedin.com/in/daudi-aden/"
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 style={{ color: 'rgb(59, 130, 246)' }}
