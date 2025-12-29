@@ -73,14 +73,15 @@ function Portfolio() {
             featured: true
         },
         {
-            id: 3,
-            title: "NeuroTrace Desktop",
-            type: "Desktop Application",
-            description: "JavaFX-based neural structure annotation tool for microscopy image stacks. Enables researchers to trace neural pathways with multi-color coding and data export.",
-            github: "https://github.com/yourusername/neurotrace-desktop",
-            tech: ["Java", "JavaFX", "Canvas API"],
-            year: "2024",
-            featured: false
+            id: 'neuroverse-3d',  // 
+            type: 'Scientific Visualization',
+            year: '2024',
+            title: 'NeuroVerse 3D',
+            description: 'Interactive 3D brain surface reconstruction from MRI slices. Features real-time mesh generation, horizontal slice stacking with nearest-neighbor connections, and multi-format export (JSON/CSV/OBJ). Built with React, Three.js, and WebGL.',
+            tech: ['React', 'Three.js', 'WebGL', 'Canvas API', 'Medical Imaging', 'Data Visualization'],
+            demo: '/mri-tracer',  //
+            github: null,
+            external: null
         },
         {
             id: 'seneca-lake',
@@ -624,10 +625,10 @@ function Portfolio() {
                                 Email
                             </span>
                             <a
-                                href="mailto:your.email@example.com"
+                                href="mailto:daudiaden4@gmail.com"
                                 style={{ color: 'rgb(59, 130, 246)' }}
                             >
-                                your.email@example.com
+                                daudiaden4@gmail.com
                             </a>
                         </p>
                         <p>
@@ -643,7 +644,7 @@ function Portfolio() {
                                 rel="noopener noreferrer"
                                 style={{ color: 'rgb(59, 130, 246)' }}
                             >
-                                github.com/yourusername
+                                Aden254
                             </a>
                         </p>
                         <p>
@@ -659,7 +660,7 @@ function Portfolio() {
                                 rel="noopener noreferrer"
                                 style={{ color: 'rgb(59, 130, 246)' }}
                             >
-                                linkedin.com/in/yourprofile
+                                Aden
                             </a>
                         </p>
                     </div>
