@@ -46,6 +46,25 @@ function Portfolio() {
 
     const projects = [
         {
+            id: 'healthhub-manager',
+            type: 'Full-Stack Development',
+            year: '2024',
+            title: 'HealthHub Manager',
+            description: 'Enterprise healthcare management system with JWT authentication, role-based access control, and automated patient allocation. Features intelligent workload balancing, database triggers for automation, and complete audit trail. Deployed with CI/CD pipeline.',
+            tech: ['React', 'Node.js', 'Express', 'MySQL', 'JWT', 'Railway', 'Vercel'],
+            demo: '/healthhub',
+            github: 'https://github.com/Aden254/healthhub-backend',
+            external: null,
+            featured: true,
+            insights: [
+                'Automated patient-to-doctor assignment with workload balancing',
+                'Role-based access control (Doctor/Nurse/Admin)',
+                'MySQL stored procedures with OUT parameters',
+                'Database triggers for real-time metric updates',
+                'Complete audit trail for compliance tracking'
+            ]
+        },
+        {
             id: 1,
             title: "The Housing Crisis: A Data Story",
             type: "Data Visualization",
@@ -72,6 +91,7 @@ function Portfolio() {
             year: "2025",
             featured: true
         },
+
         {
             id: 'neuroverse-3d',  // 
             type: 'Scientific Visualization',
