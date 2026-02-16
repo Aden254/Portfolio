@@ -697,7 +697,7 @@ function Portfolio() {
             >
                 <div className="max-w-7xl mx-auto px-6 text-center">
                     <p style={{ color: 'var(--off-white)' }}>
-                        © 2025 Your Name. All rights reserved.
+                        © 2025 Aden. All rights reserved.
                     </p>
                 </div>
             </footer>
