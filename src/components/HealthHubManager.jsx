@@ -173,6 +173,26 @@ export default function HealthHubManager() {
                 {user?.role} {user?.specialty ? `• ${user.specialty}` : ''}
               </div>
             </div>
+            {(user?.role === 'Doctor' || user?.role === 'Admin') && (
+              <button
+                onClick={() => window.location.href = '/consultlink'}
+                style={{
+                  padding: '10px 20px',
+                  background: 'rgba(255,255,255,0.2)',
+                  color: 'white',
+                  border: '1px solid rgba(255,255,255,0.3)',
+                  borderRadius: '8px',
+                  cursor: 'pointer',
+                  fontSize: '14px',
+                  fontWeight: '600',
+                  transition: 'all 0.3s'
+                }}
+                onMouseOver={(e) => e.target.style.background = 'rgba(255,255,255,0.3)'}
+                onMouseOut={(e) => e.target.style.background = 'rgba(255,255,255,0.2)'}
+              >
+                📹 ConsultLink
+              </button>
+            )}
             <button
               onClick={logout}
               style={{
