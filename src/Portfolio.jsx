@@ -198,20 +198,79 @@ function Portfolio() {
 
             {/* Header - Deep Navy */}
             <header
-                className="border-b gradient-transition-bottom"
+                className="border-b gradient-transition-bottom relative overflow-hidden"
                 style={{
                     backgroundColor: 'var(--navy-dark)',
                     borderColor: 'rgba(100, 116, 139, 0.2)',
-                    '--next-color': 'var(--slate-dark)'
+                    '--next-color': 'var(--slate-dark)',
                 }}
             >
-                <div className="max-w-7xl mx-auto px-6 py-12">
-                    <h1 className="text-5xl md:text-6xl font-bold mb-3 text-white">
-                        Data Analyst & Developer
-                    </h1>
-                    <p className="text-xl md:text-2xl" style={{ color: 'var(--blue-gray)' }}>
-                        Transforming complex data into actionable insights through analysis and visualization
-                    </p>
+                {/* Subtle background image layer — fades in from the right */}
+                <div
+                    className="absolute top-0 right-0 h-full w-1/3 bg-no-repeat bg-right bg-cover pointer-events-none"
+                    style={{
+                        backgroundImage: `url('/images/seneca-lake.jpg')`,
+                        opacity: 0.85,
+                        maskImage: 'linear-gradient(to left, rgba(0,0,0,0.8), rgba(0,0,0,0))',
+                        WebkitMaskImage: 'linear-gradient(to left, rgba(0,0,0,0.8), rgba(0,0,0,0))',
+                    }}
+                />
+
+                {/* Content */}
+                <div className="relative z-10 max-w-7xl mx-auto px-6 py-16 flex flex-col md:flex-row items-start md:items-center gap-10">
+
+                    {/* Text block */}
+                    <div className="flex-1">
+                        {/* Eyebrow label */}
+                        <p className="text-sm font-semibold tracking-widest uppercase mb-4"
+                            style={{ color: 'var(--blue-gray)' }}>
+                            Portfolio
+                        </p>
+                        <h1 className="text-5xl md:text-6xl font-bold mb-3 text-white">
+                            Daudi Aden
+                        </h1>
+                        <p className="text-2xl md:text-3xl font-normal mb-5"
+                            style={{ color: 'var(--gray-light)' }}>
+                            Data Analyst, Researcher & Developer
+                        </p>
+                        <p className="text-lg md:text-xl leading-relaxed max-w-xl"
+                            style={{ color: 'var(--blue-gray)' }}>
+                            Transforming complex data into actionable insights — from Finger Lakes water quality
+                            monitoring to full-stack healthcare systems and 3D brain visualization.
+                        </p>
+
+                        {/* Quick-link badges */}
+                        <div className="flex flex-wrap gap-3 mt-8">
+                            {['Data Analysis', 'Full-Stack Dev', 'Scientific Viz', 'Research'].map(tag => (
+                                <span key={tag}
+                                    className="px-3 py-1 text-xs font-semibold tracking-wide"
+                                    style={{
+                                        border: '1px solid rgba(148,163,184,0.3)',
+                                        color: 'var(--gray-light)',
+                                        backgroundColor: 'rgba(255,255,255,0.04)'
+                                    }}>
+                                    {tag}
+                                </span>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* Profile photo — borderless, fades into navy */}
+                    <div className="flex-shrink-0">
+                        <img
+                            src="/images/daud-profile.jpg"
+                            alt="Daudi Aden"
+                            style={{
+                                width: '220px',
+                                height: '260px',
+                                objectFit: 'cover',
+                                objectPosition: 'center top',
+                                display: 'block',
+                                maskImage: 'radial-gradient(ellipse 85% 90% at 50% 45%, black 40%, transparent 100%)',
+                                WebkitMaskImage: 'radial-gradient(ellipse 85% 90% at 50% 45%, black 40%, transparent 100%)',
+                            }}
+                        />
+                    </div>
                 </div>
             </header>
 
@@ -431,7 +490,7 @@ function Portfolio() {
                                     >
                                         {project.type}
                                     </span>
-                                    <span style={{ color: 'rgba(148, 163, 184, 0.5)' }}>•</span>
+                                    <span style={{ color: 'rgba(148, 163, 184, 0.5)' }}>→</span>
                                     <span
                                         className="text-xs"
                                         style={{ color: 'var(--blue-gray)' }}
@@ -534,11 +593,11 @@ function Portfolio() {
                                 Data Analysis
                             </h3>
                             <ul className="space-y-3 text-lg" style={{ color: 'var(--gray-light)' }}>
-                                <li>• Statistical Analysis</li>
-                                <li>• Data Visualization</li>
-                                <li>• Python (Pandas, NumPy)</li>
-                                <li>• SQL & Database Querying</li>
-                                <li>• Excel & Spreadsheet Modeling</li>
+                                <li>- Statistical Analysis</li>
+                                <li>- Data Visualization</li>
+                                <li>- Python (Pandas, NumPy)</li>
+                                <li>- SQL & Database Querying</li>
+                                <li>- Excel & Spreadsheet Modeling</li>
                             </ul>
                         </div>
 
@@ -550,11 +609,11 @@ function Portfolio() {
                                 Visualization Tools
                             </h3>
                             <ul className="space-y-3 text-lg" style={{ color: 'var(--gray-light)' }}>
-                                <li>• Tableau</li>
-                                <li>• Power BI</li>
-                                <li>• D3.js</li>
-                                <li>• Matplotlib & Seaborn</li>
-                                <li>• Information Design</li>
+                                <li>- Tableau</li>
+                                <li>- Power BI</li>
+                                <li>- D3.js</li>
+                                <li>- Matplotlib & Seaborn</li>
+                                <li>- Information Design</li>
                             </ul>
                         </div>
 
@@ -566,11 +625,11 @@ function Portfolio() {
                                 Development
                             </h3>
                             <ul className="space-y-3 text-lg" style={{ color: 'var(--gray-light)' }}>
-                                <li>• React & JavaScript</li>
-                                <li>• Java & JavaFX</li>
-                                <li>• Git & Version Control</li>
-                                <li>• Canvas API</li>
-                                <li>• Full-Stack Development</li>
+                                <li>- React & JavaScript</li>
+                                <li>- Java & JavaFX</li>
+                                <li>- Git & Version Control</li>
+                                <li>- Canvas API</li>
+                                <li>- Full-Stack Development</li>
                             </ul>
                         </div>
                     </div>
@@ -597,38 +656,147 @@ function Portfolio() {
                     >
                         About
                     </h2>
-                    <div className="max-w-3xl">
-                        <p
-                            className="text-xl md:text-2xl leading-relaxed mb-8"
-                            style={{ color: 'var(--slate-medium)' }}
-                        >
-                            I'm a data analyst and developer who transforms complex datasets into clear,
-                            actionable insights. My work bridges quantitative analysis with visual storytelling,
-                            making data accessible and compelling.
-                        </p>
-                        <p
-                            className="text-xl md:text-2xl leading-relaxed"
-                            style={{ color: 'var(--slate-medium)' }}
-                        >
-                            With expertise spanning from statistical analysis to full-stack development,
-                            I build tools and visualizations that help organizations make data-driven decisions.
-                            Whether it's analyzing economic trends or building research software, I focus on
-                            creating solutions that are both technically sound and user-centered.
-                        </p>
+                    {/* Two-column: text + action photos */}
+                    <div className="flex flex-col lg:flex-row gap-16 items-start">
+
+                        {/* Story text */}
+                        <div className="flex-1">
+                            <p className="text-xl md:text-2xl leading-relaxed mb-6"
+                                style={{ color: 'var(--slate-medium)' }}>
+                                I'm <strong>Daudi Aden</strong>  a data analyst, researcher and developer with a background
+                                in environmental science and computer science. I got my start doing real field
+                                research at the <strong>Finger Lakes Institute</strong>, collecting and analyzing
+                                water quality data from Seneca Lake's remote monitoring buoy.
+                            </p>
+                            <p className="text-xl md:text-2xl leading-relaxed mb-6"
+                                style={{ color: 'var(--slate-medium)' }}>
+                                That field work taught me something lectures couldn't: data only matters when
+                                it reaches the right people in the right form. That conviction drives everything
+                                I build ~ from real-time R/Shiny dashboards for lake monitoring, to 3D brain
+                                visualization tools for neuroscience research, to full-stack healthcare systems.
+                            </p>
+                            <p className="text-xl md:text-2xl leading-relaxed"
+                                style={{ color: 'var(--slate-medium)' }}>
+                                I'm currently seeking roles where I can apply both my analytical and engineering
+                                skills to problems with real-world impact. I'm equally comfortable in a terminal,
+                                a spreadsheet, or out on a research boat.
+                            </p>
+
+                            {/* Quick facts */}
+                            <div className="mt-10 grid grid-cols-2 gap-6">
+                                {[
+                                    { label: 'Based in', value: 'Geneva, NY' },
+                                    { label: 'Institution', value: 'Finger Lakes Institute' },
+                                    { label: 'Focus', value: 'Data × Development' },
+                                    { label: 'Open to', value: 'Full-time & Research roles' },
+                                ].map(({ label, value }) => (
+                                    <div key={label}>
+                                        <p className="text-sm font-semibold tracking-widest uppercase mb-1"
+                                            style={{ color: 'var(--blue-gray)' }}>
+                                            {label}
+                                        </p>
+                                        <p className="text-lg font-semibold"
+                                            style={{ color: 'var(--navy-dark)' }}>
+                                            {value}
+                                        </p>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+
+                        {/* Action photos */}
+                        <div className="flex-shrink-0 flex flex-col gap-4" style={{ width: '280px' }}>
+                            <div style={{
+                                overflow: 'hidden',
+                                border: '2px solid rgba(51,65,85,0.2)',
+                                boxShadow: '0 4px 20px rgba(0,0,0,0.1)'
+                            }}>
+                                <img
+                                    src="/images/daudi-research-1.jpg"
+                                    alt="Daudi examining a sensor"
+                                    style={{ width: '100%', height: '220px', objectFit: 'cover', objectPosition: 'center top', display: 'block' }}
+                                />
+                            </div>
+                            <div style={{
+                                overflow: 'hidden',
+                                border: '2px solid rgba(51,65,85,0.2)',
+                                boxShadow: '0 4px 20px rgba(0,0,0,0.1)'
+                            }}>
+                                <img
+                                    src="/images/daudi-research-2.jpg"
+                                    alt="Daudi in the lab"
+                                    style={{ width: '100%', height: '220px', objectFit: 'cover', objectPosition: 'center', display: 'block' }}
+                                />
+                            </div>
+                            <p className="text-sm text-center" style={{ color: 'var(--slate-light)' }}>
+                                Field &amp; lab work at the Finger Lakes Institute
+                            </p>
+                        </div>
                     </div>
                 </div>
             </section>
 
-            {/* Contact Section - White */}
+            {/* Contact Section — full-bleed lake background, text right */}
             <section
                 ref={sectionRefs.contact}
                 data-section="contact"
-                className={`py-20 section-fade ${visibleSections.contact ? 'visible' : ''}`}
-                style={{ backgroundColor: 'var(--white)' }}
+                className={`section-fade ${visibleSections.contact ? 'visible' : ''}`}
+                style={{ backgroundColor: 'var(--white)', position: 'relative', overflow: 'hidden', minHeight: '520px' }}
             >
-                <div className="max-w-7xl mx-auto px-6">
+                {/* Lake photo: pinned left, 75% wide, fades right into white */}
+                <div style={{
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    width: '75%',
+                    height: '100%',
+                    zIndex: 0,
+                }}>
+                    <img
+                        src="/images/seneca-lake.jpg"
+                        alt="Seneca Lake at sunrise"
+                        style={{
+                            width: '100%',
+                            height: '100%',
+                            objectFit: 'cover',
+                            objectPosition: 'center 30%',
+                            display: 'block',
+                            maskImage: 'linear-gradient(to right, rgba(0,0,0,1) 40%, rgba(0,0,0,0) 100%)',
+                            WebkitMaskImage: 'linear-gradient(to right, rgba(0,0,0,1) 40%, rgba(0,0,0,0) 100%)',
+                        }}
+                    />
+                    {/* Extra white wash to keep white bg clean on right */}
+                    <div style={{
+                        position: 'absolute', inset: 0,
+                        background: 'linear-gradient(to right, transparent 30%, var(--white) 85%)'
+                    }} />
+                </div>
+
+                {/* Caption bottom-left over the photo */}
+                <p style={{
+                    position: 'absolute',
+                    bottom: '1.5rem',
+                    left: '2rem',
+                    zIndex: 2,
+                    color: 'rgba(255,255,255,0.7)',
+                    fontSize: '0.75rem',
+                    letterSpacing: '0.08em',
+                    textTransform: 'uppercase',
+                }}>
+                    Seneca Lake — Geneva, NY
+                </p>
+
+                {/* Contact text: floats on the right quarter */}
+                <div style={{
+                    position: 'relative',
+                    zIndex: 1,
+                    marginLeft: 'auto',
+                    width: '38%',
+                    minWidth: '320px',
+                    padding: '5rem 3rem 5rem 1rem',
+                }}>
                     <h2
-                        className="text-4xl md:text-5xl font-bold mb-16 pb-6"
+                        className="text-4xl md:text-5xl font-bold mb-12 pb-6"
                         style={{
                             color: 'var(--navy-dark)',
                             borderBottom: '2px solid rgba(51, 65, 85, 0.2)'
@@ -636,54 +804,38 @@ function Portfolio() {
                     >
                         Contact
                     </h2>
+
                     <div className="space-y-6 text-xl md:text-2xl">
                         <p>
-                            <span
-                                className="inline-block w-40"
-                                style={{ color: 'var(--slate-medium)' }}
-                            >
-                                Email
-                            </span>
-                            <a
-                                href="mailto:daudiaden4@gmail.com"
-                                style={{ color: 'rgb(59, 130, 246)' }}
-                            >
+                            <span className="block text-sm font-semibold tracking-widest uppercase mb-1"
+                                style={{ color: 'var(--blue-gray)' }}>Email</span>
+                            <a href="mailto:daudiaden4@gmail.com" style={{ color: 'rgb(59, 130, 246)' }}>
                                 daudiaden4@gmail.com
                             </a>
                         </p>
                         <p>
-                            <span
-                                className="inline-block w-40"
-                                style={{ color: 'var(--slate-medium)' }}
-                            >
-                                GitHub
-                            </span>
-                            <a
-                                href="https://github.com/Aden254"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                style={{ color: 'rgb(59, 130, 246)' }}
-                            >
+                            <span className="block text-sm font-semibold tracking-widest uppercase mb-1"
+                                style={{ color: 'var(--blue-gray)' }}>GitHub</span>
+                            <a href="https://github.com/Aden254" target="_blank" rel="noopener noreferrer"
+                                style={{ color: 'rgb(59, 130, 246)' }}>
                                 Aden254
                             </a>
                         </p>
                         <p>
-                            <span
-                                className="inline-block w-40"
-                                style={{ color: 'var(--slate-medium)' }}
-                            >
-                                LinkedIn
-                            </span>
-                            <a
-                                href="https://www.linkedin.com/in/daudi-aden/"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                style={{ color: 'rgb(59, 130, 246)' }}
-                            >
+                            <span className="block text-sm font-semibold tracking-widest uppercase mb-1"
+                                style={{ color: 'var(--blue-gray)' }}>LinkedIn</span>
+                            <a href="https://www.linkedin.com/in/daudi-aden/" target="_blank" rel="noopener noreferrer"
+                                style={{ color: 'rgb(59, 130, 246)' }}>
                                 Aden
                             </a>
                         </p>
                     </div>
+
+                    <p className="mt-10 text-base leading-relaxed"
+                        style={{ color: 'var(--slate-light)', borderTop: '1px solid rgba(51,65,85,0.1)', paddingTop: '1.5rem' }}>
+                        Based in Geneva, NY — open to remote, hybrid, or local opportunities.
+                        Always happy to talk data, research, or interesting problems.
+                    </p>
                 </div>
             </section>
 
@@ -697,7 +849,7 @@ function Portfolio() {
             >
                 <div className="max-w-7xl mx-auto px-6 text-center">
                     <p style={{ color: 'var(--off-white)' }}>
-                        © 2025 Aden. All rights reserved.
+                        © 2025 Daudi Aden. All rights reserved.
                     </p>
                 </div>
             </footer>
