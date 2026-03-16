@@ -220,7 +220,7 @@ function Portfolio() {
                 className="photo-section"
                 style={{ minHeight: '100vh', display: 'flex', alignItems: 'center' }}
             >
-                <PhotoBg src="/images/bg1.jpeg" overlay="rgba(4,10,24,0.62)" position="center 45%" />
+                <PhotoBg src="/images/seneca-lake.jpg" overlay="rgba(4,10,24,0.62)" position="center 45%" />
 
                 <div className="photo-content max-w-7xl mx-auto px-6 py-24 w-full">
                     <div className="flex flex-col md:flex-row items-start md:items-center gap-12">
@@ -262,7 +262,7 @@ function Portfolio() {
 
                         <div style={{ flexShrink: 0 }}>
                             <img
-                                src="/images/daud-profile.jpeg"
+                                src="/images/daud-profile.jpg"
                                 alt="Daudi Aden"
                                 style={{
                                     width: '210px', height: '260px', objectFit: 'cover',
@@ -530,8 +530,8 @@ function Portfolio() {
 
                         <div style={{ flexShrink: 0, display: 'flex', flexDirection: 'column', gap: '1rem', width: '250px' }}>
                             {[
-                                { src: '/images/daudi-research-1.jpeg', alt: 'Daudi at the buoy sensor', accent: 'var(--teal)' },
-                                { src: '/images/daudi-research-2.jpeg', alt: 'Daudi in the lab', accent: 'var(--emerald)' },
+                                { src: '/images/daudi-research-1.jpg', alt: 'Daudi at the buoy sensor', accent: 'var(--teal)' },
+                                { src: '/images/daudi-research-2.jpg', alt: 'Daudi in the lab', accent: 'var(--emerald)' },
                             ].map(({ src, alt, accent }) => (
                                 <div key={alt} style={{ overflow: 'hidden', border: '1px solid rgba(255,255,255,0.1)', borderTop: `3px solid ${accent}` }}>
                                     <img src={src} alt={alt} style={{ width: '100%', height: '200px', objectFit: 'cover', objectPosition: 'center top', display: 'block' }} />
