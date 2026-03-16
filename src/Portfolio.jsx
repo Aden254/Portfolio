@@ -113,7 +113,26 @@ function Portfolio() {
             demo: null,
             github: null,
             external: 'https://flihws.shinyapps.io/SenecaBuoy/'
-        }
+        },
+        {
+    id: 'maritime-dashboard',
+    type: 'GIS & Data Engineering',
+    year: '2026',
+    title: 'Maritime Intelligence Dashboard',
+    description: 'Full-stack geospatial vessel tracking platform powered by PostGIS and real AIS data. Features live map rendering with MapLibre GL, spatial queries across a PostgreSQL/PostGIS database, and a REST API deployed on Railway. Demonstrates end-to-end data engineering from raw coordinates to interactive visualization.',
+    tech: ['React', 'MapLibre GL', 'PostGIS', 'Node.js', 'Express', 'Supabase', 'Railway', 'Vercel'],
+    demo: null,
+    github: 'https://github.com/Aden254/maritime-frontend',
+    external: 'https://maritime-frontend-lake.vercel.app',
+    featured: true,
+    insights: [
+        'Spatial queries using PostGIS ST_Distance and geography types',
+        'Real vessel data ingested and served via REST API on Railway',
+        'MapLibre GL for WebGL-accelerated map rendering in the browser',
+        'Supabase PostgreSQL with PostGIS extension as spatial data store',
+        'Diagnosed and resolved full deployment pipeline across Vercel + Railway + Supabase'
+    ]
+},
     ];
 
     const featuredProjects = projects.filter(p => p.featured);
@@ -597,6 +616,7 @@ function Portfolio() {
                                 <li>- Data Visualization</li>
                                 <li>- Python (Pandas, NumPy)</li>
                                 <li>- SQL & Database Querying</li>
+                                <li>- GIS & Spatial Analysis (PostGIS)</li>
                                 <li>- Excel & Spreadsheet Modeling</li>
                             </ul>
                         </div>
