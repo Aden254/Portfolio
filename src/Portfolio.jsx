@@ -2,14 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { ExternalLink, Github } from 'lucide-react';
 
-// ─────────────────────────────────────────────
-// PHOTO SETUP — place these in  public/images/
-//  bg1.jpg → IMG_1016  (Seneca Lake + chairs, dawn)
-//  bg2.jpg → IMG_1017  (fiery sunset)
-//  bg3.jpg → IMG_1181  (gothic building, daytime)
-//  bg4.jpg → IMG_1239  (gothic at night, stained glass)
-//  bg5.jpg → IMG_1244  (autumn gothic, warm light)
-// ─────────────────────────────────────────────
+
 
 function Portfolio() {
     const [selectedProject, setSelectedProject] = useState(null);
@@ -220,14 +213,14 @@ function Portfolio() {
         }
       `}</style>
 
-            {/* ══ HERO  →  bg1.jpg (lake + chairs, dawn) ══ */}
+            {/* ══ HERO  →  bg1.jpeg (lake + chairs, dawn) ══ */}
             <header
                 ref={sectionRefs.hero}
                 data-section="hero"
                 className="photo-section"
                 style={{ minHeight: '100vh', display: 'flex', alignItems: 'center' }}
             >
-                <PhotoBg src="/images/bg1.jpg" overlay="rgba(4,10,24,0.62)" position="center 45%" />
+                <PhotoBg src="/images/bg1.jpeg" overlay="rgba(4,10,24,0.62)" position="center 45%" />
 
                 <div className="photo-content max-w-7xl mx-auto px-6 py-24 w-full">
                     <div className="flex flex-col md:flex-row items-start md:items-center gap-12">
@@ -269,7 +262,7 @@ function Portfolio() {
 
                         <div style={{ flexShrink: 0 }}>
                             <img
-                                src="/images/daud-profile.jpg"
+                                src="/images/daud-profile.jpeg"
                                 alt="Daudi Aden"
                                 style={{
                                     width: '210px', height: '260px', objectFit: 'cover',
@@ -290,13 +283,13 @@ function Portfolio() {
                 </div>
             </header>
 
-            {/* ══ FEATURED WORK  →  bg2.jpg (fiery sunset) ══ */}
+            {/* ══ FEATURED WORK  →  bg2.jpeg (fiery sunset) ══ */}
             <section
                 ref={sectionRefs.featured}
                 data-section="featured"
                 className={`photo-section section-fade ${visibleSections.featured ? 'visible' : ''}`}
             >
-                <PhotoBg src="/images/bg2.jpg" overlay="rgba(6,10,24,0.76)" position="center 65%" />
+                <PhotoBg src="/images/bg2.jpeg" overlay="rgba(6,10,24,0.76)" position="center 65%" />
 
                 <div className="photo-content max-w-7xl mx-auto px-6 py-24">
                     <h2 className="font-bold" style={{ fontSize: 'clamp(2rem,4vw,3.25rem)', color: 'white', borderBottom: '2px solid rgba(14,165,233,0.3)', paddingBottom: '1.25rem', marginBottom: '4rem' }}>
@@ -398,13 +391,13 @@ function Portfolio() {
                 </div>
             </section>
 
-            {/* ══ ALL PROJECTS  →  bg3.jpg (gothic building, daytime) ══ */}
+            {/* ══ ALL PROJECTS  →  bg3.jpeg (gothic building, daytime) ══ */}
             <section
                 ref={sectionRefs.projects}
                 data-section="projects"
                 className={`photo-section section-fade ${visibleSections.projects ? 'visible' : ''}`}
             >
-                <PhotoBg src="/images/bg3.jpg" overlay="rgba(4,10,26,0.80)" position="center top" />
+                <PhotoBg src="/images/bg3.jpeg" overlay="rgba(4,10,26,0.80)" position="center top" />
 
                 <div className="photo-content max-w-7xl mx-auto px-6 py-24">
                     <h2 className="font-bold" style={{ fontSize: 'clamp(2rem,4vw,3.25rem)', color: 'white', borderBottom: '2px solid rgba(148,163,184,0.2)', paddingBottom: '1.25rem', marginBottom: '4rem' }}>
@@ -456,13 +449,13 @@ function Portfolio() {
                 </div>
             </section>
 
-            {/* ══ SKILLS  →  bg4.jpg (gothic at night, stained glass) ══ */}
+            {/* ══ SKILLS  →  bg4.jpeg (gothic at night, stained glass) ══ */}
             <section
                 ref={sectionRefs.skills}
                 data-section="skills"
                 className={`photo-section section-fade ${visibleSections.skills ? 'visible' : ''}`}
             >
-                <PhotoBg src="/images/bg4.jpg" overlay="rgba(3,7,18,0.82)" position="center" />
+                <PhotoBg src="/images/bg4.jpeg" overlay="rgba(3,7,18,0.82)" position="center" />
 
                 <div className="photo-content max-w-7xl mx-auto px-6 py-24">
                     <h2 className="font-bold" style={{ fontSize: 'clamp(2rem,4vw,3.25rem)', color: 'white', borderBottom: '2px solid rgba(148,163,184,0.2)', paddingBottom: '1.25rem', marginBottom: '4rem' }}>
@@ -495,13 +488,13 @@ function Portfolio() {
                 </div>
             </section>
 
-            {/* ══ ABOUT  →  bg5.jpg (autumn gothic, warm light) ══ */}
+            {/* ══ ABOUT  →  bg5.jpeg (autumn gothic, warm light) ══ */}
             <section
                 ref={sectionRefs.about}
                 data-section="about"
                 className={`photo-section section-fade ${visibleSections.about ? 'visible' : ''}`}
             >
-                <PhotoBg src="/images/bg5.jpg" overlay="rgba(4,10,24,0.78)" position="center right" />
+                <PhotoBg src="/images/bg5.jpeg" overlay="rgba(4,10,24,0.78)" position="center right" />
 
                 <div className="photo-content max-w-7xl mx-auto px-6 py-24">
                     <h2 className="font-bold" style={{ fontSize: 'clamp(2rem,4vw,3.25rem)', color: 'white', borderBottom: '2px solid rgba(14,165,233,0.25)', paddingBottom: '1.25rem', marginBottom: '4rem' }}>
@@ -537,8 +530,8 @@ function Portfolio() {
 
                         <div style={{ flexShrink: 0, display: 'flex', flexDirection: 'column', gap: '1rem', width: '250px' }}>
                             {[
-                                { src: '/images/daudi-research-1.jpg', alt: 'Daudi at the buoy sensor', accent: 'var(--teal)' },
-                                { src: '/images/daudi-research-2.jpg', alt: 'Daudi in the lab', accent: 'var(--emerald)' },
+                                { src: '/images/daudi-research-1.jpeg', alt: 'Daudi at the buoy sensor', accent: 'var(--teal)' },
+                                { src: '/images/daudi-research-2.jpeg', alt: 'Daudi in the lab', accent: 'var(--emerald)' },
                             ].map(({ src, alt, accent }) => (
                                 <div key={alt} style={{ overflow: 'hidden', border: '1px solid rgba(255,255,255,0.1)', borderTop: `3px solid ${accent}` }}>
                                     <img src={src} alt={alt} style={{ width: '100%', height: '200px', objectFit: 'cover', objectPosition: 'center top', display: 'block' }} />
@@ -552,14 +545,14 @@ function Portfolio() {
                 </div>
             </section>
 
-            {/* ══ CONTACT  →  bg1.jpg (lake, full bleed) ══ */}
+            {/* ══ CONTACT  →  bg1.jpeg (lake, full bleed) ══ */}
             <section
                 ref={sectionRefs.contact}
                 data-section="contact"
                 className={`photo-section section-fade ${visibleSections.contact ? 'visible' : ''}`}
                 style={{ minHeight: '480px' }}
             >
-                <PhotoBg src="/images/bg1.jpg" overlay="rgba(4,10,24,0.72)" position="center 30%" />
+                <PhotoBg src="/images/bg1.jpeg" overlay="rgba(4,10,24,0.72)" position="center 30%" />
 
                 <div className="photo-content max-w-7xl mx-auto px-6 py-24">
                     <div className="flex flex-col lg:flex-row" style={{ gap: '4rem', alignItems: 'flex-start' }}>
