@@ -16,6 +16,7 @@ const Login         = lazy(() => import('./components/Login'));
 import ConsultLinkDashboard from './components/ConsultLinkDashboard';
 import JoinSession from './components/JoinSession';
 import ConsultRoom from './components/ConsultRoom';
+import ResearchPage from './ResearchPage';
 
 function App() {
   return (
@@ -36,6 +37,7 @@ function App() {
       <Routes>
         {/* Portfolio & Existing Routes */}
         <Route path="/" element={<Portfolio />} />
+        <Route path="/research" element={<ResearchPage />} />
         <Route path="/neurotrace" element={<NeuroTraceWeb />} />
         <Route path="/login" element={<Login />} />
         <Route path="/healthhub" element={<ProtectedRoute><HealthHubManager /></ProtectedRoute>} />

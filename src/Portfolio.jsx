@@ -81,7 +81,7 @@ function Portfolio() {
         {
             id: 2, title: 'NeuroTrace Web', type: 'Full-Stack Development', year: '2025',
             description: 'Browser-based neural annotation tool with smart propagation and 15-color coding system for neuroscience research. Features automatic resize for tracking 3D structures.',
-            demo: '/neurotrace', github: 'https://github.com/yourusername/neurotrace-web',
+            demo: '/neurotrace', github: 'https://github.com/Aden254/neurotrace-web',
             tech: ['React', 'Canvas API', 'JavaScript'], featured: true
         },
         {
@@ -102,26 +102,26 @@ function Portfolio() {
     const featuredProjects = projects.filter(p => p.featured);
 
     const skills = [
-        { category: 'Data Analysis', accent: '#0ea5e9', items: [
-            { name: 'Statistical Analysis', level: 90 },
-            { name: 'Python (Pandas, NumPy)', level: 85 },
-            { name: 'SQL & Database Querying', level: 88 },
-            { name: 'GIS & Spatial Analysis (PostGIS)', level: 75 },
-            { name: 'Excel & Spreadsheet Modeling', level: 92 },
+        { category: 'Neuroimaging & Data', accent: '#0ea5e9', items: [
+            { name: 'fMRI/EEG Pipeline Analysis', level: 90 },
+            { name: 'Time-Series & Longitudinal Modeling', level: 85 },
+            { name: 'Python (NumPy/Pandas/SciPy)', level: 88 },
+            { name: 'R & R/Shiny Dashboards', level: 83 },
+            { name: 'SQL & Multi-Source Data Management', level: 80 },
         ]},
-        { category: 'Visualization Tools', accent: '#f59e0b', items: [
-            { name: 'Data Visualization (D3, Recharts)', level: 82 },
-            { name: 'Tableau & Power BI', level: 78 },
-            { name: 'Matplotlib & Seaborn', level: 85 },
-            { name: 'MapLibre GL / Deck.gl', level: 72 },
-            { name: 'Information Design', level: 80 },
+        { category: 'Scientific Visualization', accent: '#f59e0b', items: [
+            { name: 'Three.js/WebGL (3D Brain Rendering)', level: 82 },
+            { name: 'Canvas API (Neural Annotation)', level: 85 },
+            { name: 'D3.js & Data Storytelling', level: 78 },
+            { name: 'Medical Image Processing', level: 72 },
+            { name: 'Interactive Research Dashboards', level: 80 },
         ]},
-        { category: 'Development', accent: '#10b981', items: [
+        { category: 'Engineering', accent: '#10b981', items: [
             { name: 'React & JavaScript', level: 88 },
-            { name: 'Node.js & Express', level: 80 },
-            { name: 'Git & Version Control', level: 90 },
-            { name: 'Full-Stack Deployment', level: 78 },
-            { name: 'Canvas API & WebGL', level: 70 },
+            { name: 'Java / C / C# / Python', level: 80 },
+            { name: 'Full-Stack (Node.js MySQL)', level: 78 },
+            { name: 'Git & Reproducible Research', level: 90 },
+            { name: 'CI/CD & Cloud Deployment', level: 75 },
         ]}
     ];
 
@@ -228,11 +228,16 @@ function Portfolio() {
                             <p style={{ color: 'var(--teal)', fontSize: '0.75rem', fontWeight: 700, letterSpacing: '0.18em', textTransform: 'uppercase', marginBottom: '1.25rem' }}>
                                 Portfolio
                             </p>
-                            <h1 className="text-white font-bold" style={{ fontSize: 'clamp(3rem,7vw,5.5rem)', lineHeight: 1.05, marginBottom: '1rem', textShadow: '0 2px 24px rgba(0,0,0,0.6)' }}>
-                                Daudi Aden
-                            </h1>
-                            <p style={{ fontSize: 'clamp(1.2rem,2.5vw,1.75rem)', color: 'var(--gray-light)', marginBottom: '1.5rem' }}>
-                                Data Analyst, Researcher &amp; Developer
+                            <div style={{ display:'flex', justifyContent:'flex-end', marginBottom:'2rem', gap:'2rem' }}>
+                                <Link to="/research" style={{ fontSize:'0.75rem', letterSpacing:'0.14em', textTransform:'uppercase', color:'var(--blue-gray)', textDecoration:'none' }}>Research Statement</Link>
+                                <a href="https://github.com/Aden254" target="_blank" rel="noreferrer" style={{ fontSize:'0.75rem', letterSpacing:'0.14em', textTransform:'uppercase', color:'var(--blue-gray)', textDecoration:'none' }}>GitHub</a>
+                            </div>
+                            <h1 className="text-5xl md:text-6xl font-bold mb-3 text-white">Daudi Aden</h1>
+                            <p className="text-2xl md:text-3xl font-semibold mb-4" style={{ color: 'var(--gray-light)' }}>
+                                Computational Researcher &mdash; CS &amp; Neuroscience
+                            </p>
+                            <p className="text-xl md:text-2xl" style={{ color: 'var(--blue-gray)' }}>
+                                Building tools and methods to study how adversity reshapes the developing brain
                             </p>
 
                             <Glass style={{ padding: '1.25rem 1.5rem', maxWidth: '560px', marginBottom: '2rem' }}>
@@ -503,14 +508,17 @@ function Portfolio() {
                     <div className="flex flex-col lg:flex-row" style={{ gap: '3rem', alignItems: 'flex-start' }}>
                         <Glass style={{ flex: 1, padding: '2.5rem' }}>
                             <p style={{ fontSize: '1.1rem', lineHeight: 1.85, color: 'var(--off-white)', marginBottom: '1.5rem' }}>
-                                I'm <strong style={{ color: 'white' }}>Daudi Aden</strong> — a data analyst, researcher and developer with a background in environmental science and computer science. I got my start doing real field research at the{' '}
-                                <strong style={{ color: 'var(--teal)' }}>Finger Lakes Institute</strong>, collecting and analyzing water quality data from Seneca Lake's remote monitoring buoy.
+                                I'm a computational researcher with a double major in Computer Science and
+                                Psychology, studying how adversity — from early caregiving disruption to acute
+                                neurological events like stroke — reshapes brain architecture and behavioral
+                                trajectories across the lifespan.
                             </p>
                             <p style={{ fontSize: '1.1rem', lineHeight: 1.85, color: 'var(--off-white)', marginBottom: '1.5rem' }}>
-                                That field work taught me something lectures couldn't: data only matters when it reaches the right people in the right form. That conviction drives everything I build — from real-time R/Shiny dashboards for lake monitoring, to 3D brain visualization tools, to full-stack healthcare systems.
-                            </p>
-                            <p style={{ fontSize: '1.1rem', lineHeight: 1.85, color: 'var(--off-white)' }}>
-                                I'm currently seeking roles where I can apply both analytical and engineering skills to problems with real-world impact. Equally comfortable in a terminal, a spreadsheet, or out on a research boat.
+                                My work sits at the intersection of neuroimaging methods and developmental
+                                science. I build research software (3D brain reconstruction, neural annotation tools)
+                                and contribute to real-time environmental data pipelines at the Finger Lakes Institute.
+                                I'm pursuing a research assistantship leading to a PhD in developmental cognitive
+                                neuroscience starting 2027.
                             </p>
 
                             <div className="grid grid-cols-2" style={{ gap: '1.5rem', marginTop: '2.5rem' }}>
@@ -598,7 +606,7 @@ function Portfolio() {
             <footer style={{ background: 'rgba(3,7,18,0.98)', borderTop: '1px solid rgba(14,165,233,0.15)', padding: '2rem 0' }}>
                 <div className="max-w-7xl mx-auto px-6 text-center">
                     <p style={{ color: 'var(--blue-gray)', fontSize: '0.85rem' }}>
-                        © 2025 Daudi Aden · Built with React & deployed on Vercel
+                        © 2026 Daudi Aden. All rights reserved.
                     </p>
                 </div>
             </footer>
