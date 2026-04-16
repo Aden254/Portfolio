@@ -154,7 +154,7 @@ function Portfolio() {
     );
 
     return (
-        <div className="min-h-screen" style={{ fontFamily: "'Old Standard TT', serif" }}>
+        <div className="min-h-screen" style={{ fontFamily: "'Old Standard TT', serif", backgroundColor: '#050c1c' }}>
             <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Old+Standard+TT:ital,wght@0,400;0,700;1,400&display=swap');
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -168,6 +168,9 @@ function Portfolio() {
           --gray-light: #94a3b8;
           --off-white:  #e2e8f0;
           --blue-gray:  #64748b;
+          --navy-deep:    #050c1c;
+          --slate-medium: #0f172a;
+          --slate-light:  #131e2f;
         }
 
         .photo-section { position: relative; overflow: hidden; }
@@ -385,7 +388,10 @@ function Portfolio() {
                 ref={sectionRefs.projects}
                 data-section="projects"
                 className={`section-fade ${visibleSections.projects ? 'visible' : ''}`}
-                style={{ backgroundColor: 'var(--slate-medium)' }}
+                style={{
+                    background: 'linear-gradient(180deg, #050c1c 0%, #0f172a 10%, #0f172a 90%, #050c1c 100%)',
+                    position: 'relative',
+                }}
             >
 
                 <div className="photo-content max-w-7xl mx-auto px-6 py-24">
@@ -443,7 +449,10 @@ function Portfolio() {
                 ref={sectionRefs.skills}
                 data-section="skills"
                 className={`section-fade ${visibleSections.skills ? 'visible' : ''}`}
-                style={{ backgroundColor: 'var(--slate-light)' }}
+                style={{
+                    background: 'linear-gradient(180deg, #050c1c 0%, #131e2f 10%, #131e2f 90%, #050c1c 100%)',
+                    position: 'relative',
+                }}
             >
 
                 <div className="photo-content max-w-7xl mx-auto px-6 py-24">
