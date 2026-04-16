@@ -232,12 +232,12 @@ function Portfolio() {
                                 Portfolio
                             </p>
                             <div style={{ display:'flex', justifyContent:'flex-end', marginBottom:'2rem', gap:'2rem' }}>
-                                <Link to="/research" style={{ fontSize:'0.75rem', letterSpacing:'0.14em', textTransform:'uppercase', color:'var(--blue-gray)', textDecoration:'none' }}>Research Statement</Link>
+                                <Link to="/research" style={{ fontSize:'1.0rem', fontWeight: 500, letterSpacing:'0.14em', textTransform:'uppercase', color:'var(--blue-gray)', textDecoration:'none' }}>Research Statement</Link>
                                 <a href="https://github.com/Aden254" target="_blank" rel="noreferrer" style={{ fontSize:'0.75rem', letterSpacing:'0.14em', textTransform:'uppercase', color:'var(--blue-gray)', textDecoration:'none' }}>GitHub</a>
                             </div>
                             <h1 className="text-5xl md:text-6xl font-bold mb-3 text-white">Daudi Aden</h1>
                             <p className="text-2xl md:text-3xl font-semibold mb-4" style={{ color: 'var(--gray-light)' }}>
-                                Computational Researcher &mdash; CS &amp; Neuroscience
+                                Computational Researcher &mdash; CS &amp; Psychology
                             </p>
                             <p className="text-xl md:text-2xl" style={{ color: 'var(--blue-gray)' }}>
                                 Building tools and methods to study how adversity reshapes the developing brain
@@ -245,7 +245,7 @@ function Portfolio() {
 
                             <Glass style={{ padding: '1.25rem 1.5rem', maxWidth: '560px', marginBottom: '2rem' }}>
                                 <p style={{ color: 'var(--off-white)', fontSize: '1.05rem', lineHeight: 1.75 }}>
-                                    Transforming complex data into actionable insights — from Finger Lakes water quality
+                                    Building research tools at the intersection of computational methods and developmental neuroscience. From Finger Lakes water quality
                                     monitoring to full-stack healthcare systems and 3D brain visualization.
                                 </p>
                             </Glass>
