@@ -329,22 +329,6 @@ function Portfolio() {
                                     </p>
                                 </div>
 
-                                {project.image && (
-                                    <div style={{ marginBottom: '2rem' }}>
-                                        <div style={{ border: `2px solid ${style.border}`, overflow: 'hidden', cursor: 'pointer' }}
-                                            onClick={() => setSelectedProject(selectedProject === project.id ? null : project.id)}>
-                                            <img src={project.image} alt={project.title} style={{
-                                                width: '100%', height: 'auto',
-                                                maxHeight: selectedProject === project.id ? 'none' : '600px',
-                                                objectFit: selectedProject === project.id ? 'contain' : 'cover',
-                                                display: 'block'
-                                            }} />
-                                        </div>
-                                        <p style={{ fontSize: '0.8rem', textAlign: 'center', marginTop: '0.75rem', color: 'var(--blue-gray)' }}>
-                                            {selectedProject === project.id ? 'Click to collapse' : 'Click to view full size'}
-                                        </p>
-                                    </div>
-                                )}
 
                                 {project.insights && (
                                     <Glass style={{ marginBottom: '2rem', padding: '2rem', borderLeft: `4px solid ${style.text}` }}>
@@ -396,13 +380,13 @@ function Portfolio() {
                 </div>
             </section>
 
-            {/* ══ ALL PROJECTS  →  bg3.jpeg (gothic building, daytime) ══ */}
+            {/* ══ ALL PROJECTS ══ */}
             <section
                 ref={sectionRefs.projects}
                 data-section="projects"
-                className={`photo-section section-fade ${visibleSections.projects ? 'visible' : ''}`}
+                className={`section-fade ${visibleSections.projects ? 'visible' : ''}`}
+                style={{ backgroundColor: 'var(--slate-medium)' }}
             >
-                <PhotoBg src="/images/bg3.jpeg" overlay="rgba(4,10,26,0.80)" position="center top" />
 
                 <div className="photo-content max-w-7xl mx-auto px-6 py-24">
                     <h2 className="font-bold" style={{ fontSize: 'clamp(2rem,4vw,3.25rem)', color: 'white', borderBottom: '2px solid rgba(148,163,184,0.2)', paddingBottom: '1.25rem', marginBottom: '4rem' }}>
@@ -454,13 +438,13 @@ function Portfolio() {
                 </div>
             </section>
 
-            {/* ══ SKILLS  →  bg4.jpeg (gothic at night, stained glass) ══ */}
+            {/* ══ SKILLS ══ */}
             <section
                 ref={sectionRefs.skills}
                 data-section="skills"
-                className={`photo-section section-fade ${visibleSections.skills ? 'visible' : ''}`}
+                className={`section-fade ${visibleSections.skills ? 'visible' : ''}`}
+                style={{ backgroundColor: 'var(--slate-light)' }}
             >
-                <PhotoBg src="/images/bg4.jpeg" overlay="rgba(3,7,18,0.82)" position="center" />
 
                 <div className="photo-content max-w-7xl mx-auto px-6 py-24">
                     <h2 className="font-bold" style={{ fontSize: 'clamp(2rem,4vw,3.25rem)', color: 'white', borderBottom: '2px solid rgba(148,163,184,0.2)', paddingBottom: '1.25rem', marginBottom: '4rem' }}>

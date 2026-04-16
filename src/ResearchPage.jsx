@@ -81,10 +81,11 @@ function ResearchPage() {
 
                 .label-tag {
                     display: inline-block;
-                    font-size: 0.7rem;
+                    font-size: 0.95rem;
                     letter-spacing: 0.18em;
                     text-transform: uppercase;
-                    color: var(--muted);
+                    color: var(--offwhite);
+                    font-weight: 600;
                     border: 1px solid rgba(100,116,139,0.35);
                     padding: 0.25rem 0.75rem;
                     margin-bottom: 1.5rem;
@@ -183,6 +184,25 @@ function ResearchPage() {
                 </a>
             </header>
 
+            {/* ── Hero banner ── */}
+            <div style={{
+                position: 'relative',
+                height: '220px',
+                overflow: 'hidden',
+            }}>
+                <img src="/images/bg3.jpeg" alt=""
+                    style={{ width:'100%', height:'100%',
+                        objectFit:'cover', objectPosition:'center top',
+                        opacity: 0.5,
+                        filter: 'grayscale(20%) contrast(1.1)' }} />
+                <div style={{
+                    position:'absolute', inset:0,
+                    background:
+                        'linear-gradient(to bottom, rgba(15,23,42,0.3) 0%,' +
+                        'rgba(15,23,42,1) 100%)',
+                }} />
+            </div>
+
             {/* ── Layout: Side nav + Main content ── */}
             <div style={{
                 maxWidth: '1100px',
@@ -278,7 +298,7 @@ function ResearchPage() {
                             maxWidth: '540px',
                             lineHeight: 1.7,
                         }}>
-                            Computational methods for studying how adversity — acute and chronic —
+                            Computational methods for studying how adversity, acute and chronic,
                             reshapes brain architecture and behavioral development across the lifespan.
                         </p>
                     </div>
@@ -292,8 +312,8 @@ function ResearchPage() {
                         </h2>
 
                         <p style={{ color: 'var(--ghost)', marginBottom: '1.25rem' }}>
-                            When I was a child, I watched my father recover from a stroke. What I remember
-                            most wasn't the hospital — it was the pegboard on the wall of the rehab gym:
+                            About 10 years ago, I watched my brother recover from a stroke. What I remember
+                            most wasn't the hospital. It was the pegboard on the wall of the rehab gym:
                             pegs in holes, grip exercises, the slow, deliberate work of standing independently.
                             What I didn't have a name for yet was the process underneath: a brain being asked
                             to rebuild what it had lost, rerouting function through tissue that had never
@@ -301,14 +321,14 @@ function ResearchPage() {
                         </p>
 
                         <div className="pull-quote">
-                            That image — of neural networks recompiling under duress — has never left me.
+                            That image, of neural networks recompiling under duress, has never left me.
                             It crystallized a question I've spent the years since trying to learn how to answer.
                         </div>
 
                         <p style={{ color: 'var(--ghost)', marginBottom: '1.25rem' }}>
                             That question has broadened. Stroke is one kind of adversity, acute and visible.
-                            But the brain reorganizes in response to chronic adversity too — early poverty,
-                            disrupted caregiving, neighborhood stress — and often before anyone notices,
+                            But the brain reorganizes in response to chronic adversity too: early poverty,
+                            disrupted caregiving, neighborhood stress. And often before anyone notices,
                             in the developmental windows where architecture is still being laid down. The
                             mechanisms are different, but the underlying question is the same: how does
                             the brain respond to threat, and what does that cost over time?
@@ -317,7 +337,7 @@ function ResearchPage() {
                         <p style={{ color: 'var(--ghost)' }}>
                             My double major in Computer Science and Psychology is not a hedge between two
                             career paths. It's a deliberate preparation for research that sits at the
-                            intersection of neuroimaging methods and developmental science — because the
+                            intersection of neuroimaging methods and developmental science, because the
                             questions I want to ask require both.
                         </p>
                     </section>
@@ -332,8 +352,8 @@ function ResearchPage() {
 
                         <p style={{ color: 'var(--ghost)', marginBottom: '2rem' }}>
                             My research interest is the neuroscience of adversity and neural reorganization
-                            across the lifespan: how adverse events — both acute, like stroke, and chronic,
-                            like early poverty or disrupted caregiving — reshape brain architecture and
+                            across the lifespan: how adverse events, both acute, like stroke, and chronic,
+                            like early poverty or disrupted caregiving, reshape brain architecture and
                             behavioral trajectories, and what can be done about it.
                         </p>
 
@@ -345,7 +365,7 @@ function ResearchPage() {
                             },
                             {
                                 label: 'Chronic Adversity & Adolescent Neurodevelopment',
-                                body: 'How chronic adversity — poverty, environmental stress, neighborhood disadvantage — shapes the developing adolescent brain and alters behavioral trajectories. Studies like Baby\'s First Years, ABCD, and Michigan SAND represent the empirical infrastructure of this question.',
+                                body: 'How chronic adversity, poverty, environmental stress, neighborhood disadvantage, shapes the developing adolescent brain and alters behavioral trajectories. Studies like Baby\'s First Years, ABCD, and Michigan SAND represent the empirical infrastructure of this question.',
                             },
                             {
                                 label: 'Acute Neurological Adversity & Recovery',
@@ -379,9 +399,9 @@ function ResearchPage() {
                             My CS background means I approach neuroimaging data as a software and pipeline
                             problem as well as a scientific one. I've built data systems from scratch, written
                             real-time processing pipelines, and designed visualizations for multi-source
-                            scientific data. My research contributions at the Finger Lakes Institute — real-time
+                            scientific data. My research contributions at the Finger Lakes Institute, real-time
                             environmental data pipelines, R/Shiny dashboards, time-series and multi-source data
-                            management — reflect this dual orientation.
+                            management, reflect this dual orientation.
                         </p>
 
                         <div style={{ marginBottom: '1rem' }}>
@@ -417,7 +437,7 @@ function ResearchPage() {
                             Research Software Built
                         </h2>
                         <p style={{ color: 'var(--ghost)', marginBottom: '2rem', fontSize: '0.95rem' }}>
-                            These are not course projects. They're tools I built because I needed them —
+                            These are not course projects. They're tools I built because I needed them:
                             to see the data differently, to understand the method from the inside.
                         </p>
 
@@ -486,64 +506,40 @@ function ResearchPage() {
                     <section id="arc" style={{ marginBottom: '5rem' }}>
                         <hr className="section-rule" />
                         <div className="label-tag">Trajectory</div>
-                        <h2 style={{ fontSize: '1.6rem', fontWeight: 700, color: 'var(--white)', marginBottom: '1.5rem' }}>
+                        <h2 style={{ fontSize:'1.6rem', fontWeight:700,
+                            color:'var(--white)', marginBottom:'1.5rem' }}>
                             Where I'm Headed
                         </h2>
-
-                        <p style={{ color: 'var(--ghost)', marginBottom: '1.5rem' }}>
-                            I'm graduating from Hobart and William Smith Colleges in May 2026 with a double
-                            major in Computer Science and Psychology and a minor in Data Analytics. My goal
-                            is a research assistantship beginning summer 2026, leading to a PhD in
-                            developmental cognitive neuroscience starting fall 2027.
+                        <p style={{ color:'var(--ghost)' }}>
+                            Graduating from Hobart and William Smith Colleges
+                            in May 2026 with a double major in Computer Science
+                            and Psychology and a minor in Data Analytics.
+                            Currently seeking a research assistantship as a step
+                            toward graduate study and a long-term path in
+                            research and academia.
                         </p>
-
-                        <p style={{ color: 'var(--ghost)', marginBottom: '2rem' }}>
-                            Long-term, I want to be a professor. The arc is deliberate: RA to build
-                            independent research contribution, PhD to develop the methods and theoretical
-                            grounding, postdoc to establish a publication record and lab identity, faculty
-                            position to pursue the questions that have been with me since that rehab gym.
-                        </p>
-
-                        {/* Timeline strip */}
-                        <div style={{
-                            display: 'flex',
-                            gap: '0',
-                            marginBottom: '2rem',
-                            overflowX: 'auto',
-                        }}>
-                            {[
-                                { year: '2026', label: 'RA', sub: 'Developmental or\nneuroimaging lab' },
-                                { year: '2027', label: 'PhD', sub: 'Developmental\ncognitive neuro' },
-                                { year: '2031+', label: 'Postdoc', sub: 'Adversity &\nresilience neuro' },
-                                { year: '2033+', label: 'Faculty', sub: 'Independent\nresearch program' },
-                            ].map(({ year, label, sub }, i, arr) => (
-                                <div key={year} style={{ display: 'flex', alignItems: 'center', flexShrink: 0 }}>
-                                    <div style={{
-                                        padding: '1rem 1.25rem',
-                                        border: '1px solid rgba(100,116,139,0.3)',
-                                        borderRight: i < arr.length - 1 ? 'none' : '1px solid rgba(100,116,139,0.3)',
-                                        backgroundColor: i === 0 ? 'var(--accent-dim)' : 'transparent',
-                                        minWidth: '110px',
-                                    }}>
-                                        <div style={{ fontSize: '0.65rem', color: 'var(--muted)', letterSpacing: '0.1em', marginBottom: '0.3rem' }}>{year}</div>
-                                        <div style={{ fontSize: '1rem', fontWeight: 700, color: i === 0 ? 'var(--accent)' : 'var(--offwhite)', marginBottom: '0.4rem' }}>{label}</div>
-                                        <div style={{ fontSize: '0.72rem', color: 'var(--muted)', whiteSpace: 'pre-line', lineHeight: 1.5 }}>{sub}</div>
-                                    </div>
-                                    {i < arr.length - 1 && (
-                                        <div style={{ color: 'var(--muted)', fontSize: '0.75rem', padding: '0 0' }}>&nbsp;</div>
-                                    )}
-                                </div>
-                            ))}
-                        </div>
-
-                        <p style={{ color: 'var(--ghost)', fontSize: '0.95rem' }}>
-                            I am an F-1 international student. My OPT application has been filed.
-                            I am authorized to work on-campus through graduation and off-campus
-                            upon EAD card receipt.
+                        <p style={{ color:'var(--ghost)', marginTop:'1.25rem',
+                            fontSize:'0.95rem' }}>
+                            F-1 international student. OPT application filed.
+                            Authorized to work on-campus through graduation and
+                            off-campus upon EAD card receipt.
                         </p>
                     </section>
 
                     {/* ─ Contact footer ─ */}
+                    <div style={{
+                        position: 'relative',
+                        height: '90px',
+                        overflow: 'hidden',
+                        marginBottom: '2rem',
+                        borderRadius: '2px',
+                    }}>
+                        <img src="/images/bg4.jpeg" alt=""
+                            style={{ width:'100%', height:'100%',
+                                objectFit:'cover', objectPosition:'center',
+                                opacity: 0.25,
+                                filter: 'grayscale(40%)' }} />
+                    </div>
                     <div style={{
                         borderTop: '1px solid rgba(100,116,139,0.2)',
                         paddingTop: '2.5rem',
