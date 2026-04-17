@@ -361,7 +361,7 @@ function ResearchPage() {
                         {[
                             {
                                 label: 'Caregiving & Early Development',
-                                body: 'How the parent–child bond sculpts brain architecture, and how disruptions in caregiving create biological pathways to psychopathology. The work of Bick, Sharp, and O\'Connor on sensitive caregiving and early stress exposures frames this thread.',
+                                body: 'How the parent–child bond sculpts brain architecture, and how disruptions in caregiving create biological pathways to psychopathology. Longitudinal research on sensitive caregiving, biological stress responses, and early attachment disruption frames this thread.',
                             },
                             {
                                 label: 'Chronic Adversity & Adolescent Neurodevelopment',
@@ -369,7 +369,7 @@ function ResearchPage() {
                             },
                             {
                                 label: 'Acute Neurological Adversity & Recovery',
-                                body: 'How acute events like stroke force brain reorganization, what that reorganization looks like computationally, and what it means for rehabilitation. Vision recovery after cortical stroke (Tadin, Huxlin) and VR-based rehabilitation are the methodological entry point.',
+                                body: 'How acute events like stroke force brain reorganization, what that reorganization looks like computationally, and what it means for rehabilitation. Cortical stroke and visual recovery research, particularly VR-based rehabilitation approaches, represent the methodological entry point.',
                             },
                         ].map(({ label, body }) => (
                             <div key={label} style={{
