@@ -5,11 +5,12 @@ import ProtectedRoute from './components/ProtectedRoute';
 
 import { lazy, Suspense } from 'react';
 
-const Portfolio     = lazy(() => import('./Portfolio'));
-const NeuroTraceWeb = lazy(() => import('./NeuroTraceWeb'));
-const MRITracer3D   = lazy(() => import('./MRITracer3D'));
-const HealthHubManager = lazy(() => import('./components/HealthHubManager'));
-const Login         = lazy(() => import('./components/Login'));
+const Portfolio          = lazy(() => import('./Portfolio'));
+const NeuroTraceWeb      = lazy(() => import('./NeuroTraceWeb'));
+const MRITracer3D        = lazy(() => import('./MRITracer3D'));
+const AllenBrainExplorer = lazy(() => import('./AllenBrainExplorer'));
+const HealthHubManager   = lazy(() => import('./components/HealthHubManager'));
+const Login              = lazy(() => import('./components/Login'));
 
 
 // ConsultLink (telehealth)
@@ -38,7 +39,8 @@ function App() {
         {/* Portfolio & Existing Routes */}
         <Route path="/" element={<Portfolio />} />
         <Route path="/research" element={<ResearchPage />} />
-        <Route path="/neurotrace" element={<NeuroTraceWeb />} />
+        <Route path="/neurotrace"   element={<NeuroTraceWeb />} />
+        <Route path="/neuroatlas"   element={<AllenBrainExplorer />} />
         <Route path="/login" element={<Login />} />
         <Route path="/healthhub" element={<ProtectedRoute><HealthHubManager /></ProtectedRoute>} />
         <Route path="/mri-tracer" element={<MRITracer3D />} />

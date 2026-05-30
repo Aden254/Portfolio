@@ -92,6 +92,20 @@ function Portfolio() {
             demo: '/mri-tracer', github: null, external: null
         },
         {
+            id: 'neuroatlas', type: 'Scientific Visualization', year: '2025',
+            title: 'NeuroAtlas',
+            description: 'Interactive Allen Brain Atlas explorer with a 3D rotating brain, live gene expression data, and ISH section imagery. Toggle between human (microarray) and mouse (ISH) atlases — search any gene and see where it\'s expressed across 1,800+ brain structures.',
+            tech: ['React', 'Three.js', 'WebGL', 'Allen Brain Atlas API', 'Node.js', 'Express'],
+            demo: '/neuroatlas', github: null, external: null, featured: true,
+            insights: [
+                'Live proxy to Allen Brain Atlas API — real published neuroscience data',
+                'Two distinct data modes: human microarray expression vs. mouse ISH imaging',
+                'Custom vertex-displaced brain mesh with UnrealBloomPass glow',
+                '1,327 mouse / 1,839 human brain structures from Allen ontology',
+                'Featured genes: BDNF (memory), GFAP (glia), APOE (Alzheimer\'s risk)'
+            ]
+        },
+        {
             id: 'seneca-lake', type: 'Environmental Science', year: '2024',
             title: 'Seneca Lake Monitoring',
             description: 'Real-time monitoring platform displaying live data from a remote buoy on Seneca Lake. Water quality metrics (temperature, pH, dissolved oxygen) and meteorological data visualization.',
