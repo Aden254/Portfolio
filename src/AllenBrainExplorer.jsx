@@ -7,6 +7,9 @@ import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPa
 
 const API = import.meta.env.VITE_ATLAS_API ?? 'http://localhost:5001';
 
+const LENS_D = 152; // lens diameter in px
+const ZOOM   = 2.8; // magnification factor
+
 const C = {
   bg:      '#0c2250',
   bgDeep:  '#08183e',
@@ -106,6 +109,10 @@ export default function AllenBrainExplorer() {
   const [slideIdx,    setSlideIdx]    = useState(0);
   const [imgOpacity,  setImgOpacity]  = useState(1);
   const [modalOpen,   setModalOpen]   = useState(false);
+  const [lensPos,      setLensPos]      = useState(null);
+  const [modalLensPos, setModalLensPos] = useState(null);
+  const slideImgRef = useRef(null);
+  const modalImgRef = useRef(null);
   const [expression,  setExpression]  = useState([]);
   const [ontFlat,     setOntFlat]     = useState([]);
   const [ontTree,     setOntTree]     = useState([]);
@@ -376,13 +383,42 @@ export default function AllenBrainExplorer() {
   useEffect(() => {
     if (!modalOpen) return;
     const onKey = (e) => {
-      if (e.key === 'Escape')      setModalOpen(false);
+      if (e.key === 'Escape')      { setModalOpen(false); setModalLensPos(null); }
       if (e.key === 'ArrowRight')  changeSlide(Math.min(images.length - 1, slideIdx + 1));
       if (e.key === 'ArrowLeft')   changeSlide(Math.max(0, slideIdx - 1));
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
   }, [modalOpen, slideIdx, images.length, changeSlide]);
+
+  // Magnifying lens — calculates actual rendered image rect inside objectFit:contain
+  const handleLensMove = useCallback((e) => {
+    const img = slideImgRef.current;
+    if (!img || !img.naturalWidth) return;
+    const cRect = e.currentTarget.getBoundingClientRect();
+    const cw = cRect.width, ch = cRect.height;
+    const aspect = img.naturalWidth / img.naturalHeight;
+    let rw, rh, ox, oy;
+    if (cw / ch > aspect) { rh = ch; rw = ch * aspect; ox = (cw - rw) / 2; oy = 0; }
+    else                  { rw = cw; rh = cw / aspect; oy = (ch - rh) / 2; ox = 0; }
+    const cx = e.clientX - cRect.left;
+    const cy = e.clientY - cRect.top;
+    if (cx < ox || cx > ox + rw || cy < oy || cy > oy + rh) { setLensPos(null); return; }
+    setLensPos({ cx, cy, rw, rh, ox, oy });
+  }, []);
+
+  const handleLensLeave = useCallback(() => setLensPos(null), []);
+
+  // Modal magnifying lens — img element sizes to the image naturally (no black bars)
+  const handleModalLensMove = useCallback((e) => {
+    const img = modalImgRef.current;
+    if (!img) return;
+    const rect = img.getBoundingClientRect();
+    const cx = e.clientX - rect.left;
+    const cy = e.clientY - rect.top;
+    setModalLensPos({ cx, cy, rw: rect.width, rh: rect.height });
+  }, []);
+  const handleModalLensLeave = useCallback(() => setModalLensPos(null), []);
 
   const pickGene   = useCallback((g) => { setGene(g); setGeneHits([]); setQuery(''); }, []);
   const pickStruct = useCallback((s) => { setSelStruct(s); pulse(); }, [pulse]);
@@ -623,7 +659,11 @@ export default function AllenBrainExplorer() {
               )}
 
               {/* Main slide — fills all available space */}
-              <div style={{ flex: 1, position: 'relative', overflow: 'hidden' }}>
+              <div
+                style={{ flex: 1, position: 'relative', overflow: 'hidden' }}
+                onMouseMove={handleLensMove}
+                onMouseLeave={handleLensLeave}
+              >
                 {busy.images && (
                   <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 3 }}>
                     <div style={{ color: C.textMd, fontSize: '0.7rem', letterSpacing: '0.1em' }}>Loading sections…</div>
@@ -633,6 +673,7 @@ export default function AllenBrainExplorer() {
                 {curImage && (
                   <img
                     key={curImage.id}
+                    ref={slideImgRef}
                     src={`https://api.brain-map.org/api/v2/image_download/${curImage.id}?downsample=3`}
                     alt={`Section ${curImage.section_number}`}
                     onClick={() => setModalOpen(true)}
@@ -646,6 +687,27 @@ export default function AllenBrainExplorer() {
                   />
                 )}
 
+
+                {/* Magnifying lens */}
+                {lensPos && curImage && (
+                  <div style={{
+                    position: 'absolute',
+                    left: lensPos.cx - LENS_D / 2,
+                    top:  lensPos.cy - LENS_D / 2,
+                    width: LENS_D, height: LENS_D,
+                    borderRadius: '50%',
+                    overflow: 'hidden',
+                    pointerEvents: 'none',
+                    zIndex: 10,
+                    border: `1.5px solid rgba(147,197,253,0.5)`,
+                    boxShadow: '0 0 0 1px rgba(0,0,20,0.7), 0 4px 22px rgba(0,0,0,0.65)',
+                    backgroundImage: `url(https://api.brain-map.org/api/v2/image_download/${curImage.id}?downsample=3)`,
+                    backgroundRepeat: 'no-repeat',
+                    backgroundSize: `${lensPos.rw * ZOOM}px ${lensPos.rh * ZOOM}px`,
+                    backgroundPosition: `${-(lensPos.cx - lensPos.ox) * ZOOM + LENS_D / 2}px ${-(lensPos.cy - lensPos.oy) * ZOOM + LENS_D / 2}px`,
+                    filter: 'saturate(1.8) contrast(1.3)',
+                  }} />
+                )}
 
                 {/* Prev / Next */}
                 {images.length > 1 && <>
@@ -802,7 +864,7 @@ export default function AllenBrainExplorer() {
       {/* ── Fullscreen lightbox modal ── */}
       {modalOpen && curImage && (
         <div
-          onClick={() => setModalOpen(false)}
+          onClick={() => { setModalOpen(false); setModalLensPos(null); }}
           style={{
             position: 'fixed', inset: 0, zIndex: 9999,
             background: 'rgba(0,4,18,0.97)',
@@ -810,19 +872,47 @@ export default function AllenBrainExplorer() {
             animation: 'na-lift 0.22s ease',
           }}
         >
-          <img
-            src={`https://api.brain-map.org/api/v2/image_download/${curImage.id}?downsample=2`}
-            alt={`Section ${curImage.section_number}`}
+          {/* Image wrapper — sized to the image content, mouse tracked for lens */}
+          <div
+            style={{ position: 'relative', display: 'inline-block', cursor: 'crosshair', lineHeight: 0 }}
+            onMouseMove={handleModalLensMove}
+            onMouseLeave={handleModalLensLeave}
             onClick={e => e.stopPropagation()}
-            style={{
-              maxWidth: '92vw', maxHeight: '90vh',
-              objectFit: 'contain', display: 'block',
-              animation: 'na-fade 0.2s ease',
-            }}
-          />
+          >
+            <img
+              ref={modalImgRef}
+              src={`https://api.brain-map.org/api/v2/image_download/${curImage.id}?downsample=2`}
+              alt={`Section ${curImage.section_number}`}
+              style={{
+                maxWidth: '92vw', maxHeight: '90vh',
+                objectFit: 'contain', display: 'block',
+                animation: 'na-fade 0.2s ease',
+              }}
+            />
+
+            {/* Magnifying lens */}
+            {modalLensPos && (
+              <div style={{
+                position: 'absolute',
+                left: modalLensPos.cx - LENS_D / 2,
+                top:  modalLensPos.cy - LENS_D / 2,
+                width: LENS_D, height: LENS_D,
+                borderRadius: '50%',
+                pointerEvents: 'none',
+                zIndex: 10,
+                border: `1.5px solid rgba(147,197,253,0.55)`,
+                boxShadow: '0 0 0 1px rgba(0,0,20,0.7), 0 4px 24px rgba(0,0,0,0.7)',
+                backgroundImage: `url(https://api.brain-map.org/api/v2/image_download/${curImage.id}?downsample=2)`,
+                backgroundRepeat: 'no-repeat',
+                backgroundSize: `${modalLensPos.rw * ZOOM}px ${modalLensPos.rh * ZOOM}px`,
+                backgroundPosition: `${-modalLensPos.cx * ZOOM + LENS_D / 2}px ${-modalLensPos.cy * ZOOM + LENS_D / 2}px`,
+                filter: 'saturate(1.8) contrast(1.3)',
+              }} />
+            )}
+          </div>
 
           {/* Close */}
-          <button onClick={() => setModalOpen(false)} style={{
+          <button onClick={() => { setModalOpen(false); setModalLensPos(null); }} style={{
             position: 'absolute', top: 20, right: 24,
             background: 'rgba(8,20,60,0.85)', border: `1px solid ${C.border}`,
             color: C.accent, fontSize: '1.1rem', cursor: 'pointer',
