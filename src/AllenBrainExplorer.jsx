@@ -160,73 +160,85 @@ export default function AllenBrainExplorer() {
   const makeBrain = useCallback((sp) => {
     const human = sp === 'human';
     const group  = new THREE.Group();
-    const mat = new THREE.MeshPhongMaterial({
-      color:    human ? 0x5888c8 : 0x4eaaaa,
-      emissive: human ? 0x081c50 : 0x0a2030,
-      shininess: 80,
-      specular:  0x3366aa,
+
+    // ── Signed-distance helpers ──────────────────────────────
+    const inEllipsoid = (x, y, z, cx, cy, cz, rx, ry, rz) => {
+      const dx=(x-cx)/rx, dy=(y-cy)/ry, dz=(z-cz)/rz;
+      return dx*dx + dy*dy + dz*dz < 1.0;
+    };
+
+    // Returns 'cx' | 'cb' | 'ob' | null
+    const classify = (x, y, z) => {
+      if (human) {
+        if (inEllipsoid(x,y,z, -0.48, 0.04, 0,    0.90, 0.76, 0.86)) return 'cx';
+        if (inEllipsoid(x,y,z,  0.48, 0.04, 0,    0.90, 0.76, 0.86)) return 'cx';
+        if (inEllipsoid(x,y,z,  0,  -0.52, -0.72, 0.52, 0.29, 0.38)) return 'cb';
+      } else {
+        // Mouse: elongated anterior-posterior axis
+        if (inEllipsoid(x,y,z, -0.36, 0.06, 0,    0.72, 0.64, 1.08)) return 'cx';
+        if (inEllipsoid(x,y,z,  0.36, 0.06, 0,    0.72, 0.64, 1.08)) return 'cx';
+        if (inEllipsoid(x,y,z,  0,  -0.06, 1.22,  0.26, 0.21, 0.28)) return 'ob'; // olfactory
+        if (inEllipsoid(x,y,z,  0,  -0.46,-0.90,  0.44, 0.25, 0.33)) return 'cb';
+      }
+      return null;
+    };
+
+    // ── Rejection sampling ───────────────────────────────────
+    const N   = 9500;
+    const BX  = 1.55, BY = 1.05, BZ = human ? 1.25 : 1.55;
+    const pos = new Float32Array(N * 3);
+    const col = new Float32Array(N * 3);
+    let filled = 0;
+
+    for (let tries = 0; tries < N * 16 && filled < N; tries++) {
+      const x = (Math.random() - 0.5) * 2 * BX;
+      const y = (Math.random() - 0.5) * 2 * BY;
+      const z = (Math.random() - 0.5) * 2 * BZ;
+      const r = classify(x, y, z);
+      if (!r) continue;
+
+      const i3 = filled * 3;
+      pos[i3] = x; pos[i3+1] = y; pos[i3+2] = z;
+
+      // Surface proximity drives brightness (additive blending accumulates colour at dense core)
+      const d = Math.sqrt(x*x + (y*1.3)*(y*1.3) + z*z);
+      const t = Math.min(1, d * 0.88);
+
+      if (r === 'cx') {
+        if (human) {
+          // Blue → bright cyan at surface
+          col[i3]=0.04+t*0.52; col[i3+1]=0.18+t*0.58; col[i3+2]=0.82+t*0.18;
+        } else {
+          // Teal-green for mouse
+          col[i3]=0.03+t*0.22; col[i3+1]=0.40+t*0.52; col[i3+2]=0.60+t*0.38;
+        }
+      } else if (r === 'cb') {
+        col[i3]=0.05+t*0.32; col[i3+1]=0.16+t*0.46; col[i3+2]=0.76+t*0.22;
+      } else {
+        // Olfactory bulb — warm accent
+        col[i3]=0.18+t*0.55; col[i3+1]=0.58+t*0.38; col[i3+2]=0.70+t*0.28;
+      }
+      filled++;
+    }
+
+    const geo = new THREE.BufferGeometry();
+    geo.setAttribute('position', new THREE.BufferAttribute(pos.slice(0, filled*3), 3));
+    geo.setAttribute('color',    new THREE.BufferAttribute(col.slice(0, filled*3), 3));
+
+    const mat = new THREE.PointsMaterial({
+      size:            0.030,
+      vertexColors:    true,
+      transparent:     true,
+      opacity:         0.82,
+      sizeAttenuation: true,
+      blending:        THREE.AdditiveBlending,
+      depthWrite:      false,
     });
 
-    // Cortex
-    const r   = human ? 1.05 : 0.90;
-    const geo = new THREE.SphereGeometry(r, 160, 160);
-    const pos = geo.attributes.position;
+    group.add(new THREE.Points(geo, mat));
 
-    for (let i = 0; i < pos.count; i++) {
-      const x = pos.getX(i), y = pos.getY(i), z = pos.getZ(i);
-      const len = Math.sqrt(x*x+y*y+z*z) || 1;
-      const nx = x/len, ny = y/len, nz = z/len;
-      const θ = Math.acos(Math.max(-1, Math.min(1, nz)));
-      const φ = Math.atan2(ny, nx);
-
-      let d  = 0.068 * Math.sin(7 *θ)       * Math.cos(5 *φ);
-      d     += 0.052 * Math.sin(11*θ + 0.5) * Math.sin(8 *φ);
-      d     += 0.038 * Math.cos(13*θ)       * Math.sin(6 *φ + 1.2);
-      d     += 0.024 * Math.sin(17*θ)       * Math.cos(12*φ + 0.4);
-      d     += 0.016 * Math.cos(21*θ + 1)   * Math.sin(15*φ);
-      if (human) {
-        d   += 0.011 * Math.sin(27*θ) * Math.cos(20*φ + 0.8);
-        d   += 0.007 * Math.sin(33*θ) * Math.sin(25*φ + 0.3);
-      }
-
-      // Deep longitudinal fissure — narrow, pronounced
-      const fissureW = 0.052;
-      const topFade  = Math.max(0, ny);
-      const fissureT = Math.max(0, 1 - Math.abs(nx) / fissureW);
-      d -= 0.22 * fissureT * fissureT * topFade;
-
-      // Strong vertical flattening — this is what makes it look like a brain
-      const sx = 1.10, sy = human ? 0.62 : 0.58, sz = human ? 0.94 : 1.22;
-      pos.setXYZ(i, (x+nx*d)*sx, (y+ny*d)*sy, (z+nz*d)*sz);
-    }
-    geo.computeVertexNormals();
-    group.add(new THREE.Mesh(geo, mat));
-
-    // Cerebellum
-    const cbR   = human ? 0.40 : 0.32;
-    const cbGeo = new THREE.SphereGeometry(cbR, 80, 80);
-    const cbPos = cbGeo.attributes.position;
-    for (let i = 0; i < cbPos.count; i++) {
-      const x = cbPos.getX(i), y = cbPos.getY(i), z = cbPos.getZ(i);
-      const len = Math.sqrt(x*x+y*y+z*z) || 1;
-      const nx = x/len, ny = y/len, nz = z/len;
-      const θ = Math.acos(Math.max(-1, Math.min(1, nz)));
-      const φ = Math.atan2(ny, nx);
-      let d = 0.040*Math.sin(18*θ)*Math.cos(14*φ) + 0.028*Math.sin(24*θ)*Math.sin(20*φ);
-      cbPos.setXYZ(i, (x+nx*d)*1.1, (y+ny*d)*0.55, (z+nz*d)*1.05);
-    }
-    cbGeo.computeVertexNormals();
-    const cb = new THREE.Mesh(cbGeo, mat.clone());
-    cb.position.set(0, -r*0.62*0.60, -r*(human?0.94:1.22)*0.62);
-    group.add(cb);
-
-    if (!human) {
-      const obGeo = new THREE.SphereGeometry(0.20, 40, 40);
-      const ob = new THREE.Mesh(obGeo, mat.clone());
-      ob.position.set(0, -0.04, r*1.22*0.96);
-      ob.scale.set(0.70, 0.58, 1.32);
-      group.add(ob);
-    }
+    // Fixed downward tilt so both hemispheres are visible from the front
+    group.rotation.x = -0.24;
     return group;
   }, []);
 
@@ -277,7 +289,7 @@ export default function AllenBrainExplorer() {
         animFrame = requestAnimationFrame(loop);
         tRef.current += 0.003;
         const b = brainRef.current;
-        if (b) { b.rotation.y = tRef.current; b.rotation.x = Math.sin(tRef.current*0.4)*0.08; }
+        if (b) { b.rotation.y = tRef.current; } // x-tilt fixed in makeBrain
         composer.render();
       };
       loop();
@@ -308,19 +320,38 @@ export default function AllenBrainExplorer() {
     const scene = sceneRef.current, old = brainRef.current;
     if (!scene || !old) return;
     scene.remove(old);
-    old.traverse(c => { if (c.isMesh) { c.geometry.dispose(); c.material.dispose(); } });
+    old.traverse(c => { if (c.geometry) c.geometry.dispose(); if (c.material) c.material.dispose(); });
     const next = makeBrain(species);
     scene.add(next);
     brainRef.current = next;
   }, [species, makeBrain]);
 
   const pulse = useCallback(() => {
+    // Bloom burst
     const b = bloomRef.current;
-    if (!b) return;
-    b.strength = 1.2;
-    let f = 0;
-    const tick = () => { f++; b.strength = Math.max(0.28, 1.2*Math.exp(-f*0.055)); if (b.strength > 0.30) requestAnimationFrame(tick); };
-    requestAnimationFrame(tick);
+    if (b) {
+      b.strength = 1.4;
+      let f = 0;
+      const bTick = () => { f++; b.strength = Math.max(0.28, 1.4*Math.exp(-f*0.06)); if (b.strength > 0.30) requestAnimationFrame(bTick); };
+      requestAnimationFrame(bTick);
+    }
+    // Particle size + opacity burst
+    const brain = brainRef.current;
+    if (brain) {
+      brain.traverse(c => {
+        if (!c.isPoints) return;
+        const m = c.material;
+        m.size = 0.060; m.opacity = 1.0;
+        let f = 0;
+        const pTick = () => {
+          f++;
+          m.size    = Math.max(0.030, 0.060 * Math.exp(-f * 0.07));
+          m.opacity = Math.max(0.82,  1.0   - f * 0.009);
+          if (m.size > 0.031) requestAnimationFrame(pTick);
+        };
+        requestAnimationFrame(pTick);
+      });
+    }
   }, []);
 
   useEffect(() => {
