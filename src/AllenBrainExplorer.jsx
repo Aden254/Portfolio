@@ -153,92 +153,129 @@ export default function AllenBrainExplorer() {
   const brainRef    = useRef(null);
   const sceneRef    = useRef(null);
   const cameraRef   = useRef(null);
-  const tRef        = useRef(0);
-  const speciesRef  = useRef(species);
+  const tRef          = useRef(0);
+  const speciesRef    = useRef(species);
+  const edgesRef      = useRef([]);          // [{ax,ay,az,bx,by,bz}] built each time makeBrain runs
+  const pulseObjRef   = useRef(null);        // the traveling THREE.Mesh pulse sphere
+  const pulseStateRef = useRef({ idx: 0, t: 0, speed: 0.016 }); // animation state
   useEffect(() => { speciesRef.current = species; }, [species]);
 
   const makeBrain = useCallback((sp) => {
     const human = sp === 'human';
     const group  = new THREE.Group();
 
-    // ── Signed-distance helpers ──────────────────────────────
+    // ── SDF for brain shape ──────────────────────────────────
     const inEllipsoid = (x, y, z, cx, cy, cz, rx, ry, rz) => {
       const dx=(x-cx)/rx, dy=(y-cy)/ry, dz=(z-cz)/rz;
       return dx*dx + dy*dy + dz*dz < 1.0;
     };
-
-    // Returns 'cx' | 'cb' | 'ob' | null
-    const classify = (x, y, z) => {
+    const inBrain = (x, y, z) => {
       if (human) {
-        if (inEllipsoid(x,y,z, -0.48, 0.04, 0,    0.90, 0.76, 0.86)) return 'cx';
-        if (inEllipsoid(x,y,z,  0.48, 0.04, 0,    0.90, 0.76, 0.86)) return 'cx';
-        if (inEllipsoid(x,y,z,  0,  -0.52, -0.72, 0.52, 0.29, 0.38)) return 'cb';
+        if (inEllipsoid(x,y,z, -0.48, 0.04, 0,    0.90, 0.76, 0.86)) return true;
+        if (inEllipsoid(x,y,z,  0.48, 0.04, 0,    0.90, 0.76, 0.86)) return true;
+        if (inEllipsoid(x,y,z,  0,  -0.52,-0.72,  0.52, 0.29, 0.38)) return true;
       } else {
-        // Mouse: elongated anterior-posterior axis
-        if (inEllipsoid(x,y,z, -0.36, 0.06, 0,    0.72, 0.64, 1.08)) return 'cx';
-        if (inEllipsoid(x,y,z,  0.36, 0.06, 0,    0.72, 0.64, 1.08)) return 'cx';
-        if (inEllipsoid(x,y,z,  0,  -0.06, 1.22,  0.26, 0.21, 0.28)) return 'ob'; // olfactory
-        if (inEllipsoid(x,y,z,  0,  -0.46,-0.90,  0.44, 0.25, 0.33)) return 'cb';
+        if (inEllipsoid(x,y,z, -0.36, 0.06, 0,    0.72, 0.64, 1.08)) return true;
+        if (inEllipsoid(x,y,z,  0.36, 0.06, 0,    0.72, 0.64, 1.08)) return true;
+        if (inEllipsoid(x,y,z,  0,  -0.06, 1.22,  0.26, 0.21, 0.28)) return true;
+        if (inEllipsoid(x,y,z,  0,  -0.46,-0.90,  0.44, 0.25, 0.33)) return true;
       }
-      return null;
+      return false;
     };
 
-    // ── Rejection sampling ───────────────────────────────────
-    const N   = 9500;
-    const BX  = 1.55, BY = 1.05, BZ = human ? 1.25 : 1.55;
-    const pos = new Float32Array(N * 3);
-    const col = new Float32Array(N * 3);
-    let filled = 0;
-
-    for (let tries = 0; tries < N * 16 && filled < N; tries++) {
+    // ── Node positions (rejection sampling) ─────────────────
+    const N_NODES = 290;
+    const BX = 1.55, BY = 1.05, BZ = human ? 1.25 : 1.55;
+    const xyz = []; // flat [x,y,z ...]
+    for (let tries = 0; tries < N_NODES * 20 && xyz.length < N_NODES * 3; tries++) {
       const x = (Math.random() - 0.5) * 2 * BX;
       const y = (Math.random() - 0.5) * 2 * BY;
       const z = (Math.random() - 0.5) * 2 * BZ;
-      const r = classify(x, y, z);
-      if (!r) continue;
-
-      const i3 = filled * 3;
-      pos[i3] = x; pos[i3+1] = y; pos[i3+2] = z;
-
-      // Surface proximity drives brightness (additive blending accumulates colour at dense core)
-      const d = Math.sqrt(x*x + (y*1.3)*(y*1.3) + z*z);
-      const t = Math.min(1, d * 0.88);
-
-      if (r === 'cx') {
-        if (human) {
-          // Blue → bright cyan at surface
-          col[i3]=0.04+t*0.52; col[i3+1]=0.18+t*0.58; col[i3+2]=0.82+t*0.18;
-        } else {
-          // Teal-green for mouse
-          col[i3]=0.03+t*0.22; col[i3+1]=0.40+t*0.52; col[i3+2]=0.60+t*0.38;
-        }
-      } else if (r === 'cb') {
-        col[i3]=0.05+t*0.32; col[i3+1]=0.16+t*0.46; col[i3+2]=0.76+t*0.22;
-      } else {
-        // Olfactory bulb — warm accent
-        col[i3]=0.18+t*0.55; col[i3+1]=0.58+t*0.38; col[i3+2]=0.70+t*0.28;
-      }
-      filled++;
+      if (inBrain(x, y, z)) xyz.push(x, y, z);
     }
+    const nNodes = xyz.length / 3;
 
-    const geo = new THREE.BufferGeometry();
-    geo.setAttribute('position', new THREE.BufferAttribute(pos.slice(0, filled*3), 3));
-    geo.setAttribute('color',    new THREE.BufferAttribute(col.slice(0, filled*3), 3));
+    // ── Circular glow sprite texture ─────────────────────────
+    const canvas = document.createElement('canvas');
+    canvas.width = canvas.height = 64;
+    const ctx = canvas.getContext('2d');
+    const grad = ctx.createRadialGradient(32, 32, 0, 32, 32, 32);
+    grad.addColorStop(0,    'rgba(255,255,255,1)');
+    grad.addColorStop(0.28, 'rgba(180,215,255,0.88)');
+    grad.addColorStop(0.60, 'rgba(70,120,255,0.38)');
+    grad.addColorStop(1,    'rgba(0,0,0,0)');
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, 64, 64);
+    const discTex = new THREE.CanvasTexture(canvas);
 
-    const mat = new THREE.PointsMaterial({
-      size:            0.030,
-      vertexColors:    true,
-      transparent:     true,
-      opacity:         0.82,
+    // ── Node point cloud ─────────────────────────────────────
+    const nodePosArr = new Float32Array(xyz);
+    const nodeGeo = new THREE.BufferGeometry();
+    nodeGeo.setAttribute('position', new THREE.BufferAttribute(nodePosArr, 3));
+    const nodeMat = new THREE.PointsMaterial({
+      size: 0.058,
+      map: discTex,
+      color: human ? 0x93c5fd : 0x6ee7b7,
+      transparent: true,
+      alphaTest: 0.01,
+      opacity: 0.88,
       sizeAttenuation: true,
-      blending:        THREE.AdditiveBlending,
-      depthWrite:      false,
+      depthWrite: false,
+      blending: THREE.AdditiveBlending,
     });
+    group.add(new THREE.Points(nodeGeo, nodeMat));
 
-    group.add(new THREE.Points(geo, mat));
+    // ── Edges: connect each node to ≤4 nearest within 0.30 ──
+    const DIST_SQ = 0.30 * 0.30;
+    const edges    = [];
+    const edgeVerts = [];
+    for (let i = 0; i < nNodes; i++) {
+      const xi = xyz[i*3], yi = xyz[i*3+1], zi = xyz[i*3+2];
+      const near = [];
+      for (let j = i+1; j < nNodes; j++) {
+        const dx=xi-xyz[j*3], dy=yi-xyz[j*3+1], dz=zi-xyz[j*3+2];
+        const d2=dx*dx+dy*dy+dz*dz;
+        if (d2 < DIST_SQ) near.push({ j, d2 });
+      }
+      near.sort((a,b) => a.d2-b.d2);
+      near.slice(0, 4).forEach(({ j }) => {
+        const bx=xyz[j*3], by=xyz[j*3+1], bz=xyz[j*3+2];
+        edges.push({ ax: xi, ay: yi, az: zi, bx, by, bz });
+        edgeVerts.push(xi, yi, zi, bx, by, bz);
+      });
+    }
+    edgesRef.current = edges;
 
-    // Fixed downward tilt so both hemispheres are visible from the front
-    group.rotation.x = -0.24;
+    const edgeGeo = new THREE.BufferGeometry();
+    edgeGeo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(edgeVerts), 3));
+    const edgeMat = new THREE.LineBasicMaterial({
+      color: human ? 0x1d4ed8 : 0x047857,
+      transparent: true,
+      opacity: 0.20,
+    });
+    group.add(new THREE.LineSegments(edgeGeo, edgeMat));
+
+    // ── Pulse sphere (travels along edges) ───────────────────
+    const pulseGeo  = new THREE.SphereGeometry(0.042, 8, 8);
+    const pulseMat  = new THREE.MeshBasicMaterial({
+      color: human ? 0xbfdbfe : 0xa7f3d0,
+      transparent: true,
+      opacity: 0,
+      blending: THREE.AdditiveBlending,
+      depthWrite: false,
+    });
+    const pulseMesh = new THREE.Mesh(pulseGeo, pulseMat);
+    pulseMesh.visible = false;
+    group.add(pulseMesh);
+    pulseObjRef.current = pulseMesh;
+
+    // Reset pulse state
+    pulseStateRef.current = {
+      idx: Math.floor(Math.random() * Math.max(1, edges.length)),
+      t: 0, speed: 0.016,
+    };
+
+    group.rotation.x = -0.20;
     return group;
   }, []);
 
@@ -289,7 +326,31 @@ export default function AllenBrainExplorer() {
         animFrame = requestAnimationFrame(loop);
         tRef.current += 0.003;
         const b = brainRef.current;
-        if (b) { b.rotation.y = tRef.current; } // x-tilt fixed in makeBrain
+        if (b) { b.rotation.y = tRef.current; }
+
+        // Advance pulse along edges
+        const ps  = pulseStateRef.current;
+        const eds = edgesRef.current;
+        const pm  = pulseObjRef.current;
+        if (pm && eds.length > 0) {
+          ps.t += ps.speed;
+          if (ps.t >= 1) {
+            ps.t = 0;
+            ps.idx = Math.floor(Math.random() * eds.length);
+          }
+          const e = eds[ps.idx];
+          if (e) {
+            pm.position.set(
+              e.ax + (e.bx - e.ax) * ps.t,
+              e.ay + (e.by - e.ay) * ps.t,
+              e.az + (e.bz - e.az) * ps.t,
+            );
+            pm.visible = true;
+            // Fade in at start, fade out at end of each edge
+            pm.material.opacity = 0.88 * Math.sin(Math.PI * ps.t) + 0.06;
+          }
+        }
+
         composer.render();
       };
       loop();
@@ -320,7 +381,10 @@ export default function AllenBrainExplorer() {
     const scene = sceneRef.current, old = brainRef.current;
     if (!scene || !old) return;
     scene.remove(old);
-    old.traverse(c => { if (c.geometry) c.geometry.dispose(); if (c.material) c.material.dispose(); });
+    old.traverse(c => {
+      if (c.geometry) c.geometry.dispose();
+      if (c.material) { if (c.material.map) c.material.map.dispose(); c.material.dispose(); }
+    });
     const next = makeBrain(species);
     scene.add(next);
     brainRef.current = next;
@@ -332,26 +396,13 @@ export default function AllenBrainExplorer() {
     if (b) {
       b.strength = 1.4;
       let f = 0;
-      const bTick = () => { f++; b.strength = Math.max(0.28, 1.4*Math.exp(-f*0.06)); if (b.strength > 0.30) requestAnimationFrame(bTick); };
+      const bTick = () => { f++; b.strength = Math.max(0.28, 1.4*Math.exp(-f*0.055)); if (b.strength > 0.30) requestAnimationFrame(bTick); };
       requestAnimationFrame(bTick);
     }
-    // Particle size + opacity burst
-    const brain = brainRef.current;
-    if (brain) {
-      brain.traverse(c => {
-        if (!c.isPoints) return;
-        const m = c.material;
-        m.size = 0.060; m.opacity = 1.0;
-        let f = 0;
-        const pTick = () => {
-          f++;
-          m.size    = Math.max(0.030, 0.060 * Math.exp(-f * 0.07));
-          m.opacity = Math.max(0.82,  1.0   - f * 0.009);
-          if (m.size > 0.031) requestAnimationFrame(pTick);
-        };
-        requestAnimationFrame(pTick);
-      });
-    }
+    // Speed up the pulse for ~2.5 s then settle back
+    const ps = pulseStateRef.current;
+    ps.speed = 0.058;
+    setTimeout(() => { ps.speed = 0.016; }, 2500);
   }, []);
 
   useEffect(() => {
