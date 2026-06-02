@@ -7,8 +7,8 @@ import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPa
 
 const API = import.meta.env.VITE_ATLAS_API ?? 'http://localhost:5001';
 
-const LENS_D = 152; // lens diameter in px
-const ZOOM   = 2.8; // magnification factor
+const LENS_D = 224; // lens diameter in px
+const ZOOM   = 3.4; // magnification factor
 
 const C = {
   bg:      '#0c2250',
@@ -111,6 +111,7 @@ export default function AllenBrainExplorer() {
   const [modalOpen,   setModalOpen]   = useState(false);
   const [lensPos,      setLensPos]      = useState(null);
   const [modalLensPos, setModalLensPos] = useState(null);
+  const [lensEnabled,  setLensEnabled]  = useState(true);
   const slideImgRef = useRef(null);
   const modalImgRef = useRef(null);
   const [expression,  setExpression]  = useState([]);
@@ -646,15 +647,43 @@ export default function AllenBrainExplorer() {
                 </div>
               )}
 
-              {/* Slide counter — top-right */}
+              {/* Slide counter + lens toggle — top-right */}
               {images.length > 0 && (
                 <div style={{
                   position: 'absolute', top: 12, right: 14, zIndex: 8,
-                  background: 'rgba(4,10,35,0.82)', borderRadius: 5, padding: '0.22rem 0.55rem',
-                  backdropFilter: 'blur(8px)', border: `1px solid ${C.border}`,
-                  fontSize: '0.62rem', color: C.textMd,
+                  display: 'flex', alignItems: 'center', gap: 6,
                 }}>
-                  §{curImage?.section_number} &nbsp;·&nbsp; {slideIdx+1} / {images.length}
+                  {/* Lens toggle pill */}
+                  <button
+                    onClick={() => setLensEnabled(v => !v)}
+                    title={lensEnabled ? 'Turn off magnifier' : 'Turn on magnifier'}
+                    style={{
+                      background: lensEnabled ? 'rgba(147,197,253,0.14)' : 'rgba(4,10,35,0.82)',
+                      border: `1px solid ${lensEnabled ? 'rgba(147,197,253,0.45)' : C.border}`,
+                      borderRadius: 5, padding: '0.22rem 0.6rem',
+                      backdropFilter: 'blur(8px)',
+                      fontSize: '0.6rem', letterSpacing: '0.07em',
+                      color: lensEnabled ? C.accent : C.textMd,
+                      cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 5,
+                      transition: 'background 0.2s, border-color 0.2s, color 0.2s',
+                    }}
+                  >
+                    <span style={{ fontSize: '0.75rem', lineHeight: 1 }}>◎</span>
+                    LENS
+                    <span style={{
+                      width: 6, height: 6, borderRadius: '50%', flexShrink: 0,
+                      background: lensEnabled ? C.accent : C.textDim,
+                      transition: 'background 0.2s',
+                    }} />
+                  </button>
+                  {/* Section counter */}
+                  <div style={{
+                    background: 'rgba(4,10,35,0.82)', borderRadius: 5, padding: '0.22rem 0.55rem',
+                    backdropFilter: 'blur(8px)', border: `1px solid ${C.border}`,
+                    fontSize: '0.62rem', color: C.textMd,
+                  }}>
+                    §{curImage?.section_number} &nbsp;·&nbsp; {slideIdx+1} / {images.length}
+                  </div>
                 </div>
               )}
 
@@ -689,23 +718,24 @@ export default function AllenBrainExplorer() {
 
 
                 {/* Magnifying lens */}
-                {lensPos && curImage && (
+                {lensPos && curImage && lensEnabled && (
                   <div style={{
                     position: 'absolute',
-                    left: lensPos.cx - LENS_D / 2,
-                    top:  lensPos.cy - LENS_D / 2,
+                    left: 0, top: 0,
+                    transform: `translate(${lensPos.cx - LENS_D / 2}px, ${lensPos.cy - LENS_D / 2}px)`,
                     width: LENS_D, height: LENS_D,
                     borderRadius: '50%',
                     overflow: 'hidden',
                     pointerEvents: 'none',
                     zIndex: 10,
-                    border: `1.5px solid rgba(147,197,253,0.5)`,
-                    boxShadow: '0 0 0 1px rgba(0,0,20,0.7), 0 4px 22px rgba(0,0,0,0.65)',
-                    backgroundImage: `url(https://api.brain-map.org/api/v2/image_download/${curImage.id}?downsample=3)`,
+                    willChange: 'transform',
+                    border: `2px solid rgba(147,197,253,0.6)`,
+                    boxShadow: '0 0 0 1.5px rgba(0,0,20,0.8), 0 6px 28px rgba(0,0,0,0.7)',
+                    backgroundImage: `url(https://api.brain-map.org/api/v2/image_download/${curImage.id}?downsample=2)`,
                     backgroundRepeat: 'no-repeat',
                     backgroundSize: `${lensPos.rw * ZOOM}px ${lensPos.rh * ZOOM}px`,
                     backgroundPosition: `${-(lensPos.cx - lensPos.ox) * ZOOM + LENS_D / 2}px ${-(lensPos.cy - lensPos.oy) * ZOOM + LENS_D / 2}px`,
-                    filter: 'saturate(1.8) contrast(1.3)',
+                    filter: 'saturate(2) contrast(1.35)',
                   }} />
                 )}
 
@@ -891,33 +921,58 @@ export default function AllenBrainExplorer() {
             />
 
             {/* Magnifying lens */}
-            {modalLensPos && (
+            {modalLensPos && lensEnabled && (
               <div style={{
                 position: 'absolute',
-                left: modalLensPos.cx - LENS_D / 2,
-                top:  modalLensPos.cy - LENS_D / 2,
+                left: 0, top: 0,
+                transform: `translate(${modalLensPos.cx - LENS_D / 2}px, ${modalLensPos.cy - LENS_D / 2}px)`,
                 width: LENS_D, height: LENS_D,
                 borderRadius: '50%',
+                overflow: 'hidden',
                 pointerEvents: 'none',
                 zIndex: 10,
-                border: `1.5px solid rgba(147,197,253,0.55)`,
-                boxShadow: '0 0 0 1px rgba(0,0,20,0.7), 0 4px 24px rgba(0,0,0,0.7)',
+                willChange: 'transform',
+                border: `2px solid rgba(147,197,253,0.6)`,
+                boxShadow: '0 0 0 1.5px rgba(0,0,20,0.8), 0 6px 28px rgba(0,0,0,0.7)',
                 backgroundImage: `url(https://api.brain-map.org/api/v2/image_download/${curImage.id}?downsample=2)`,
                 backgroundRepeat: 'no-repeat',
                 backgroundSize: `${modalLensPos.rw * ZOOM}px ${modalLensPos.rh * ZOOM}px`,
                 backgroundPosition: `${-modalLensPos.cx * ZOOM + LENS_D / 2}px ${-modalLensPos.cy * ZOOM + LENS_D / 2}px`,
-                filter: 'saturate(1.8) contrast(1.3)',
+                filter: 'saturate(2) contrast(1.35)',
               }} />
             )}
           </div>
 
-          {/* Close */}
-          <button onClick={() => { setModalOpen(false); setModalLensPos(null); }} style={{
-            position: 'absolute', top: 20, right: 24,
-            background: 'rgba(8,20,60,0.85)', border: `1px solid ${C.border}`,
-            color: C.accent, fontSize: '1.1rem', cursor: 'pointer',
-            borderRadius: 6, padding: '0.2rem 0.65rem', backdropFilter: 'blur(8px)',
-          }}>×</button>
+          {/* Top-right controls: lens toggle + close */}
+          <div style={{ position: 'absolute', top: 20, right: 24, display: 'flex', alignItems: 'center', gap: 8, zIndex: 10000 }}>
+            <button
+              onClick={e => { e.stopPropagation(); setLensEnabled(v => !v); }}
+              title={lensEnabled ? 'Turn off magnifier' : 'Turn on magnifier'}
+              style={{
+                background: lensEnabled ? 'rgba(147,197,253,0.14)' : 'rgba(8,20,60,0.85)',
+                border: `1px solid ${lensEnabled ? 'rgba(147,197,253,0.45)' : C.border}`,
+                borderRadius: 6, padding: '0.2rem 0.65rem',
+                backdropFilter: 'blur(8px)',
+                fontSize: '0.6rem', letterSpacing: '0.07em',
+                color: lensEnabled ? C.accent : C.textMd,
+                cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 5,
+                transition: 'background 0.2s, border-color 0.2s, color 0.2s',
+              }}
+            >
+              <span style={{ fontSize: '0.8rem', lineHeight: 1 }}>◎</span>
+              LENS
+              <span style={{
+                width: 6, height: 6, borderRadius: '50%', flexShrink: 0,
+                background: lensEnabled ? C.accent : C.textDim,
+                transition: 'background 0.2s',
+              }} />
+            </button>
+            <button onClick={() => { setModalOpen(false); setModalLensPos(null); }} style={{
+              background: 'rgba(8,20,60,0.85)', border: `1px solid ${C.border}`,
+              color: C.accent, fontSize: '1.1rem', cursor: 'pointer',
+              borderRadius: 6, padding: '0.2rem 0.65rem', backdropFilter: 'blur(8px)',
+            }}>×</button>
+          </div>
 
           {/* Prev */}
           {slideIdx > 0 && (
