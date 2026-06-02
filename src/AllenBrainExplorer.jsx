@@ -109,11 +109,12 @@ export default function AllenBrainExplorer() {
   const [slideIdx,    setSlideIdx]    = useState(0);
   const [imgOpacity,  setImgOpacity]  = useState(1);
   const [modalOpen,   setModalOpen]   = useState(false);
-  const [lensPos,      setLensPos]      = useState(null);
-  const [modalLensPos, setModalLensPos] = useState(null);
   const [lensEnabled,  setLensEnabled]  = useState(true);
-  const slideImgRef = useRef(null);
-  const modalImgRef = useRef(null);
+  const slideImgRef    = useRef(null);
+  const modalImgRef    = useRef(null);
+  const lensRef        = useRef(null);   // slide-panel lens DOM node
+  const modalLensRef   = useRef(null);   // modal lens DOM node
+  const lensEnabledRef = useRef(true);   // mirror of lensEnabled, readable in callbacks without stale closure
   const [expression,  setExpression]  = useState([]);
   const [ontFlat,     setOntFlat]     = useState([]);
   const [ontTree,     setOntTree]     = useState([]);
@@ -384,7 +385,7 @@ export default function AllenBrainExplorer() {
   useEffect(() => {
     if (!modalOpen) return;
     const onKey = (e) => {
-      if (e.key === 'Escape')      { setModalOpen(false); setModalLensPos(null); }
+      if (e.key === 'Escape')      { setModalOpen(false); handleModalLensLeave(); }
       if (e.key === 'ArrowRight')  changeSlide(Math.min(images.length - 1, slideIdx + 1));
       if (e.key === 'ArrowLeft')   changeSlide(Math.max(0, slideIdx - 1));
     };
@@ -392,34 +393,69 @@ export default function AllenBrainExplorer() {
     return () => window.removeEventListener('keydown', onKey);
   }, [modalOpen, slideIdx, images.length, changeSlide]);
 
-  // Magnifying lens — calculates actual rendered image rect inside objectFit:contain
+  // Keep lensEnabledRef in sync so handlers never stale-close over lensEnabled
+  useEffect(() => { lensEnabledRef.current = lensEnabled; }, [lensEnabled]);
+
+  // Hide both lenses immediately whenever the toggle is turned off
+  useEffect(() => {
+    if (!lensEnabled) {
+      if (lensRef.current)      lensRef.current.style.visibility      = 'hidden';
+      if (modalLensRef.current) modalLensRef.current.style.visibility = 'hidden';
+    }
+  }, [lensEnabled]);
+
+  // Slide-panel lens — writes directly to DOM, zero React re-render overhead
   const handleLensMove = useCallback((e) => {
-    const img = slideImgRef.current;
-    if (!img || !img.naturalWidth) return;
-    const cRect = e.currentTarget.getBoundingClientRect();
+    if (!lensEnabledRef.current) return;
+    const img  = slideImgRef.current;
+    const lens = lensRef.current;
+    if (!img || !img.naturalWidth || !lens) return;
+
+    const cRect  = e.currentTarget.getBoundingClientRect();
     const cw = cRect.width, ch = cRect.height;
     const aspect = img.naturalWidth / img.naturalHeight;
     let rw, rh, ox, oy;
     if (cw / ch > aspect) { rh = ch; rw = ch * aspect; ox = (cw - rw) / 2; oy = 0; }
     else                  { rw = cw; rh = cw / aspect; oy = (ch - rh) / 2; ox = 0; }
+
     const cx = e.clientX - cRect.left;
     const cy = e.clientY - cRect.top;
-    if (cx < ox || cx > ox + rw || cy < oy || cy > oy + rh) { setLensPos(null); return; }
-    setLensPos({ cx, cy, rw, rh, ox, oy });
+    if (cx < ox || cx > ox + rw || cy < oy || cy > oy + rh) {
+      lens.style.visibility = 'hidden';
+      return;
+    }
+
+    lens.style.visibility       = 'visible';
+    lens.style.transform        = `translate(${cx - LENS_D / 2}px,${cy - LENS_D / 2}px)`;
+    lens.style.backgroundSize   = `${rw * ZOOM}px ${rh * ZOOM}px`;
+    lens.style.backgroundPosition = `${-(cx - ox) * ZOOM + LENS_D / 2}px ${-(cy - oy) * ZOOM + LENS_D / 2}px`;
   }, []);
 
-  const handleLensLeave = useCallback(() => setLensPos(null), []);
+  const handleLensLeave = useCallback(() => {
+    if (lensRef.current) lensRef.current.style.visibility = 'hidden';
+  }, []);
 
-  // Modal magnifying lens — img element sizes to the image naturally (no black bars)
+  // Modal lens — same imperative approach, no black-bar offset needed
   const handleModalLensMove = useCallback((e) => {
-    const img = modalImgRef.current;
-    if (!img) return;
+    if (!lensEnabledRef.current) return;
+    const img  = modalImgRef.current;
+    const lens = modalLensRef.current;
+    if (!img || !lens) return;
+
     const rect = img.getBoundingClientRect();
     const cx = e.clientX - rect.left;
     const cy = e.clientY - rect.top;
-    setModalLensPos({ cx, cy, rw: rect.width, rh: rect.height });
+    const rw = rect.width, rh = rect.height;
+
+    lens.style.visibility         = 'visible';
+    lens.style.transform          = `translate(${cx - LENS_D / 2}px,${cy - LENS_D / 2}px)`;
+    lens.style.backgroundSize     = `${rw * ZOOM}px ${rh * ZOOM}px`;
+    lens.style.backgroundPosition = `${-cx * ZOOM + LENS_D / 2}px ${-cy * ZOOM + LENS_D / 2}px`;
   }, []);
-  const handleModalLensLeave = useCallback(() => setModalLensPos(null), []);
+
+  const handleModalLensLeave = useCallback(() => {
+    if (modalLensRef.current) modalLensRef.current.style.visibility = 'hidden';
+  }, []);
 
   const pickGene   = useCallback((g) => { setGene(g); setGeneHits([]); setQuery(''); }, []);
   const pickStruct = useCallback((s) => { setSelStruct(s); pulse(); }, [pulse]);
@@ -717,24 +753,18 @@ export default function AllenBrainExplorer() {
                 )}
 
 
-                {/* Magnifying lens */}
-                {lensPos && curImage && lensEnabled && (
-                  <div style={{
-                    position: 'absolute',
-                    left: 0, top: 0,
-                    transform: `translate(${lensPos.cx - LENS_D / 2}px, ${lensPos.cy - LENS_D / 2}px)`,
+                {/* Magnifying lens — always in DOM when image present; position/size written imperatively */}
+                {curImage && (
+                  <div ref={lensRef} style={{
+                    position: 'absolute', left: 0, top: 0,
                     width: LENS_D, height: LENS_D,
-                    borderRadius: '50%',
-                    overflow: 'hidden',
-                    pointerEvents: 'none',
-                    zIndex: 10,
-                    willChange: 'transform',
-                    border: `2px solid rgba(147,197,253,0.6)`,
+                    borderRadius: '50%', overflow: 'hidden',
+                    pointerEvents: 'none', zIndex: 10,
+                    visibility: 'hidden', willChange: 'transform',
+                    border: '2px solid rgba(147,197,253,0.6)',
                     boxShadow: '0 0 0 1.5px rgba(0,0,20,0.8), 0 6px 28px rgba(0,0,0,0.7)',
                     backgroundImage: `url(https://api.brain-map.org/api/v2/image_download/${curImage.id}?downsample=2)`,
                     backgroundRepeat: 'no-repeat',
-                    backgroundSize: `${lensPos.rw * ZOOM}px ${lensPos.rh * ZOOM}px`,
-                    backgroundPosition: `${-(lensPos.cx - lensPos.ox) * ZOOM + LENS_D / 2}px ${-(lensPos.cy - lensPos.oy) * ZOOM + LENS_D / 2}px`,
                     filter: 'saturate(2) contrast(1.35)',
                   }} />
                 )}
@@ -894,7 +924,7 @@ export default function AllenBrainExplorer() {
       {/* ── Fullscreen lightbox modal ── */}
       {modalOpen && curImage && (
         <div
-          onClick={() => { setModalOpen(false); setModalLensPos(null); }}
+          onClick={() => { setModalOpen(false); handleModalLensLeave(); }}
           style={{
             position: 'fixed', inset: 0, zIndex: 9999,
             background: 'rgba(0,4,18,0.97)',
@@ -920,27 +950,19 @@ export default function AllenBrainExplorer() {
               }}
             />
 
-            {/* Magnifying lens */}
-            {modalLensPos && lensEnabled && (
-              <div style={{
-                position: 'absolute',
-                left: 0, top: 0,
-                transform: `translate(${modalLensPos.cx - LENS_D / 2}px, ${modalLensPos.cy - LENS_D / 2}px)`,
-                width: LENS_D, height: LENS_D,
-                borderRadius: '50%',
-                overflow: 'hidden',
-                pointerEvents: 'none',
-                zIndex: 10,
-                willChange: 'transform',
-                border: `2px solid rgba(147,197,253,0.6)`,
-                boxShadow: '0 0 0 1.5px rgba(0,0,20,0.8), 0 6px 28px rgba(0,0,0,0.7)',
-                backgroundImage: `url(https://api.brain-map.org/api/v2/image_download/${curImage.id}?downsample=2)`,
-                backgroundRepeat: 'no-repeat',
-                backgroundSize: `${modalLensPos.rw * ZOOM}px ${modalLensPos.rh * ZOOM}px`,
-                backgroundPosition: `${-modalLensPos.cx * ZOOM + LENS_D / 2}px ${-modalLensPos.cy * ZOOM + LENS_D / 2}px`,
-                filter: 'saturate(2) contrast(1.35)',
-              }} />
-            )}
+            {/* Magnifying lens — always in DOM; position/size written imperatively */}
+            <div ref={modalLensRef} style={{
+              position: 'absolute', left: 0, top: 0,
+              width: LENS_D, height: LENS_D,
+              borderRadius: '50%', overflow: 'hidden',
+              pointerEvents: 'none', zIndex: 10,
+              visibility: 'hidden', willChange: 'transform',
+              border: '2px solid rgba(147,197,253,0.6)',
+              boxShadow: '0 0 0 1.5px rgba(0,0,20,0.8), 0 6px 28px rgba(0,0,0,0.7)',
+              backgroundImage: `url(https://api.brain-map.org/api/v2/image_download/${curImage.id}?downsample=2)`,
+              backgroundRepeat: 'no-repeat',
+              filter: 'saturate(2) contrast(1.35)',
+            }} />
           </div>
 
           {/* Top-right controls: lens toggle + close */}
@@ -967,7 +989,7 @@ export default function AllenBrainExplorer() {
                 transition: 'background 0.2s',
               }} />
             </button>
-            <button onClick={() => { setModalOpen(false); setModalLensPos(null); }} style={{
+            <button onClick={() => { setModalOpen(false); handleModalLensLeave(); }} style={{
               background: 'rgba(8,20,60,0.85)', border: `1px solid ${C.border}`,
               color: C.accent, fontSize: '1.1rem', cursor: 'pointer',
               borderRadius: 6, padding: '0.2rem 0.65rem', backdropFilter: 'blur(8px)',
