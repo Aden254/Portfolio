@@ -515,16 +515,10 @@ function Portfolio() {
                     <div className="flex flex-col lg:flex-row" style={{ gap: '3rem', alignItems: 'flex-start' }}>
                         <Glass style={{ flex: 1, padding: '2.5rem' }}>
                             <p style={{ fontSize: '1.1rem', lineHeight: 1.85, color: 'var(--off-white)', marginBottom: '1.5rem' }}>
-                                I'm a computational researcher with a double major in Computer Science and
-                                Psychology, studying how adversity — from early caregiving disruption to acute
-                                neurological events like stroke — reshapes brain architecture and behavioral
-                                trajectories across the lifespan.
+                                My degrees are in Computer Science and Psychology, a combination I chose deliberately. The problems I find most interesting are the ones where understanding the technical pipeline and the behavior being measured are both part of getting the answer right.
                             </p>
                             <p style={{ fontSize: '1.1rem', lineHeight: 1.85, color: 'var(--off-white)', marginBottom: '1.5rem' }}>
-                                My work sits at the intersection of neuroimaging methods and developmental
-                                science. I build research software (3D brain reconstruction, neural annotation tools)
-                                and contribute to real-time environmental data pipelines at the Finger Lakes Institute.
-
+                                What I've built reflects that: geospatial dashboards on real vessel tracking data, full-stack healthcare platforms, environmental monitoring pipelines, 3D tools for scientific datasets. Different domains, consistent approach; reliable data systems, honest analysis, output that actually communicates.
                             </p>
 
                             <div className="grid grid-cols-2" style={{ gap: '1.5rem', marginTop: '2.5rem' }}>
