@@ -256,10 +256,10 @@ function ResearchPage() {
                         gap: '0.9rem',
                     }}>
                         {[
-                            { label: 'Degree',   value: 'B.S. CS + B.A. Psych' },
+                            { label: 'Degree',   value: 'B.A. CS + B.A. Psych' },
                             { label: 'Minor',    value: 'Data Analytics'       },
-                            { label: 'GPA',      value: '3.43'                 },
-                            { label: 'Status',   value: 'F-1 · OPT Filed'      },
+                            { label: 'GPA',      value: '3.46'                 },
+                            { label: 'Status',   value: 'F-1 · OPT Approved'   },
                             { label: 'GitHub',   value: 'Aden254'              },
                         ].map(({ label, value }) => (
                             <div key={label}>
@@ -520,9 +520,8 @@ function ResearchPage() {
                         </p>
                         <p style={{ color:'var(--ghost)', marginTop:'1.25rem',
                             fontSize:'0.95rem' }}>
-                            F-1 international student. OPT application filed.
-                            Authorized to work on-campus through graduation and
-                            off-campus upon EAD card receipt.
+                            F-1 international student. OPT approved.
+                            Authorized to work in the U.S. without sponsorship.
                         </p>
                     </section>
 
