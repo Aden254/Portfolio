@@ -251,10 +251,10 @@ function Portfolio() {
                             </div>
                             <h1 className="text-5xl md:text-6xl font-bold mb-3 text-white">Daudi Aden</h1>
                             <p className="text-2xl md:text-3xl font-semibold mb-4" style={{ color: 'var(--gray-light)' }}>
-                                Computational Researcher &mdash; CS &amp; Psychology
+                                Data Analyst &amp; Developer
                             </p>
                             <p className="text-xl md:text-2xl" style={{ color: 'var(--blue-gray)' }}>
-                                Building tools and methods to study how adversity reshapes the developing brain
+                                Building data systems and tools at the intersection of computational methods and human behavior
                             </p>
 
                             <Glass style={{ padding: '1.25rem 1.5rem', maxWidth: '560px', marginBottom: '2rem' }}>
@@ -524,8 +524,7 @@ function Portfolio() {
                                 My work sits at the intersection of neuroimaging methods and developmental
                                 science. I build research software (3D brain reconstruction, neural annotation tools)
                                 and contribute to real-time environmental data pipelines at the Finger Lakes Institute.
-                                I'm pursuing a research assistantship leading to a PhD in developmental cognitive
-                                neuroscience starting 2027.
+
                             </p>
 
                             <div className="grid grid-cols-2" style={{ gap: '1.5rem', marginTop: '2.5rem' }}>
