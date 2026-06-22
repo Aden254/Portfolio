@@ -17,16 +17,34 @@ export const AuthProvider = ({ children }) => {
 
   const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
-  // Check for existing token on mount
+  // Verify stored token against backend on mount
   useEffect(() => {
     const storedToken = localStorage.getItem('healthhub_token');
     const storedUser = localStorage.getItem('healthhub_user');
 
     if (storedToken && storedUser) {
-      setToken(storedToken);
-      setUser(JSON.parse(storedUser));
+      fetch(`${API_URL}/auth/me`, {
+        headers: { 'Authorization': `Bearer ${storedToken}` }
+      })
+        .then(res => {
+          if (res.ok) {
+            setToken(storedToken);
+            setUser(JSON.parse(storedUser));
+          } else {
+            localStorage.removeItem('healthhub_token');
+            localStorage.removeItem('healthhub_user');
+          }
+          setLoading(false);
+        })
+        .catch(() => {
+          // Network error — trust stored session so offline visits still work
+          setToken(storedToken);
+          setUser(JSON.parse(storedUser));
+          setLoading(false);
+        });
+    } else {
+      setLoading(false);
     }
-    setLoading(false);
   }, []);
 
   const login = async (username, password) => {
