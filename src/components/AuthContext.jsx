@@ -37,9 +37,9 @@ export const AuthProvider = ({ children }) => {
           setLoading(false);
         })
         .catch(() => {
-          // Network error — trust stored session so offline visits still work
-          setToken(storedToken);
-          setUser(JSON.parse(storedUser));
+          // Network error — require fresh login rather than trusting stale token
+          localStorage.removeItem('healthhub_token');
+          localStorage.removeItem('healthhub_user');
           setLoading(false);
         });
     } else {
