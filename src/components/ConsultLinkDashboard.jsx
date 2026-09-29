@@ -168,6 +168,20 @@ export default function ConsultLinkDashboard() {
       setSessions(updated);
       setShowModal(false);
       setFormData({ patientName: '', patientEmail: '', patientRecordId: '', expiresInHours: 24 });
+
+      // Inform the doctor whether the email was delivered
+      if (formData.patientEmail) {
+        if (data.emailSent) {
+          alert(`Session created. Consultation link sent to ${formData.patientEmail}.`);
+        } else {
+          // Email not configured on backend — show the link so the doctor can share it manually
+          const link = data.sessionLink;
+          window.prompt(
+            `Session created, but email delivery is not configured on the server.\nCopy the link below and send it to the patient manually:`,
+            link
+          );
+        }
+      }
     } catch (err) { alert('Failed to create session: ' + err.message); }
     finally { setCreating(false); }
   };
