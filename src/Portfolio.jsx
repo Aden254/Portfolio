@@ -36,6 +36,22 @@ function Portfolio() {
 
     const projects = [
         {
+            id: 'trip-planner', type: 'Full-Stack Development', year: '2026',
+            title: 'Trip Planner',
+            description: 'Collaborative travel planning platform where groups build shared itineraries on a live map. Search real places via Google Places, drag-and-drop day-by-day scheduling, drop custom pins, and share trips with travel partners — with full offline support as a Progressive Web App.',
+            tech: ['Next.js 14', 'Google Maps API', 'Supabase', 'Node.js', 'Express', 'AWS S3', 'PWA', 'Vercel'],
+            demo: null, github: null,
+            external: 'https://travel-platform-silk.vercel.app', featured: true,
+            insights: [
+                'Progressive Web App — installable and functional offline via next-pwa service worker',
+                'Google Places API proxied through Express with node-cache to stay inside quota',
+                'Supabase for authentication and shared real-time trip state',
+                'Drag-and-drop itinerary reordering with @hello-pangea/dnd',
+                'AWS S3 + presigned URLs for trip photo attachments',
+                'Sentry integrated on both Next.js frontend and Node.js backend for error monitoring'
+            ]
+        },
+        {
             id: 'maritime-dashboard', type: 'GIS & Data Engineering', year: '2026',
             title: 'Maritime Intelligence Dashboard',
             description: 'Full-stack geospatial vessel tracking platform powered by PostGIS and real AIS data. Features live map rendering with MapLibre GL, spatial queries across a PostgreSQL/PostGIS database, and a REST API deployed on Railway.',
