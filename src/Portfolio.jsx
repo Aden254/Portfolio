@@ -82,19 +82,6 @@ function Portfolio() {
             ]
         },
         {
-            id: 1, title: 'The Housing Crisis: A Data Story',
-            type: 'Data Visualization', year: '2024',
-            description: 'Comprehensive infographic analyzing American household spending patterns from 2013–2023, revealing how housing costs have made the 50/30/20 budgeting rule mathematically impossible for most families.',
-            image: '/images/housing-crisis-infographic.png',
-            tech: ['Data Analysis', 'Visualization', 'Storytelling'], featured: true,
-            insights: [
-                'Housing costs rose to 32.4% of household budgets by 2023',
-                'Analyzed 10 years of BLS Consumer Expenditure Survey data',
-                'Created multi-layered visualizations showing geographic and income disparities',
-                'Demonstrated structural economic burden through data storytelling'
-            ]
-        },
-        {
             id: 2, title: 'NeuroTrace Web', type: 'Full-Stack Development', year: '2025',
             description: 'Browser-based neural annotation tool with smart propagation and 15-color coding system for neuroscience research. Features automatic resize for tracking 3D structures.',
             demo: '/neurotrace', github: 'https://github.com/Aden254/neurotrace-web',
@@ -410,6 +397,75 @@ function Portfolio() {
                             </div>
                         );
                     })}
+                </div>
+            </section>
+
+            {/* ══ DATA STORY — Housing Crisis Infographic ══ */}
+            <section style={{
+                background: '#050c1c',
+                borderTop: '1px solid rgba(255,255,255,0.06)',
+                borderBottom: '1px solid rgba(255,255,255,0.06)',
+                padding: '5rem 0',
+            }}>
+                <div className="max-w-7xl mx-auto px-6">
+                    {/* Header row */}
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: '1.5rem', marginBottom: '3rem' }}>
+                        <div>
+                            <p style={{ color: 'var(--gold)', fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.18em', textTransform: 'uppercase', marginBottom: '0.75rem' }}>
+                                Data Visualization · 2024
+                            </p>
+                            <h2 className="font-bold" style={{ fontSize: 'clamp(1.75rem,3.5vw,3rem)', color: 'white', marginBottom: '0.9rem' }}>
+                                The Housing Crisis: A Data Story
+                            </h2>
+                            <p style={{ fontSize: '1.05rem', color: 'var(--gray-light)', maxWidth: '640px', lineHeight: 1.75 }}>
+                                Analyzing American household spending patterns from 2013–2023. Housing costs have risen to 32.4% of household budgets, making the 50/30/20 rule mathematically impossible for most families.
+                            </p>
+                        </div>
+                        <a
+                            href="/images/housing-crisis-infographic.png"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.75rem 1.5rem', fontWeight: 700, fontSize: '0.9rem', background: 'var(--gold)', color: '#050c1c', textDecoration: 'none', flexShrink: 0 }}
+                        >
+                            <ExternalLink size={15} /> View Full Size
+                        </a>
+                    </div>
+
+                    {/* Infographic — click opens full size */}
+                    <a
+                        href="/images/housing-crisis-infographic.png"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={{ display: 'block', cursor: 'zoom-in' }}
+                        title="Click to open full size"
+                    >
+                        <div style={{
+                            background: 'rgba(255,255,255,0.03)',
+                            border: '1px solid rgba(255,255,255,0.08)',
+                            padding: '1.5rem',
+                            display: 'flex',
+                            justifyContent: 'center',
+                            transition: 'border-color 0.25s',
+                        }}
+                            onMouseOver={e => e.currentTarget.style.borderColor = 'rgba(245,158,11,0.4)'}
+                            onMouseOut={e  => e.currentTarget.style.borderColor = 'rgba(255,255,255,0.08)'}
+                        >
+                            <img
+                                src="/images/housing-crisis-infographic.png"
+                                alt="The Housing Crisis: A Data Story — infographic"
+                                style={{ maxWidth: '100%', width: '960px', display: 'block' }}
+                            />
+                        </div>
+                    </a>
+
+                    {/* Tech tags */}
+                    <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', marginTop: '1.5rem' }}>
+                        {['Data Analysis', 'BLS Consumer Expenditure Survey', 'Visualization', 'Data Storytelling'].map(t => (
+                            <span key={t} style={{ padding: '0.35rem 0.85rem', fontSize: '0.78rem', fontWeight: 600, background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', color: 'var(--off-white)' }}>
+                                {t}
+                            </span>
+                        ))}
+                    </div>
                 </div>
             </section>
 
