@@ -52,6 +52,22 @@ function Portfolio() {
             ]
         },
         {
+            id: 'success-for-geneva', type: 'Data Visualization', year: '2026',
+            title: 'Success for Geneva',
+            description: 'Community data story tracking 10 shared goals for Geneva\'s children and families. Live data pulled directly from a shared database maintained by three institutional partners — no manual rebuilds, always current.',
+            tech: ['R', 'Shiny', 'shinyapps.io', 'Data Visualization', 'Community Research'],
+            demo: null, github: null,
+            external: 'https://success4geneva.shinyapps.io/geneva-story/', featured: true,
+            inProgress: true,
+            insights: [
+                'Live database connection — dashboard updates automatically as partners push new data',
+                'Three data partners: Geneva City School District, Geneva Police Department, NY State Dept of Health',
+                '10 community goals tracked across education, safety, and public health themes',
+                'Full PDF report export for all 10 goals in a single download',
+                'Built with R Shiny and deployed on shinyapps.io'
+            ]
+        },
+        {
             id: 'maritime-dashboard', type: 'GIS & Data Engineering', year: '2026',
             title: 'Maritime Intelligence Dashboard',
             description: 'Full-stack geospatial vessel tracking platform powered by PostGIS and real AIS data. Features live map rendering with MapLibre GL, spatial queries across a PostgreSQL/PostGIS database, and a REST API deployed on Railway.',
@@ -335,6 +351,11 @@ function Portfolio() {
                                         <span style={{ padding: '0.3rem 0.75rem', fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.12em', color: 'var(--gold)', border: '1px solid rgba(245,158,11,0.35)', background: 'rgba(245,158,11,0.1)' }}>
                                             {project.year}
                                         </span>
+                                        {project.inProgress && (
+                                            <span style={{ padding: '0.3rem 0.75rem', fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.1em', color: '#fb923c', border: '1px solid rgba(251,146,60,0.4)', background: 'rgba(251,146,60,0.1)' }}>
+                                                IN PROGRESS
+                                            </span>
+                                        )}
                                         {project.external && (
                                             <span style={{ color: 'var(--emerald)', fontSize: '0.8rem', display: 'flex', alignItems: 'center' }}>
                                                 <span className="live-dot" /> Live
@@ -496,6 +517,12 @@ function Portfolio() {
                                         </span>
                                         <span style={{ color: 'rgba(148,163,184,0.3)' }}>·</span>
                                         <span style={{ fontSize: '0.72rem', color: 'var(--gold)' }}>{project.year}</span>
+                                        {project.inProgress && (
+                                            <>
+                                                <span style={{ color: 'rgba(148,163,184,0.3)' }}>·</span>
+                                                <span style={{ fontSize: '0.68rem', fontWeight: 700, color: '#fb923c' }}>IN PROGRESS</span>
+                                            </>
+                                        )}
                                         {project.external && (
                                             <>
                                                 <span style={{ color: 'rgba(148,163,184,0.3)' }}>·</span>
