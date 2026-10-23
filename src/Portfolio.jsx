@@ -295,8 +295,7 @@ function Portfolio() {
 
                             <Glass style={{ padding: '1.25rem 1.5rem', maxWidth: '560px', marginBottom: '2rem' }}>
                                 <p style={{ color: 'var(--off-white)', fontSize: '1.05rem', lineHeight: 1.75 }}>
-                                    Building research tools at the intersection of computational methods and developmental neuroscience. From Finger Lakes water quality
-                                    monitoring to full-stack healthcare systems and 3D brain visualization.
+                                    Data Manager & Analyst at the Finger Lakes Institute — building research tools at the intersection of computational methods and environmental science. From lake water quality monitoring to full-stack healthcare systems and 3D brain visualization.
                                 </p>
                             </Glass>
 
@@ -634,15 +633,15 @@ function Portfolio() {
                                 My degrees are in Computer Science and Psychology, a combination I chose deliberately. The problems I find most interesting are the ones where understanding the technical pipeline and the behavior being measured are both part of getting the answer right.
                             </p>
                             <p style={{ fontSize: '1.1rem', lineHeight: 1.85, color: 'var(--off-white)', marginBottom: '1.5rem' }}>
-                                What I've built reflects that: geospatial dashboards on real vessel tracking data, full-stack healthcare platforms, environmental monitoring pipelines, 3D tools for scientific datasets. Different domains, consistent approach; reliable data systems, honest analysis, output that actually communicates.
+                                I currently work as a Data Manager & Analyst at the Finger Lakes Institute (Hobart and William Smith Colleges), where I manage environmental datasets, build data pipelines, and develop public-facing monitoring dashboards for Canandaigua Lake, Seneca Lake, and community research initiatives. What I've built reflects that: geospatial dashboards on real vessel tracking data, full-stack healthcare platforms, environmental monitoring pipelines, 3D tools for scientific datasets. Different domains, consistent approach — reliable data systems, honest analysis, output that actually communicates.
                             </p>
 
                             <div className="grid grid-cols-2" style={{ gap: '1.5rem', marginTop: '2.5rem' }}>
                                 {[
-                                    { label: 'Based in',    value: 'Geneva, NY',              accent: 'var(--teal)' },
-                                    { label: 'Institution', value: 'Finger Lakes Institute',   accent: 'var(--emerald)' },
-                                    { label: 'Focus',       value: 'Data × Development',       accent: 'var(--gold)' },
-                                    { label: 'Open to',     value: 'Full-time & Research',     accent: 'var(--violet)' },
+                                    { label: 'Based in',  value: 'Geneva, NY',                       accent: 'var(--teal)' },
+                                    { label: 'Role',      value: 'Data Manager & Analyst',           accent: 'var(--emerald)' },
+                                    { label: 'Employer',  value: 'Finger Lakes Institute · HWS',     accent: 'var(--teal)' },
+                                    { label: 'Focus',     value: 'Data × Development',               accent: 'var(--gold)' },
                                 ].map(({ label, value, accent }) => (
                                     <div key={label} style={{ borderLeft: `3px solid ${accent}`, paddingLeft: '12px' }}>
                                         <p style={{ fontSize: '0.68rem', fontWeight: 700, letterSpacing: '0.15em', textTransform: 'uppercase', color: 'var(--blue-gray)', marginBottom: '4px' }}>{label}</p>
