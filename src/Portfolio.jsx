@@ -152,12 +152,13 @@ function Portfolio() {
     const featuredProjects = projects.filter(p => p.featured);
 
     const skills = [
-        { category: 'Neuroimaging & Data', accent: '#0ea5e9', items: [
+        { category: 'Research & Behavioral Data', accent: '#0ea5e9', items: [
             { name: 'fMRI/EEG Pipeline Analysis', level: 90 },
+            { name: 'Experimental Design & Statistics', level: 85 },
             { name: 'Time-Series & Longitudinal Modeling', level: 85 },
             { name: 'Python (NumPy/Pandas/SciPy)', level: 88 },
-            { name: 'R & R/Shiny Dashboards', level: 83 },
-            { name: 'SQL & Multi-Source Data Management', level: 80 },
+            { name: 'R · Statistical Computing & Shiny', level: 83 },
+            { name: 'SQL & Multi-Source Data Management', level: 82 },
         ]},
         { category: 'Scientific Visualization', accent: '#f59e0b', items: [
             { name: 'Three.js/WebGL (3D Brain Rendering)', level: 82 },
@@ -166,12 +167,13 @@ function Portfolio() {
             { name: 'Medical Image Processing', level: 72 },
             { name: 'Interactive Research Dashboards', level: 80 },
         ]},
-        { category: 'Engineering', accent: '#10b981', items: [
-            { name: 'React & JavaScript', level: 88 },
+        { category: 'Engineering & Systems', accent: '#10b981', items: [
+            { name: 'React & JavaScript / Full-Stack', level: 88 },
             { name: 'Java / C / C# / Python', level: 80 },
-            { name: 'Full-Stack (Node.js MySQL)', level: 78 },
-            { name: 'Git & Reproducible Research', level: 90 },
-            { name: 'CI/CD & Cloud Deployment', level: 75 },
+            { name: 'Linux · Server & Systems Administration', level: 76 },
+            { name: 'Networking Fundamentals (TCP/IP, DNS)', level: 72 },
+            { name: 'Cloud Infrastructure (AWS · Railway · Vercel)', level: 78 },
+            { name: 'CI/CD · Docker · Reproducible Pipelines', level: 75 },
         ]}
     ];
 
@@ -287,10 +289,10 @@ function Portfolio() {
                             </div>
                             <h1 className="text-5xl md:text-6xl font-bold mb-3 text-white">Daudi Aden</h1>
                             <p className="text-2xl md:text-3xl font-semibold mb-4" style={{ color: 'var(--gray-light)' }}>
-                                Data Analyst &amp; Developer
+                                Data Manager · Research Analyst · Systems Developer
                             </p>
                             <p className="text-xl md:text-2xl" style={{ color: 'var(--blue-gray)' }}>
-                                Building data systems and tools at the intersection of computational methods and human behavior
+                                Bridging environmental data management, behavioral research, and systems engineering
                             </p>
 
                             <Glass style={{ padding: '1.25rem 1.5rem', maxWidth: '560px', marginBottom: '2rem' }}>
@@ -301,10 +303,11 @@ function Portfolio() {
 
                             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem' }}>
                                 {[
-                                    { label: 'Data Analysis',  color: 'var(--teal)' },
-                                    { label: 'Full-Stack Dev', color: 'var(--emerald)' },
-                                    { label: 'Scientific Viz', color: 'var(--violet)' },
-                                    { label: 'GIS & Research', color: 'var(--gold)' },
+                                    { label: 'Data Analysis',    color: 'var(--teal)' },
+                                    { label: 'Psych Research',   color: 'var(--violet)' },
+                                    { label: 'Full-Stack Dev',   color: 'var(--emerald)' },
+                                    { label: 'Systems & Infra',  color: 'var(--gold)' },
+                                    { label: 'GIS & Env. Sci',   color: '#0ea5e9' },
                                 ].map(({ label, color }) => (
                                     <span key={label} style={{
                                         padding: '0.4rem 1rem', fontSize: '0.7rem', fontWeight: 700,
@@ -633,15 +636,20 @@ function Portfolio() {
                                 My degrees are in Computer Science and Psychology, a combination I chose deliberately. The problems I find most interesting are the ones where understanding the technical pipeline and the behavior being measured are both part of getting the answer right.
                             </p>
                             <p style={{ fontSize: '1.1rem', lineHeight: 1.85, color: 'var(--off-white)', marginBottom: '1.5rem' }}>
-                                I currently work as a Data Manager & Analyst at the Finger Lakes Institute (Hobart and William Smith Colleges), where I manage environmental datasets, build data pipelines, and develop public-facing monitoring dashboards for Canandaigua Lake, Seneca Lake, and community research initiatives. What I've built reflects that: geospatial dashboards on real vessel tracking data, full-stack healthcare platforms, environmental monitoring pipelines, 3D tools for scientific datasets. Different domains, consistent approach — reliable data systems, honest analysis, output that actually communicates.
+                                I currently work as a Data Manager & Analyst at the Finger Lakes Institute (Hobart and William Smith Colleges), managing environmental datasets, building data pipelines, and developing public-facing monitoring portals for lake water quality and community research. What I've built reflects the same approach across domains: geospatial dashboards on real vessel data, full-stack healthcare platforms, 3D scientific visualization tools — reliable systems, honest analysis, output that communicates.
+                            </p>
+                            <p style={{ fontSize: '1.1rem', lineHeight: 1.85, color: 'var(--off-white)', marginBottom: '1.5rem' }}>
+                                I'm actively looking to bridge into a Research Assistant role in psychology or cognitive/behavioral science, or into a technical role in systems administration, network engineering, or IT infrastructure — areas where my CS foundation, data management experience, and research background connect directly.
                             </p>
 
                             <div className="grid grid-cols-2" style={{ gap: '1.5rem', marginTop: '2.5rem' }}>
                                 {[
-                                    { label: 'Based in',  value: 'Geneva, NY',                       accent: 'var(--teal)' },
-                                    { label: 'Role',      value: 'Data Manager & Analyst',           accent: 'var(--emerald)' },
-                                    { label: 'Employer',  value: 'Finger Lakes Institute · HWS',     accent: 'var(--teal)' },
-                                    { label: 'Focus',     value: 'Data × Development',               accent: 'var(--gold)' },
+                                    { label: 'Based in',  value: 'Geneva, NY',                        accent: 'var(--teal)' },
+                                    { label: 'Role',      value: 'Data Manager & Analyst',            accent: 'var(--emerald)' },
+                                    { label: 'Employer',  value: 'Finger Lakes Institute · HWS',      accent: 'var(--teal)' },
+                                    { label: 'Degrees',   value: 'Computer Science · Psychology',     accent: 'var(--violet)' },
+                                    { label: 'Open to',   value: 'RA · Systems Admin · Net. Eng.',    accent: 'var(--gold)' },
+                                    { label: 'Focus',     value: 'Data × Research × Infrastructure',  accent: 'var(--gold)' },
                                 ].map(({ label, value, accent }) => (
                                     <div key={label} style={{ borderLeft: `3px solid ${accent}`, paddingLeft: '12px' }}>
                                         <p style={{ fontSize: '0.68rem', fontWeight: 700, letterSpacing: '0.15em', textTransform: 'uppercase', color: 'var(--blue-gray)', marginBottom: '4px' }}>{label}</p>
