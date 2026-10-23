@@ -125,6 +125,23 @@ function Portfolio() {
             ]
         },
         {
+            id: 'canandaigua-lake', type: 'Environmental Science', year: '2026',
+            title: 'Canandaigua Lake Environmental Monitoring',
+            description: 'Multi-tab water quality and environmental data portal for the Canandaigua Lake Watershed Association. Tracks Secchi depth, nutrients, harmful algal blooms, stream conditions, and temperature across 25+ monitoring sites.',
+            tech: ['R', 'Shiny', 'shinyapps.io', 'Data Visualization', 'Environmental Science'],
+            demo: null, github: null,
+            external: 'https://flihws.shinyapps.io/CNtest261023/', featured: true,
+            inProgress: true,
+            insights: [
+                'Five data modules: Secchi Depth, Nutrient Data, HABs, Streams, Temperature',
+                '25+ named monitoring sites across Canandaigua Lake for spatial comparison',
+                'Seasonal pattern analysis with weekly boxplots and year-over-year trend overlays',
+                'Statistical filtering — only weeks with ≥10 measurements shown to ensure reliability',
+                'Built for the Canandaigua Lake Watershed Association (FLIHWS / Hobart & William Smith Colleges)',
+                'Proprietary data; portal is public-facing for community and research use'
+            ]
+        },
+        {
             id: 'seneca-lake', type: 'Environmental Science', year: '2024',
             title: 'Seneca Lake Monitoring',
             description: 'Real-time monitoring platform displaying live data from a remote buoy on Seneca Lake. Water quality metrics (temperature, pH, dissolved oxygen) and meteorological data visualization.',
