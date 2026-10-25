@@ -5,7 +5,9 @@ import ProtectedRoute from './components/ProtectedRoute';
 
 import { lazy, Suspense } from 'react';
 
-const Portfolio          = lazy(() => import('./Portfolio'));
+const Hub                = lazy(() => import('./Hub'));
+const ResearchTrack      = lazy(() => import('./ResearchTrack'));
+const TechTrack          = lazy(() => import('./TechTrack'));
 const NeuroTraceWeb      = lazy(() => import('./NeuroTraceWeb'));
 const MRITracer3D        = lazy(() => import('./MRITracer3D'));
 const AllenBrainExplorer = lazy(() => import('./AllenBrainExplorer'));
@@ -37,7 +39,9 @@ function App() {
       }>
       <Routes>
         {/* Portfolio & Existing Routes */}
-        <Route path="/" element={<Portfolio />} />
+        <Route path="/" element={<Hub />} />
+        <Route path="/work/research" element={<ResearchTrack />} />
+        <Route path="/work/tech" element={<TechTrack />} />
         <Route path="/research" element={<ResearchPage />} />
         <Route path="/neurotrace"   element={<NeuroTraceWeb />} />
         <Route path="/neuroatlas"   element={<AllenBrainExplorer />} />
