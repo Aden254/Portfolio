@@ -8,45 +8,34 @@ const { research: R, tech: T } = TRACKS;
 const JOURNEY = [
     {
         when: 'Origin',
-        title: 'A question that started at home',
-        body: 'About ten years ago I watched my brother recover from a stroke: the pegboards, the grip exercises, a brain slowly rerouting what it had lost. I didn\'t have the words for it then, but it left me with a question I still work on: how does a brain rebuild under pressure?',
-        paths: [R],
+        title: 'A question about how brains adapt',
+        body: 'I became interested early in how the brain adapts and recovers after injury. That question drew me to psychology, and the need to measure it carefully drew me to computing.',
     },
     {
         when: 'Undergraduate',
         title: 'Computer Science and Psychology, on purpose',
         body: 'At Hobart and William Smith Colleges I double-majored in Computer Science and Psychology, with a minor in Data Analytics. Psychology gave me the questions, and Computer Science gave me the means to answer them at scale. I graduated in May 2026.',
-        paths: [R, T],
     },
     {
         when: '2024',
         title: 'Data from the field',
         body: 'As a student researcher at the Finger Lakes Institute, I built real-time pipelines and dashboards for a sensor buoy on Seneca Lake, and presented the work at the NY6 Undergraduate Research Conference and the Finger Lakes Research Symposium.',
-        paths: [R],
     },
     {
         when: '2024 – 2025',
         title: 'Building the tools I needed',
         body: 'When existing tools didn\'t fit, I built my own: NeuroVerse 3D for reconstructing brains from MRI slices, NeuroTrace for annotating neural tissue, and NeuroAtlas for exploring gene expression across the brain. HealthHub, a healthcare platform with authentication and role-based access, was my first complete system.',
-        paths: [R, T],
     },
     {
         when: '2026',
         title: 'Systems that hold up in the real world',
-        body: 'Next came networking and infrastructure: ConsultLink, browser-to-browser video that connects across home and mobile networks; a spatial database behind live vessel tracking; and a cloud-deployed trip planner that keeps working offline.',
-        paths: [T],
+        body: 'Then came networking and infrastructure: ConsultLink, browser-to-browser video that connects across home and mobile networks; a spatial database behind live vessel tracking; and a cloud-deployed trip planner that keeps working offline.',
     },
     {
         when: 'Now',
         title: 'Data Manager & Analyst, Finger Lakes Institute',
         body: 'Today I manage the data behind long-running monitoring programs, including a water quality portal for Canandaigua Lake and Success for Geneva, a community dashboard tracking outcomes for children and families.',
-        paths: [R, T],
     },
-];
-
-const DIRECTIONS = [
-    { t: R, body: 'Research Assistant roles in psychology and cognitive science, as a step toward graduate study in how adversity reshapes the developing brain.' },
-    { t: T, body: 'Systems administration, network engineering, and IT infrastructure roles, where keeping systems reliable is the job itself.' },
 ];
 
 const eyebrow = { fontSize: '0.68rem', fontWeight: 700, letterSpacing: '0.24em', textTransform: 'uppercase', color: 'rgba(148,163,184,0.7)' };
@@ -87,7 +76,7 @@ export default function Hub() {
                     Computer Science &amp; Psychology · Data Manager &amp; Analyst
                 </p>
                 <p style={{ fontSize: 'clamp(1.05rem, 2.2vw, 1.25rem)', lineHeight: 1.8, color: 'var(--off-white)', maxWidth: '640px', textAlign: 'center' }}>
-                    I study how brains and behavior change, and I build the systems that make that kind of research possible. My work runs in two directions from one starting point.
+                    I collect, manage, and analyze research data, and I build the systems that keep it reliable and usable, from lake monitoring pipelines to neuroscience tools to secure healthcare platforms.
                 </p>
 
                 <nav aria-label="Choose a portfolio" style={{
@@ -109,16 +98,9 @@ export default function Hub() {
             <Reveal style={{ borderTop: '1px solid rgba(255,255,255,0.05)' }}>
                 <div id="journey" className="max-w-4xl mx-auto px-6" style={{ paddingTop: '7rem', paddingBottom: '6rem', scrollMarginTop: '1rem' }}>
                     <p className="sans" style={{ ...eyebrow, marginBottom: '1rem' }}>The journey so far</p>
-                    <h2 className="font-bold" style={{ fontSize: 'clamp(2rem,4vw,3rem)', color: 'white', lineHeight: 1.15, marginBottom: '1.25rem' }}>
-                        One question, two kinds of work.
+                    <h2 className="font-bold" style={{ fontSize: 'clamp(2rem,4vw,3rem)', color: 'white', lineHeight: 1.15, marginBottom: '4rem' }}>
+                        How I got here.
                     </h2>
-                    <div className="sans" style={{ display: 'flex', gap: '1.5rem', flexWrap: 'wrap', marginBottom: '4rem', fontSize: '0.72rem', fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase' }}>
-                        {[R, T].map((t) => (
-                            <span key={t.path} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: t.color }}>
-                                <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: t.color }} /> {t.label}
-                            </span>
-                        ))}
-                    </div>
 
                     <ol style={{ listStyle: 'none' }}>
                         {JOURNEY.map((step, i) => (
@@ -140,16 +122,9 @@ export default function Hub() {
                                     <h3 className="font-bold" style={{ fontSize: 'clamp(1.25rem,2.4vw,1.6rem)', color: 'white', lineHeight: 1.3, marginBottom: '0.75rem' }}>
                                         {step.title}
                                     </h3>
-                                    <p style={{ fontSize: '1.05rem', lineHeight: 1.8, color: 'var(--gray-light)', marginBottom: '0.9rem' }}>
+                                    <p style={{ fontSize: '1.05rem', lineHeight: 1.8, color: 'var(--gray-light)' }}>
                                         {step.body}
                                     </p>
-                                    <div className="sans" style={{ display: 'flex', gap: '1rem', fontSize: '0.66rem', fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase' }}>
-                                        {step.paths.map((t) => (
-                                            <span key={t.path} style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: t.color }}>
-                                                <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: t.color }} /> {t.short}
-                                            </span>
-                                        ))}
-                                    </div>
                                 </div>
                             </li>
                         ))}
@@ -159,25 +134,22 @@ export default function Hub() {
 
             {/* ── Where it leads ── */}
             <Reveal style={{ borderTop: '1px solid rgba(255,255,255,0.05)', background: 'linear-gradient(180deg, #050c1c 0%, #0b1730 100%)' }}>
-                <div className="max-w-5xl mx-auto px-6" style={{ paddingTop: '6rem', paddingBottom: '6rem' }}>
-                    <p className="sans" style={{ ...eyebrow, marginBottom: '1rem', textAlign: 'center' }}>Where it leads</p>
-                    <h2 className="font-bold" style={{ fontSize: 'clamp(1.9rem,3.8vw,2.75rem)', color: 'white', lineHeight: 1.2, textAlign: 'center', marginBottom: '4rem' }}>
-                        From here, the work goes two ways.
+                <div className="max-w-3xl mx-auto px-6 text-center" style={{ paddingTop: '6rem', paddingBottom: '6rem' }}>
+                    <p className="sans" style={{ ...eyebrow, marginBottom: '1rem' }}>What I do</p>
+                    <h2 className="font-bold" style={{ fontSize: 'clamp(1.9rem,3.8vw,2.75rem)', color: 'white', lineHeight: 1.2, marginBottom: '1.5rem' }}>
+                        Data you can trust, on systems that stay up.
                     </h2>
-                    <div className="grid md:grid-cols-2" style={{ gap: '4rem' }}>
-                        {DIRECTIONS.map(({ t, body }) => {
+                    <p style={{ fontSize: '1.1rem', lineHeight: 1.85, color: 'var(--off-white)', marginBottom: '3.5rem' }}>
+                        Whether the question is how a lake changes over a decade or whether a video call gets through a home router, the job is the same: collect the data carefully, store it safely, and make it usable for the people who depend on it.
+                    </p>
+                    <div className="sans" style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '2.5rem', fontSize: '0.78rem', fontWeight: 700, letterSpacing: '0.16em', textTransform: 'uppercase' }}>
+                        {[R, T].map((t) => {
                             const Icon = t.Icon;
                             return (
-                                <div key={t.path} style={{ textAlign: 'center' }}>
-                                    <Icon size={40} strokeWidth={1.2} color={t.color} style={{ display: 'block', margin: '0 auto 1.25rem' }} />
-                                    <p style={{ fontSize: '1.1rem', lineHeight: 1.8, color: 'var(--off-white)', maxWidth: '400px', margin: '0 auto 1.75rem' }}>
-                                        {body}
-                                    </p>
-                                    <Link to={t.path} className="glow-link sans"
-                                        style={{ '--c': t.color, '--g': t.glow, '--rest': t.color, fontSize: '0.78rem', fontWeight: 700, letterSpacing: '0.16em', textTransform: 'uppercase' }}>
-                                        Enter {t.label} →
-                                    </Link>
-                                </div>
+                                <Link key={t.path} to={t.path} className="glow-link"
+                                    style={{ '--c': t.color, '--g': t.glow, '--rest': 'rgba(226,232,240,0.7)', display: 'inline-flex', alignItems: 'center', gap: '0.6rem' }}>
+                                    <Icon size={20} strokeWidth={1.4} /> {t.label} →
+                                </Link>
                             );
                         })}
                     </div>
