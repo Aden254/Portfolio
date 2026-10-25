@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-    TrackShell, Hero, Chapter, ProjectFeature, SkillGrid, InfoGrid, CrossTrack, Contact, Glass, Reveal,
+    TrackShell, Hero, Chapter, ProjectFeature, SkillGrid, InfoGrid, Contact, Glass, Reveal,
 } from './components/site/SiteKit';
 import { TRACKS } from './components/site/tracks';
 
@@ -146,13 +146,6 @@ export default function TechTrack() {
                     </Glass>
                 </div>
             </Reveal>
-
-            <CrossTrack
-                to="research"
-                eyebrow="The other half of the work"
-                title="These systems exist to answer questions."
-                body="Lake monitoring, community outcomes, and neuroscience tools. The research these systems serve has its own story."
-            />
 
             <Contact
                 accent={ACCENT}

@@ -204,7 +204,7 @@ export function Chapter({ number, eyebrow, title, intro, accent, bg, bgPosition 
     );
 
     return (
-        <Reveal className={bg ? 'photo-section' : ''} style={bg ? undefined : { background: '#050c1c' }}>
+        <Reveal className={bg ? 'photo-section' : ''} style={bg ? undefined : { background: '#050c1c', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
             {bg && <PhotoBg src={bg} overlay="rgba(5,10,24,0.82)" position={bgPosition} />}
             {content}
         </Reveal>
@@ -334,35 +334,10 @@ export function InfoGrid({ items }) {
     );
 }
 
-export function CrossTrack({ to, eyebrow, title, body }) {
-    const t = TRACKS[to];
-    const Icon = t.Icon;
-    return (
-        <Reveal style={{ background: '#050c1c', borderTop: '1px solid rgba(255,255,255,0.06)', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
-            <div className="max-w-4xl mx-auto px-6 text-center" style={{ paddingTop: '7rem', paddingBottom: '7rem' }}>
-                <p className="sans" style={{ color: 'rgba(100,116,139,0.85)', fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.22em', textTransform: 'uppercase', marginBottom: '1.25rem' }}>
-                    {eyebrow}
-                </p>
-                <h2 className="font-bold" style={{ fontSize: 'clamp(1.75rem,3.5vw,2.75rem)', color: 'white', lineHeight: 1.2, marginBottom: '1.25rem' }}>
-                    {title}
-                </h2>
-                <p style={{ fontSize: '1.1rem', lineHeight: 1.8, color: 'var(--gray-light)', maxWidth: '620px', margin: '0 auto 3rem' }}>
-                    {body}
-                </p>
-                <Link to={t.path} className="glow-link"
-                    style={{ '--c': t.color, '--g': t.glow, display: 'inline-flex', flexDirection: 'column', alignItems: 'center', gap: '1rem' }}>
-                    <Icon size={52} strokeWidth={1.2} />
-                    <span style={{ fontSize: 'clamp(1.35rem,2.5vw,1.85rem)', fontWeight: 700 }}>{t.label} →</span>
-                </Link>
-            </div>
-        </Reveal>
-    );
-}
-
 export function Contact({ accent, bg, headline, line }) {
     return (
-        <Reveal className="photo-section">
-            <PhotoBg src={bg} overlay="rgba(4,10,24,0.74)" position="center 30%" />
+        <Reveal className="photo-section" style={bg ? undefined : { background: 'linear-gradient(180deg, #050c1c 0%, #0b1730 100%)', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+            {bg && <PhotoBg src={bg} overlay="rgba(4,10,24,0.74)" position="center 30%" />}
             <div className="photo-content max-w-7xl mx-auto px-6 py-24">
                 <div className="flex flex-col lg:flex-row" style={{ gap: '4rem', alignItems: 'flex-start' }}>
                     <div style={{ flex: 1 }}>

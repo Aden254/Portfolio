@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { ExternalLink } from 'lucide-react';
 import {
-    TrackShell, Hero, Chapter, ProjectFeature, SkillGrid, InfoGrid, CrossTrack, Contact, Glass, Reveal, PhotoBg,
+    TrackShell, Hero, Chapter, ProjectFeature, SkillGrid, InfoGrid, Contact, Glass, Reveal,
 } from './components/site/SiteKit';
 import { TRACKS } from './components/site/tracks';
 
@@ -150,20 +150,20 @@ export default function ResearchTrack() {
                 </Link>
             </Hero>
 
-            <Chapter number="01" eyebrow="In the field" accent={ACCENT} bg="/images/bg1.jpeg" bgPosition="center 30%"
+            <Chapter number="01" eyebrow="In the field" accent={ACCENT}
                 title="Environmental data at the Finger Lakes Institute"
                 intro="This is my day-to-day work: turning sensor readings and field samples into clean, documented datasets, then publishing them so watershed groups and the public can use them.">
                 {FIELD.map((p, i) => <ProjectFeature key={p.id} project={p} accent={ACCENT} first={i === 0} />)}
             </Chapter>
 
-            <Chapter number="02" eyebrow="Communities" accent={ACCENT} bg="/images/bg3.jpeg" bgPosition="center 40%"
+            <Chapter number="02" eyebrow="Communities" accent={ACCENT}
                 title="Data about people, made readable for people"
                 intro="Outcome data only matters if the people it describes can read it. These projects take administrative and survey data and turn it into something a community can act on.">
                 {COMMUNITY.map((p, i) => <ProjectFeature key={p.id} project={p} accent={ACCENT} first={i === 0} />)}
                 <DataStory />
             </Chapter>
 
-            <Chapter number="03" eyebrow="The brain" accent={ACCENT} bg="/images/bg5.jpeg" bgPosition="center right"
+            <Chapter number="03" eyebrow="The brain" accent={ACCENT}
                 title="Tools for neuroscience research"
                 intro="This is where my psychology training and engineering meet: tools for exploring, annotating, and reconstructing brain data.">
                 {BRAIN.map((p, i) => <ProjectFeature key={p.id} project={p} accent={ACCENT} first={i === 0} />)}
@@ -171,14 +171,12 @@ export default function ResearchTrack() {
 
             <SkillGrid title="Research Skills" skills={SKILLS} />
 
-            <Reveal className="photo-section">
-                <PhotoBg src="/images/bg2.jpeg" overlay="rgba(4,10,24,0.8)" position="center 65%" />
-                <div className="photo-content max-w-7xl mx-auto px-6 py-24">
+            <Reveal style={{ background: '#050c1c' }}>
+                <div className="max-w-7xl mx-auto px-6 py-24">
                     <h2 className="font-bold" style={{ fontSize: 'clamp(2rem,4vw,3.25rem)', color: 'white', borderBottom: `2px solid ${ACCENT}40`, paddingBottom: '1.25rem', marginBottom: '3.5rem' }}>
                         Where I'm headed
                     </h2>
-                    <div className="flex flex-col lg:flex-row" style={{ gap: '3rem', alignItems: 'flex-start' }}>
-                        <Glass style={{ flex: 1, padding: '2.5rem' }}>
+                    <Glass style={{ padding: '2.5rem', maxWidth: '900px' }}>
                             <p style={{ fontSize: '1.1rem', lineHeight: 1.85, color: 'var(--off-white)', marginBottom: '1.5rem' }}>
                                 I chose Computer Science and Psychology together on purpose. The questions I care about need both: you can't interpret behavior well without understanding how it was measured, and you can't build good measurement without understanding the behavior.
                             </p>
@@ -191,34 +189,12 @@ export default function ResearchTrack() {
                                 { label: 'Degrees',      value: 'Computer Science · Psychology', accent: '#7c3aed' },
                                 { label: 'Seeking',      value: 'Research Assistant, Psychology / Cognitive Science', accent: '#f59e0b' },
                             ]} />
-                        </Glass>
-                        <div style={{ flexShrink: 0, display: 'flex', flexDirection: 'column', gap: '1rem', width: 'min(250px, 100%)' }}>
-                            {[
-                                { src: '/images/daudi-research-1.jpg', alt: 'Daudi at the buoy sensor' },
-                                { src: '/images/daudi-research-2.jpg', alt: 'Daudi in the lab' },
-                            ].map(({ src, alt }) => (
-                                <div key={alt} style={{ overflow: 'hidden', border: '1px solid rgba(255,255,255,0.1)', borderTop: `3px solid ${ACCENT}` }}>
-                                    <img src={src} alt={alt} style={{ width: '100%', height: '200px', objectFit: 'cover', objectPosition: 'center top', display: 'block' }} />
-                                </div>
-                            ))}
-                            <p className="sans" style={{ fontSize: '0.75rem', textAlign: 'center', color: 'var(--blue-gray)' }}>
-                                Field &amp; lab work at the Finger Lakes Institute
-                            </p>
-                        </div>
-                    </div>
+                    </Glass>
                 </div>
             </Reveal>
 
-            <CrossTrack
-                to="tech"
-                eyebrow="The other half of the work"
-                title="Every dataset here runs on systems I built."
-                body="Databases, authentication, real-time video, and cloud deployments. The engineering side has its own story."
-            />
-
             <Contact
                 accent={ACCENT}
-                bg="/images/bg1.jpeg"
                 headline={<>Let's talk<br />research.</>}
                 line="Open to Research Assistant roles in psychology and cognitive science. I'm always happy to talk methods, study design, or messy data."
             />
