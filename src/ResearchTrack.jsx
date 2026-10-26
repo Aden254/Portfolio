@@ -131,9 +131,7 @@ export default function ResearchTrack() {
                 accent={ACCENT}
                 bg="/images/seneca-lake.jpg" bgPosition="center 45%"
                 eyebrow="Research & Data"
-                headline="Measuring how living systems change, from a lake to a community to the brain."
-                photo="/images/daud-profile.jpg"
-            >
+                headline="Measuring how living systems change, from a lake to a community to the brain."            >
                 <p style={{ fontSize: '1.15rem', lineHeight: 1.8, color: 'var(--off-white)', maxWidth: '640px', marginBottom: '2rem' }}>
                     I'm a Data Manager &amp; Analyst at the Finger Lakes Institute with degrees in Computer Science and Psychology. I build the datasets, analyses, and visual tools that let researchers trust what they're measuring.
                 </p>

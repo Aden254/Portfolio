@@ -141,29 +141,18 @@ export function TrackShell({ track, title, children }) {
     );
 }
 
-export function Hero({ accent, bg, bgPosition, eyebrow, headline, children, photo }) {
+export function Hero({ accent, bg, bgPosition, eyebrow, headline, children }) {
     return (
         <header className="photo-section" style={{ minHeight: '100vh', display: 'flex', alignItems: 'center' }}>
             <PhotoBg src={bg} overlay="rgba(4,10,24,0.66)" position={bgPosition} />
             <div className="photo-content max-w-7xl mx-auto px-6 w-full" style={{ paddingTop: '8rem', paddingBottom: '6rem' }}>
-                <div className="flex flex-col md:flex-row items-start md:items-center" style={{ gap: '3rem' }}>
-                    <div className="flex-1">
-                        <p className="sans" style={{ color: accent, fontSize: '0.75rem', fontWeight: 700, letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '1.25rem' }}>
-                            {eyebrow}
-                        </p>
-                        <h1 className="font-bold text-white" style={{ fontSize: 'clamp(2.25rem, 5.5vw, 4.25rem)', lineHeight: 1.08, marginBottom: '1.75rem', maxWidth: '820px' }}>
-                            {headline}
-                        </h1>
-                        {children}
-                    </div>
-                    {photo && (
-                        <img src={photo} alt="Daudi Aden" style={{
-                            width: '210px', height: '260px', objectFit: 'cover', objectPosition: 'center top', flexShrink: 0,
-                            maskImage: 'radial-gradient(ellipse 85% 90% at 50% 45%, black 40%, transparent 100%)',
-                            WebkitMaskImage: 'radial-gradient(ellipse 85% 90% at 50% 45%, black 40%, transparent 100%)',
-                        }} />
-                    )}
-                </div>
+                <p className="sans" style={{ color: accent, fontSize: '0.75rem', fontWeight: 700, letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '1.25rem' }}>
+                    {eyebrow}
+                </p>
+                <h1 className="font-bold text-white" style={{ fontSize: 'clamp(2.25rem, 5.5vw, 4.25rem)', lineHeight: 1.08, marginBottom: '1.75rem', maxWidth: '820px' }}>
+                    {headline}
+                </h1>
+                {children}
             </div>
         </header>
     );
