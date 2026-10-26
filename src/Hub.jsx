@@ -38,15 +38,46 @@ const JOURNEY = [
     },
 ];
 
+const SELECTED = [
+    {
+        year: '2026', inProgress: true,
+        title: 'Canandaigua Lake Environmental Monitoring',
+        body: 'A public water quality portal for 25+ sampling sites, built on proprietary monitoring data I manage.',
+        tags: ['R', 'Shiny', 'Data Management'],
+        href: 'https://flihws.shinyapps.io/CNtest261023/',
+    },
+    {
+        year: '2026', inProgress: true,
+        title: 'Success for Geneva',
+        body: 'Ten community goals for children and families, read live from a database three local institutions update.',
+        tags: ['R', 'Shiny', 'Live Database'],
+        href: 'https://success4geneva.shinyapps.io/geneva-story/',
+    },
+    {
+        year: '2025',
+        title: 'NeuroAtlas',
+        body: 'A gene expression explorer for 1,800+ brain structures, backed by a server that proxies the Allen Brain Atlas API.',
+        tags: ['React', 'Three.js', 'Node.js'],
+        to: '/neuroatlas',
+    },
+    {
+        year: '2024',
+        title: 'HealthHub Manager',
+        body: 'A healthcare records platform with authentication, role-based access, and database-enforced rules.',
+        tags: ['React', 'Node.js', 'MySQL'],
+        to: '/healthhub',
+    },
+];
+
 const eyebrow = { fontSize: '0.68rem', fontWeight: 700, letterSpacing: '0.24em', textTransform: 'uppercase', color: 'rgba(148,163,184,0.7)' };
 
 function Door({ t }) {
     const Icon = t.Icon;
     return (
         <Link to={t.path} className="glow-link"
-            style={{ '--c': t.color, '--g': t.glow, '--rest': 'rgba(226,232,240,0.6)', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1.25rem', width: '270px', textAlign: 'center' }}>
-            <Icon size={72} strokeWidth={1} />
-            <span style={{ fontSize: 'clamp(1.3rem, 2.6vw, 1.7rem)', fontWeight: 700, lineHeight: 1.2, whiteSpace: 'nowrap' }}>
+            style={{ '--c': t.color, '--g': t.glow, '--rest': 'rgba(226,232,240,0.6)', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.6rem', width: '270px', textAlign: 'center' }}>
+            <span style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', fontSize: 'clamp(1.3rem, 2.6vw, 1.7rem)', fontWeight: 700, lineHeight: 1.2, whiteSpace: 'nowrap' }}>
+                <Icon size={18} strokeWidth={1.5} />
                 {t.label}
             </span>
             <span className="sans" style={{ fontSize: '0.72rem', letterSpacing: '0.04em', color: 'rgba(100,116,139,0.85)', textShadow: 'none' }}>
@@ -66,9 +97,16 @@ export default function Hub() {
             {/* ── Opening ── */}
             <header style={{
                 minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
-                padding: '5rem 1.25rem 4rem',
+                padding: '4rem 1.25rem 3.5rem',
                 background: 'radial-gradient(ellipse 70% 55% at 50% 38%, #0b1730 0%, #050c1c 70%)',
             }}>
+                <img src="/images/daud-profile.jpg" alt="Daudi Aden" style={{
+                    width: 'clamp(120px, 18vw, 150px)', aspectRatio: '1', borderRadius: '50%',
+                    objectFit: 'cover', objectPosition: 'center 20%',
+                    border: '1px solid rgba(226,232,240,0.18)',
+                    boxShadow: '0 0 0 6px rgba(226,232,240,0.04), 0 20px 50px rgba(0,0,0,0.45)',
+                    marginBottom: '2rem',
+                }} />
                 <h1 className="font-bold text-white" style={{ fontSize: 'clamp(2.75rem, 8vw, 5.75rem)', lineHeight: 1, textAlign: 'center', marginBottom: '1.25rem' }}>
                     Daudi Aden
                 </h1>
@@ -129,6 +167,39 @@ export default function Hub() {
                             </li>
                         ))}
                     </ol>
+                </div>
+            </Reveal>
+
+            {/* ── Selected work ── */}
+            <Reveal style={{ borderTop: '1px solid rgba(255,255,255,0.05)' }}>
+                <div className="max-w-4xl mx-auto px-6" style={{ paddingTop: '6rem', paddingBottom: '6rem' }}>
+                    <p className="sans" style={{ ...eyebrow, marginBottom: '1rem' }}>Selected work</p>
+                    <h2 className="font-bold" style={{ fontSize: 'clamp(2rem,4vw,3rem)', color: 'white', lineHeight: 1.15, marginBottom: '3rem' }}>
+                        A few things I've built.
+                    </h2>
+                    <ul style={{ listStyle: 'none', borderTop: '1px solid rgba(255,255,255,0.08)' }}>
+                        {SELECTED.map((p) => {
+                            const linkProps = { className: 'glow-link sans', style: { '--c': '#e2e8f0', '--g': 'rgba(226,232,240,0.35)', '--rest': 'rgba(148,163,184,0.9)', fontSize: '0.72rem', fontWeight: 700, letterSpacing: '0.16em', textTransform: 'uppercase', whiteSpace: 'nowrap' } };
+                            return (
+                                <li key={p.title} className="grid md:grid-cols-[80px_1fr_auto]" style={{ columnGap: '2rem', rowGap: '0.5rem', alignItems: 'baseline', padding: '2rem 0', borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
+                                    <p className="sans" style={{ ...eyebrow, color: 'rgba(148,163,184,0.85)' }}>{p.year}</p>
+                                    <div>
+                                        <h3 className="font-bold" style={{ fontSize: 'clamp(1.2rem,2.2vw,1.45rem)', color: 'white', lineHeight: 1.3, marginBottom: '0.5rem' }}>
+                                            {p.title}
+                                            {p.inProgress && (
+                                                <span className="sans" style={{ marginLeft: '0.75rem', verticalAlign: 'middle', fontSize: '0.6rem', fontWeight: 700, letterSpacing: '0.14em', color: '#fb923c' }}>IN PROGRESS</span>
+                                            )}
+                                        </h3>
+                                        <p style={{ fontSize: '1rem', lineHeight: 1.75, color: 'var(--gray-light)', marginBottom: '0.75rem' }}>{p.body}</p>
+                                        <p className="sans" style={{ fontSize: '0.72rem', letterSpacing: '0.06em', color: 'rgba(100,116,139,0.95)' }}>{p.tags.join(' · ')}</p>
+                                    </div>
+                                    {p.to
+                                        ? <Link to={p.to} {...linkProps}>Open →</Link>
+                                        : <a href={p.href} target="_blank" rel="noopener noreferrer" {...linkProps}>View live →</a>}
+                                </li>
+                            );
+                        })}
+                    </ul>
                 </div>
             </Reveal>
 
