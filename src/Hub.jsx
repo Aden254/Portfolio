@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { SiteStyles, Reveal } from './components/site/SiteKit';
+import { SiteStyles, Reveal, PhotoBg } from './components/site/SiteKit';
+import Ambient from './components/site/Ambient';
 import { TRACKS } from './components/site/tracks';
 
 const { research: R, tech: T } = TRACKS;
@@ -72,12 +73,10 @@ const SELECTED = [
 const eyebrow = { fontSize: '0.68rem', fontWeight: 700, letterSpacing: '0.24em', textTransform: 'uppercase', color: 'rgba(148,163,184,0.7)' };
 
 function Door({ t }) {
-    const Icon = t.Icon;
     return (
         <Link to={t.path} className="glow-link"
-            style={{ '--c': t.color, '--g': t.glow, '--rest': 'rgba(226,232,240,0.6)', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.6rem', width: '270px', textAlign: 'center' }}>
-            <span style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', fontSize: 'clamp(1.3rem, 2.6vw, 1.7rem)', fontWeight: 700, lineHeight: 1.2, whiteSpace: 'nowrap' }}>
-                <Icon size={18} strokeWidth={1.5} />
+            style={{ '--c': t.color, '--g': t.glow, '--rest': 'rgba(226,232,240,0.78)', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.6rem', width: '270px', textAlign: 'center' }}>
+            <span style={{ fontSize: 'clamp(1.3rem, 2.6vw, 1.7rem)', fontWeight: 700, lineHeight: 1.2, whiteSpace: 'nowrap' }}>
                 {t.label}
             </span>
             <span className="sans" style={{ fontSize: '0.72rem', letterSpacing: '0.04em', color: 'rgba(100,116,139,0.85)', textShadow: 'none' }}>
@@ -95,11 +94,13 @@ export default function Hub() {
             <SiteStyles />
 
             {/* ── Opening ── */}
-            <header style={{
-                minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
-                padding: '4rem 1.25rem 3.5rem',
-                background: 'radial-gradient(ellipse 70% 55% at 50% 38%, #0b1730 0%, #050c1c 70%)',
-            }}>
+            <header className="photo-section" style={{ minHeight: '100vh', display: 'flex' }}>
+                <PhotoBg src="/images/bg1.jpeg" position="center 52%"
+                    overlay="linear-gradient(180deg, rgba(5,12,28,0.82) 0%, rgba(5,12,28,0.62) 45%, rgba(5,12,28,0.95) 100%)" />
+                <div className="photo-content" style={{
+                    flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+                    padding: '4rem 1.25rem 3.5rem',
+                }}>
                 <img src="/images/daud-profile.jpg" alt="Daudi Aden" style={{
                     width: 'clamp(120px, 18vw, 150px)', aspectRatio: '1', borderRadius: '50%',
                     objectFit: 'cover', objectPosition: 'center 20%',
@@ -110,7 +111,7 @@ export default function Hub() {
                 <h1 className="font-bold text-white" style={{ fontSize: 'clamp(2.75rem, 8vw, 5.75rem)', lineHeight: 1, textAlign: 'center', marginBottom: '1.25rem' }}>
                     Daudi Aden
                 </h1>
-                <p className="sans" style={{ ...eyebrow, fontSize: 'clamp(0.72rem, 1.8vw, 0.85rem)', textAlign: 'center', lineHeight: 1.9, marginBottom: '2rem' }}>
+                <p className="sans" style={{ ...eyebrow, color: 'rgba(226,232,240,0.85)', textShadow: '0 1px 12px rgba(0,0,0,0.6)', fontSize: 'clamp(0.72rem, 1.8vw, 0.85rem)', textAlign: 'center', lineHeight: 1.9, marginBottom: '2rem' }}>
                     Computer Science &amp; Psychology · Data Manager &amp; Analyst
                 </p>
                 <p style={{ fontSize: 'clamp(1.05rem, 2.2vw, 1.25rem)', lineHeight: 1.8, color: 'var(--off-white)', maxWidth: '640px', textAlign: 'center' }}>
@@ -130,6 +131,7 @@ export default function Hub() {
                     The journey so far
                     <span aria-hidden="true" style={{ width: '1px', height: '32px', background: 'linear-gradient(to bottom, rgba(148,163,184,0.6), transparent)' }} />
                 </a>
+                </div>
             </header>
 
             {/* ── Journey ── */}
@@ -203,9 +205,11 @@ export default function Hub() {
                 </div>
             </Reveal>
 
-            {/* ── Where it leads ── */}
-            <Reveal style={{ borderTop: '1px solid rgba(255,255,255,0.05)', background: 'linear-gradient(180deg, #050c1c 0%, #0b1730 100%)' }}>
-                <div className="max-w-3xl mx-auto px-6 text-center" style={{ paddingTop: '6rem', paddingBottom: '6rem' }}>
+            {/* ── What I do ── */}
+            <Reveal className="photo-section">
+                <PhotoBg src="/images/bg2.jpeg" position="center 55%"
+                    overlay="linear-gradient(180deg, rgba(5,12,28,0.95) 0%, rgba(5,12,28,0.72) 50%, rgba(5,12,28,0.9) 100%)" />
+                <div className="photo-content max-w-3xl mx-auto px-6 text-center" style={{ paddingTop: '7rem', paddingBottom: '7rem' }}>
                     <p className="sans" style={{ ...eyebrow, marginBottom: '1rem' }}>What I do</p>
                     <h2 className="font-bold" style={{ fontSize: 'clamp(1.9rem,3.8vw,2.75rem)', color: 'white', lineHeight: 1.2, marginBottom: '1.5rem' }}>
                         Data you can trust, on systems that stay up.
@@ -245,6 +249,8 @@ export default function Hub() {
                 </div>
                 <p style={{ fontSize: '0.75rem', color: 'var(--blue-gray)' }}>© 2026 Daudi Aden · Geneva, NY</p>
             </footer>
+
+            <Ambient />
         </div>
     );
 }
