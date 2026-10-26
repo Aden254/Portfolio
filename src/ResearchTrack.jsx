@@ -1,8 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { ExternalLink } from 'lucide-react';
 import {
-    TrackShell, Hero, Chapter, ProjectFeature, SkillGrid, InfoGrid, Contact, Glass, Reveal,
+    TrackShell, Hero, Chapter, ProjectFeature, ProjectRow, SkillGrid, InfoGrid, Contact, Section, TextLink,
 } from './components/site/SiteKit';
 import { TRACKS } from './components/site/tracks';
 
@@ -99,35 +98,29 @@ const SKILLS = [
     ]},
 ];
 
+const INFOGRAPHIC = '/images/housing-crisis-infographic.png';
+
 function DataStory() {
     return (
-        <div style={{ paddingTop: '4rem', borderTop: '1px solid rgba(255,255,255,0.07)' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: '1.5rem', marginBottom: '2rem' }}>
-                <div>
-                    <p className="sans" style={{ color: 'var(--gold)', fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.18em', textTransform: 'uppercase', marginBottom: '0.75rem' }}>
-                        Data Story · 2024
-                    </p>
-                    <h3 className="font-bold" style={{ fontSize: 'clamp(1.6rem,3vw,2.5rem)', color: 'white', marginBottom: '0.9rem' }}>
-                        The Housing Crisis: A Data Story
-                    </h3>
-                    <p style={{ fontSize: '1.1rem', color: 'var(--gray-light)', maxWidth: '680px', lineHeight: 1.75 }}>
-                        American household spending from 2013 to 2023. Housing has grown to 32.4% of the average budget, which makes the 50/30/20 rule unworkable for most families.
-                    </p>
-                </div>
-                <a href="/images/housing-crisis-infographic.png" target="_blank" rel="noopener noreferrer" className="btn-solid sans" style={{ background: 'var(--gold)', fontSize: '0.9rem' }}>
-                    <ExternalLink size={15} /> View Full Size
-                </a>
-            </div>
-            <a href="/images/housing-crisis-infographic.png" target="_blank" rel="noopener noreferrer" title="Open full size"
-                style={{ display: 'flex', justifyContent: 'center', cursor: 'zoom-in', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)', padding: '1.5rem' }}>
-                <img src="/images/housing-crisis-infographic.png" alt="The Housing Crisis: A Data Story infographic" style={{ maxWidth: '100%', width: '960px', display: 'block' }} />
+        <ProjectRow year="2024">
+            <p className="sans" style={{ fontSize: '0.62rem', fontWeight: 700, letterSpacing: '0.24em', textTransform: 'uppercase', color: ACCENT, marginBottom: '0.6rem' }}>
+                Data Story
+            </p>
+            <h3 className="font-bold" style={{ fontSize: 'clamp(1.35rem,2.6vw,1.85rem)', color: 'white', lineHeight: 1.25, marginBottom: '0.75rem' }}>
+                The Housing Crisis: A Data Story
+            </h3>
+            <p style={{ fontSize: '1.05rem', lineHeight: 1.8, color: 'var(--gray-light)', maxWidth: '720px', marginBottom: '1.5rem' }}>
+                American household spending from 2013 to 2023. Housing has grown to 32.4% of the average budget, which makes the 50/30/20 rule unworkable for most families.
+            </p>
+            <a href={INFOGRAPHIC} target="_blank" rel="noopener noreferrer" title="Open full size"
+                style={{ display: 'block', cursor: 'zoom-in', border: '1px solid rgba(255,255,255,0.08)', padding: '1rem', marginBottom: '1.25rem' }}>
+                <img src={INFOGRAPHIC} alt="The Housing Crisis: A Data Story infographic" style={{ width: '100%', display: 'block' }} />
             </a>
-            <div className="sans" style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', marginTop: '1.5rem' }}>
-                {['BLS Consumer Expenditure Survey', 'Data Analysis', 'Data Storytelling'].map((t) => (
-                    <span key={t} style={{ padding: '0.35rem 0.85rem', fontSize: '0.78rem', fontWeight: 600, background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', color: 'var(--off-white)' }}>{t}</span>
-                ))}
-            </div>
-        </div>
+            <p className="sans" style={{ fontSize: '0.72rem', letterSpacing: '0.06em', color: 'rgba(100,116,139,0.95)', marginBottom: '1.1rem' }}>
+                BLS Consumer Expenditure Survey · Data Analysis · Data Storytelling
+            </p>
+            <TextLink href={INFOGRAPHIC} accent={ACCENT}>View full size →</TextLink>
+        </ProjectRow>
     );
 }
 
@@ -153,45 +146,40 @@ export default function ResearchTrack() {
             <Chapter number="01" eyebrow="In the field" accent={ACCENT}
                 title="Environmental data at the Finger Lakes Institute"
                 intro="This is my day-to-day work: turning sensor readings and field samples into clean, documented datasets, then publishing them so watershed groups and the public can use them.">
-                {FIELD.map((p, i) => <ProjectFeature key={p.id} project={p} accent={ACCENT} first={i === 0} />)}
+                {FIELD.map((p) => <ProjectFeature key={p.id} project={p} accent={ACCENT} />)}
             </Chapter>
 
             <Chapter number="02" eyebrow="Communities" accent={ACCENT}
                 title="Data about people, made readable for people"
                 intro="Outcome data only matters if the people it describes can read it. These projects take administrative and survey data and turn it into something a community can act on.">
-                {COMMUNITY.map((p, i) => <ProjectFeature key={p.id} project={p} accent={ACCENT} first={i === 0} />)}
+                {COMMUNITY.map((p) => <ProjectFeature key={p.id} project={p} accent={ACCENT} />)}
                 <DataStory />
             </Chapter>
 
             <Chapter number="03" eyebrow="The brain" accent={ACCENT}
                 title="Tools for neuroscience research"
                 intro="This is where my psychology training and engineering meet: tools for exploring, annotating, and reconstructing brain data.">
-                {BRAIN.map((p, i) => <ProjectFeature key={p.id} project={p} accent={ACCENT} first={i === 0} />)}
+                {BRAIN.map((p) => <ProjectFeature key={p.id} project={p} accent={ACCENT} />)}
             </Chapter>
 
             <SkillGrid title="Research Skills" skills={SKILLS} />
 
-            <Reveal style={{ background: '#050c1c' }}>
-                <div className="max-w-7xl mx-auto px-6 py-24">
-                    <h2 className="font-bold" style={{ fontSize: 'clamp(2rem,4vw,3.25rem)', color: 'white', borderBottom: `2px solid ${ACCENT}40`, paddingBottom: '1.25rem', marginBottom: '3.5rem' }}>
-                        Where I'm headed
-                    </h2>
-                    <Glass style={{ padding: '2.5rem', maxWidth: '900px' }}>
-                            <p style={{ fontSize: '1.1rem', lineHeight: 1.85, color: 'var(--off-white)', marginBottom: '1.5rem' }}>
-                                I chose Computer Science and Psychology together on purpose. The questions I care about need both: you can't interpret behavior well without understanding how it was measured, and you can't build good measurement without understanding the behavior.
-                            </p>
-                            <p style={{ fontSize: '1.1rem', lineHeight: 1.85, color: 'var(--off-white)' }}>
-                                Managing research data at the Finger Lakes Institute has taught me what working research data looks like: incomplete, longitudinal, collected by many hands. I'm looking for a Research Assistant role in psychology or cognitive science, where I can bring that data discipline to studies of human behavior.
-                            </p>
-                            <InfoGrid items={[
-                                { label: 'Current role', value: 'Data Manager & Analyst', accent: ACCENT },
-                                { label: 'Institution',  value: 'Finger Lakes Institute · HWS', accent: ACCENT },
-                                { label: 'Degrees',      value: 'Computer Science · Psychology', accent: '#7c3aed' },
-                                { label: 'Seeking',      value: 'Research Assistant, Psychology / Cognitive Science', accent: '#f59e0b' },
-                            ]} />
-                    </Glass>
+            <Section eyebrow="Where I'm headed" title="Bringing data discipline to the study of behavior.">
+                <div style={{ maxWidth: '760px' }}>
+                    <p style={{ fontSize: '1.1rem', lineHeight: 1.85, color: 'var(--off-white)', marginBottom: '1.5rem' }}>
+                        I chose Computer Science and Psychology together on purpose. The questions I care about need both: you can't interpret behavior well without understanding how it was measured, and you can't build good measurement without understanding the behavior.
+                    </p>
+                    <p style={{ fontSize: '1.1rem', lineHeight: 1.85, color: 'var(--off-white)' }}>
+                        Managing research data at the Finger Lakes Institute has taught me what working research data looks like: incomplete, longitudinal, collected by many hands. I'm looking for a Research Assistant role in psychology or cognitive science, where I can bring that data discipline to studies of human behavior.
+                    </p>
+                    <InfoGrid items={[
+                        { label: 'Current role', value: 'Data Manager & Analyst', accent: ACCENT },
+                        { label: 'Institution',  value: 'Finger Lakes Institute · HWS', accent: ACCENT },
+                        { label: 'Degrees',      value: 'Computer Science · Psychology', accent: '#7c3aed' },
+                        { label: 'Seeking',      value: 'Research Assistant, Psychology / Cognitive Science', accent: '#f59e0b' },
+                    ]} />
                 </div>
-            </Reveal>
+            </Section>
 
             <Contact
                 accent={ACCENT}

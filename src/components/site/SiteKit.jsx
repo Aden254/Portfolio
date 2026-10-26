@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { ExternalLink, Github } from 'lucide-react';
 import { TRACKS, useInView } from './tracks';
+import Ambient from './Ambient';
 
 export function SiteStyles() {
     return (
@@ -62,26 +62,9 @@ export function SiteStyles() {
         .glow-link:hover svg, .glow-link:focus-visible svg { filter: drop-shadow(0 0 12px var(--g)); }
         .glow-link:focus-visible { outline: 1px solid var(--c); outline-offset: 8px; }
 
-        .btn-solid { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1.5rem; font-weight: 700; color: #050c1c; transition: filter 0.2s ease; }
-        .btn-solid:hover { filter: brightness(1.12); }
-        .btn-ghost { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1.5rem; font-weight: 700; border: 2px solid rgba(148,163,184,0.4); color: var(--off-white); transition: border-color 0.2s ease; }
-        .btn-ghost:hover { border-color: rgba(226,232,240,0.8); }
       `}</style>
     );
 }
-
-export const Glass = ({ children, style = {}, className = '' }) => (
-    <div className={className} style={{
-        background: 'rgba(6,14,32,0.65)',
-        backdropFilter: 'blur(20px)',
-        WebkitBackdropFilter: 'blur(20px)',
-        border: '1px solid rgba(255,255,255,0.08)',
-        borderRadius: '2px',
-        ...style,
-    }}>
-        {children}
-    </div>
-);
 
 export const PhotoBg = ({ src, overlay = 'rgba(6,14,32,0.70)', position = 'center' }) => (
     <>
@@ -149,12 +132,11 @@ export function TrackShell({ track, title, children }) {
             <SiteStyles />
             <TrackHeader track={track} />
             {children}
-            <footer className="sans" style={{ background: 'rgba(3,7,18,0.98)', borderTop: '1px solid rgba(255,255,255,0.06)', padding: '2rem 0' }}>
-                <div className="max-w-7xl mx-auto px-6" style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem' }}>
-                    <p style={{ color: 'var(--blue-gray)', fontSize: '0.8rem' }}>© 2026 Daudi Aden</p>
-                    <Link to="/" style={{ color: 'var(--blue-gray)', fontSize: '0.8rem' }}>← Back to start</Link>
-                </div>
+            <footer className="sans" style={{ borderTop: '1px solid rgba(255,255,255,0.05)', padding: '2.5rem 1.25rem', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1.25rem' }}>
+                <TextLink to="/">← Back to start</TextLink>
+                <p style={{ fontSize: '0.75rem', color: 'var(--blue-gray)' }}>© 2026 Daudi Aden · Geneva, NY</p>
             </footer>
+            <Ambient />
         </div>
     );
 }
@@ -187,119 +169,108 @@ export function Hero({ accent, bg, bgPosition, eyebrow, headline, children, phot
     );
 }
 
-export function Chapter({ number, eyebrow, title, intro, accent, bg, bgPosition = 'center', children }) {
-    const content = (
-        <div className="photo-content max-w-7xl mx-auto px-6 py-24">
-            <p className="sans" style={{ color: accent, fontSize: '0.72rem', fontWeight: 700, letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '0.9rem' }}>
-                {number} — {eyebrow}
-            </p>
-            <h2 className="font-bold" style={{ fontSize: 'clamp(2rem,4vw,3.25rem)', color: 'white', lineHeight: 1.12, marginBottom: '1.25rem', maxWidth: '860px' }}>
-                {title}
-            </h2>
-            <p style={{ fontSize: '1.15rem', lineHeight: 1.8, color: 'var(--gray-light)', maxWidth: '720px', paddingBottom: '3rem', marginBottom: '3.5rem', borderBottom: `1px solid ${accent}40` }}>
-                {intro}
-            </p>
-            {children}
-        </div>
-    );
+const EYEBROW = { fontSize: '0.68rem', fontWeight: 700, letterSpacing: '0.24em', textTransform: 'uppercase', color: 'rgba(148,163,184,0.7)' };
+const H2 = { fontSize: 'clamp(2rem,4vw,3rem)', fontWeight: 700, color: 'white', lineHeight: 1.15 };
+const DIVIDER = '1px solid rgba(255,255,255,0.08)';
+const SECTION_TOP = '1px solid rgba(255,255,255,0.05)';
 
+export function TextLink({ to, href, accent = '#e2e8f0', children }) {
+    const style = {
+        '--c': accent, '--g': `${accent}66`, '--rest': 'rgba(148,163,184,0.9)',
+        fontSize: '0.72rem', fontWeight: 700, letterSpacing: '0.16em', textTransform: 'uppercase', whiteSpace: 'nowrap',
+    };
+    if (to) return <Link to={to} className="glow-link sans" style={style}>{children}</Link>;
     return (
-        <Reveal className={bg ? 'photo-section' : ''} style={bg ? undefined : { background: '#050c1c', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
-            {bg && <PhotoBg src={bg} overlay="rgba(5,10,24,0.82)" position={bgPosition} />}
-            {content}
+        <a href={href} target={href.startsWith('mailto') ? undefined : '_blank'} rel="noopener noreferrer" className="glow-link sans" style={style}>
+            {children}
+        </a>
+    );
+}
+
+export function Section({ eyebrow, title, intro, children }) {
+    return (
+        <Reveal style={{ borderTop: SECTION_TOP }}>
+            <div className="max-w-5xl mx-auto px-6" style={{ paddingTop: '6rem', paddingBottom: '6rem' }}>
+                <p className="sans" style={{ ...EYEBROW, marginBottom: '1rem' }}>{eyebrow}</p>
+                <h2 style={{ ...H2, marginBottom: intro ? '1.25rem' : '3rem', maxWidth: '820px' }}>{title}</h2>
+                {intro && (
+                    <p style={{ fontSize: '1.1rem', lineHeight: 1.8, color: 'var(--gray-light)', maxWidth: '720px', marginBottom: '3rem' }}>{intro}</p>
+                )}
+                {children}
+            </div>
         </Reveal>
     );
 }
 
-export function ProjectFeature({ project, accent, first }) {
+export function Chapter({ number, eyebrow, title, intro, accent, children }) {
     return (
-        <div style={first ? { marginBottom: '4rem' } : { marginBottom: '4rem', paddingTop: '4rem', borderTop: '1px solid rgba(255,255,255,0.07)' }}>
-            <div className="sans" style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap', marginBottom: '1.25rem' }}>
-                <span style={{ padding: '0.35rem 0.9rem', fontSize: '0.75rem', fontWeight: 700, border: `1px solid ${accent}80`, color: accent, background: `${accent}1f` }}>
-                    {project.type}
-                </span>
-                <span style={{ padding: '0.3rem 0.75rem', fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.12em', color: 'var(--gold)', border: '1px solid rgba(245,158,11,0.35)', background: 'rgba(245,158,11,0.1)' }}>
-                    {project.year}
-                </span>
-                {project.inProgress && (
-                    <span style={{ padding: '0.3rem 0.75rem', fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.1em', color: '#fb923c', border: '1px solid rgba(251,146,60,0.4)', background: 'rgba(251,146,60,0.1)' }}>
-                        IN PROGRESS
-                    </span>
-                )}
-                {project.external && (
-                    <span style={{ color: 'var(--emerald)', fontSize: '0.8rem', display: 'flex', alignItems: 'center' }}>
-                        <span className="live-dot" /> Live
-                    </span>
-                )}
-            </div>
+        <Section eyebrow={<><span style={{ color: accent }}>{number}</span> — {eyebrow}</>} title={title} intro={intro}>
+            <ul style={{ listStyle: 'none', borderTop: DIVIDER }}>{children}</ul>
+        </Section>
+    );
+}
 
-            <h3 className="font-bold" style={{ fontSize: 'clamp(1.6rem,3vw,2.5rem)', color: 'white', marginBottom: '1rem' }}>
+export function ProjectRow({ year, children }) {
+    return (
+        <li className="grid md:grid-cols-[80px_1fr]" style={{ columnGap: '2rem', rowGap: '0.5rem', alignItems: 'baseline', padding: '2.75rem 0', borderBottom: DIVIDER }}>
+            <p className="sans" style={{ ...EYEBROW, color: 'rgba(148,163,184,0.85)' }}>{year}</p>
+            <div style={{ minWidth: 0 }}>{children}</div>
+        </li>
+    );
+}
+
+export function ProjectFeature({ project, accent }) {
+    return (
+        <ProjectRow year={project.year}>
+            <p className="sans" style={{ ...EYEBROW, fontSize: '0.62rem', color: accent, marginBottom: '0.6rem' }}>{project.type}</p>
+            <h3 className="font-bold" style={{ fontSize: 'clamp(1.35rem,2.6vw,1.85rem)', color: 'white', lineHeight: 1.25, marginBottom: '0.75rem' }}>
                 {project.title}
+                {project.inProgress && (
+                    <span className="sans" style={{ marginLeft: '0.75rem', verticalAlign: 'middle', fontSize: '0.6rem', fontWeight: 700, letterSpacing: '0.14em', color: '#fb923c' }}>IN PROGRESS</span>
+                )}
             </h3>
-            <p style={{ fontSize: '1.1rem', lineHeight: 1.75, color: 'var(--gray-light)', maxWidth: '760px', marginBottom: '2rem' }}>
+            <p style={{ fontSize: '1.05rem', lineHeight: 1.8, color: 'var(--gray-light)', maxWidth: '720px', marginBottom: project.insights ? '1.5rem' : '1rem' }}>
                 {project.description}
             </p>
 
             {project.insights && (
-                <Glass style={{ marginBottom: '2rem', padding: '2rem', borderLeft: `4px solid ${accent}` }}>
-                    <h4 className="font-bold" style={{ fontSize: '1.1rem', color: 'var(--off-white)', marginBottom: '1.25rem' }}>
-                        {project.insightsTitle || 'How it works'}
-                    </h4>
-                    <ul style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', listStyle: 'none' }}>
+                <div style={{ marginBottom: '1.5rem' }}>
+                    <p className="sans" style={{ ...EYEBROW, fontSize: '0.62rem', marginBottom: '0.85rem' }}>{project.insightsTitle || 'How it works'}</p>
+                    <ul style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem', listStyle: 'none', maxWidth: '720px' }}>
                         {project.insights.map((insight) => (
-                            <li key={insight} style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start', color: 'var(--gray-light)', fontSize: '1rem', lineHeight: 1.65 }}>
-                                <span style={{ color: accent, marginTop: '2px', flexShrink: 0 }}>→</span>
+                            <li key={insight} style={{ display: 'flex', gap: '0.85rem', alignItems: 'flex-start', color: 'var(--gray-light)', fontSize: '0.98rem', lineHeight: 1.65 }}>
+                                <span style={{ color: accent, flexShrink: 0 }}>→</span>
                                 {insight}
                             </li>
                         ))}
                     </ul>
-                </Glass>
+                </div>
             )}
 
-            <div className="sans" style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '1rem' }}>
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
-                    {project.tech.map((t) => (
-                        <span key={t} style={{ padding: '0.35rem 0.85rem', fontSize: '0.78rem', fontWeight: 600, background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', color: 'var(--off-white)' }}>
-                            {t}
-                        </span>
-                    ))}
-                </div>
-                <div style={{ display: 'flex', gap: '1rem', marginLeft: 'auto', flexWrap: 'wrap' }}>
-                    {project.demo && (
-                        <Link to={project.demo} className="btn-solid" style={{ background: accent }}>
-                            <ExternalLink size={16} /> Live Demo
-                        </Link>
-                    )}
-                    {project.external && (
-                        <a href={project.external} target="_blank" rel="noopener noreferrer" className="btn-solid" style={{ background: accent }}>
-                            <ExternalLink size={16} /> View Live
-                        </a>
-                    )}
-                    {project.github && (
-                        <a href={project.github} target="_blank" rel="noopener noreferrer" className="btn-ghost">
-                            <Github size={16} /> GitHub
-                        </a>
-                    )}
-                </div>
+            <p className="sans" style={{ fontSize: '0.72rem', letterSpacing: '0.06em', color: 'rgba(100,116,139,0.95)', marginBottom: '1.1rem' }}>
+                {project.tech.join(' · ')}
+            </p>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1.75rem' }}>
+                {project.demo && <TextLink to={project.demo} accent={accent}>Live demo →</TextLink>}
+                {project.external && <TextLink href={project.external} accent={accent}>View live →</TextLink>}
+                {project.github && <TextLink href={project.github} accent={accent}>GitHub →</TextLink>}
             </div>
-        </div>
+        </ProjectRow>
     );
 }
 
 export function SkillGrid({ title, skills }) {
     const [ref, inView] = useInView();
     return (
-        <section ref={ref} className={`section-fade ${inView ? 'visible' : ''}`}
-            style={{ background: 'linear-gradient(180deg, #050c1c 0%, #131e2f 10%, #131e2f 90%, #050c1c 100%)' }}>
-            <div className="max-w-7xl mx-auto px-6 py-24">
-                <h2 className="font-bold" style={{ fontSize: 'clamp(2rem,4vw,3.25rem)', color: 'white', borderBottom: '2px solid rgba(148,163,184,0.2)', paddingBottom: '1.25rem', marginBottom: '3.5rem' }}>
-                    {title}
-                </h2>
-                <div className="grid md:grid-cols-2" style={{ gap: '2rem' }}>
+        <section ref={ref} className={`section-fade ${inView ? 'visible' : ''}`} style={{ borderTop: SECTION_TOP }}>
+            <div className="max-w-5xl mx-auto px-6" style={{ paddingTop: '6rem', paddingBottom: '6rem' }}>
+                <p className="sans" style={{ ...EYEBROW, marginBottom: '1rem' }}>Skills</p>
+                <h2 style={{ ...H2, marginBottom: '3rem' }}>{title}</h2>
+                <div className="grid md:grid-cols-2" style={{ gap: '3.5rem', borderTop: DIVIDER, paddingTop: '2.5rem' }}>
                     {skills.map(({ category, accent, items }) => (
-                        <Glass key={category} style={{ padding: '2rem' }}>
-                            <h3 className="font-bold" style={{ fontSize: '1.35rem', color: 'var(--off-white)', marginBottom: '0.5rem' }}>{category}</h3>
-                            <div style={{ width: '32px', height: '3px', background: accent, borderRadius: '2px', marginBottom: '1.5rem' }} />
+                        <div key={category}>
+                            <h3 className="font-bold" style={{ fontSize: '1.3rem', color: 'white', marginBottom: '0.5rem' }}>{category}</h3>
+                            <div style={{ width: '32px', height: '2px', background: accent, marginBottom: '1.5rem' }} />
                             <ul className="sans" style={{ display: 'flex', flexDirection: 'column', gap: '1.1rem', listStyle: 'none' }}>
                                 {items.map(({ name, level }) => (
                                     <li key={name}>
@@ -313,7 +284,7 @@ export function SkillGrid({ title, skills }) {
                                     </li>
                                 ))}
                             </ul>
-                        </Glass>
+                        </div>
                     ))}
                 </div>
             </div>
@@ -323,10 +294,10 @@ export function SkillGrid({ title, skills }) {
 
 export function InfoGrid({ items }) {
     return (
-        <div className="grid grid-cols-1 sm:grid-cols-2 sans" style={{ gap: '1.5rem', marginTop: '2.5rem' }}>
+        <div className="grid grid-cols-1 sm:grid-cols-2 sans" style={{ gap: '1.5rem', marginTop: '2.5rem', paddingTop: '2rem', borderTop: DIVIDER }}>
             {items.map(({ label, value, accent }) => (
-                <div key={label} style={{ borderLeft: `3px solid ${accent}`, paddingLeft: '12px' }}>
-                    <p style={{ fontSize: '0.66rem', fontWeight: 700, letterSpacing: '0.15em', textTransform: 'uppercase', color: 'var(--blue-gray)', marginBottom: '4px' }}>{label}</p>
+                <div key={label} style={{ borderLeft: `2px solid ${accent}`, paddingLeft: '12px' }}>
+                    <p style={{ ...EYEBROW, fontSize: '0.62rem', marginBottom: '4px' }}>{label}</p>
                     <p style={{ fontSize: '0.95rem', fontWeight: 700, color: 'white' }}>{value}</p>
                 </div>
             ))}
@@ -336,38 +307,19 @@ export function InfoGrid({ items }) {
 
 export function Contact({ accent, bg, headline, line }) {
     return (
-        <Reveal className="photo-section" style={bg ? undefined : { background: 'linear-gradient(180deg, #050c1c 0%, #0b1730 100%)', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
-            {bg && <PhotoBg src={bg} overlay="rgba(4,10,24,0.74)" position="center 30%" />}
-            <div className="photo-content max-w-7xl mx-auto px-6 py-24">
-                <div className="flex flex-col lg:flex-row" style={{ gap: '4rem', alignItems: 'flex-start' }}>
-                    <div style={{ flex: 1 }}>
-                        <p className="sans" style={{ fontSize: '0.72rem', fontWeight: 700, letterSpacing: '0.18em', textTransform: 'uppercase', color: accent, marginBottom: '1rem' }}>
-                            Geneva, NY
-                        </p>
-                        <h2 className="font-bold" style={{ fontSize: 'clamp(2.25rem,5vw,4rem)', color: 'white', lineHeight: 1.1, marginBottom: '1.5rem' }}>
-                            {headline}
-                        </h2>
-                        <p style={{ fontSize: '1.05rem', lineHeight: 1.8, color: 'var(--gray-light)', maxWidth: '420px' }}>
-                            {line}
-                        </p>
-                    </div>
-                    <Glass style={{ padding: '2.5rem', minWidth: 'min(300px, 100%)' }}>
-                        <div className="sans" style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem' }}>
-                            {[
-                                { label: 'Email',    href: 'mailto:aden@hws.edu',             text: 'aden@hws.edu' },
-                                { label: 'GitHub',   href: 'https://github.com/Aden254',              text: 'github.com/Aden254' },
-                                { label: 'LinkedIn', href: 'https://www.linkedin.com/in/daudi-aden/', text: 'linkedin.com/in/daudi-aden' },
-                            ].map(({ label, href, text }) => (
-                                <div key={label}>
-                                    <p style={{ fontSize: '0.66rem', fontWeight: 700, letterSpacing: '0.15em', textTransform: 'uppercase', color: 'var(--blue-gray)', marginBottom: '4px' }}>{label}</p>
-                                    <a href={href} target={href.startsWith('mailto') ? undefined : '_blank'} rel="noopener noreferrer"
-                                        style={{ fontSize: '1rem', fontWeight: 700, color: accent, wordBreak: 'break-word' }}>
-                                        {text}
-                                    </a>
-                                </div>
-                            ))}
-                        </div>
-                    </Glass>
+        <Reveal className="photo-section" style={bg ? undefined : { borderTop: SECTION_TOP }}>
+            {bg && (
+                <PhotoBg src={bg} position="center 40%"
+                    overlay="linear-gradient(180deg, rgba(5,12,28,0.95) 0%, rgba(5,12,28,0.72) 50%, rgba(5,12,28,0.9) 100%)" />
+            )}
+            <div className="photo-content max-w-3xl mx-auto px-6 text-center" style={{ paddingTop: '7rem', paddingBottom: '7rem' }}>
+                <p className="sans" style={{ ...EYEBROW, marginBottom: '1rem' }}>Contact</p>
+                <h2 style={{ ...H2, fontSize: 'clamp(2rem,4.5vw,3.25rem)', marginBottom: '1.5rem' }}>{headline}</h2>
+                <p style={{ fontSize: '1.1rem', lineHeight: 1.85, color: 'var(--off-white)', marginBottom: '3rem' }}>{line}</p>
+                <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '2rem' }}>
+                    <TextLink href="mailto:aden@hws.edu" accent={accent}>aden@hws.edu</TextLink>
+                    <TextLink href="https://github.com/Aden254" accent={accent}>GitHub</TextLink>
+                    <TextLink href="https://www.linkedin.com/in/daudi-aden/" accent={accent}>LinkedIn</TextLink>
                 </div>
             </div>
         </Reveal>

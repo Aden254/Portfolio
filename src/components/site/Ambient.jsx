@@ -79,10 +79,10 @@ function Constellation() {
 }
 
 const MIST = [
-    { left: '-15%', top: '-10%', tint: '148,163,184', dur: 70, delay: 0 },
-    { left: '55%',  top: '15%',  tint: '125,170,230', dur: 85, delay: -20 },
-    { left: '10%',  top: '55%',  tint: '160,150,190', dur: 95, delay: -45 },
-    { left: '60%',  top: '70%',  tint: '200,170,140', dur: 80, delay: -10 },
+    { left: '-15%', top: '-10%', tint: '148,163,184', dur: 42, delay: 0 },
+    { left: '55%',  top: '15%',  tint: '125,170,230', dur: 50, delay: -14 },
+    { left: '10%',  top: '55%',  tint: '160,150,190', dur: 58, delay: -30 },
+    { left: '60%',  top: '70%',  tint: '200,170,140', dur: 46, delay: -8 },
 ];
 
 export default function Ambient() {
@@ -107,7 +107,7 @@ export default function Ambient() {
             {MIST.map((m) => (
                 <div key={m.left + m.top} className="amb-mist" style={{
                     left: m.left, top: m.top,
-                    background: `radial-gradient(circle, rgba(${m.tint},0.13) 0%, rgba(${m.tint},0.05) 35%, transparent 65%)`,
+                    background: `radial-gradient(circle, rgba(${m.tint},0.26) 0%, rgba(${m.tint},0.1) 35%, transparent 65%)`,
                     animationDuration: `${m.dur}s`, animationDelay: `${m.delay}s`,
                 }} />
             ))}

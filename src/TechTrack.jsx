@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-    TrackShell, Hero, Chapter, ProjectFeature, SkillGrid, InfoGrid, Contact, Glass, Reveal,
+    TrackShell, Hero, Chapter, ProjectFeature, SkillGrid, InfoGrid, Contact, Section,
 } from './components/site/SiteKit';
 import { TRACKS } from './components/site/tracks';
 
@@ -105,32 +105,28 @@ export default function TechTrack() {
                 </a>
             </Hero>
 
-            <Chapter number="01" eyebrow="Security" accent={ACCENT} bg="/images/bg4.jpeg" bgPosition="center 60%"
+            <Chapter number="01" eyebrow="Security" accent={ACCENT}
                 title="Access control comes first"
                 intro="Healthcare data leaves no room for error about who can see what. This platform was designed around authentication, roles, and accountability from the first table.">
-                {SECURITY.map((p, i) => <ProjectFeature key={p.id} project={p} accent={ACCENT} first={i === 0} />)}
+                {SECURITY.map((p) => <ProjectFeature key={p.id} project={p} accent={ACCENT} />)}
             </Chapter>
 
             <Chapter number="02" eyebrow="Networking" accent={ACCENT}
                 title="Getting two browsers to talk"
                 intro="Live video between a clinic and a patient's home network is a networking problem before it is a UI problem. I had to work through NAT traversal, signaling, and transport fallbacks to make calls connect reliably.">
-                {NETWORKING.map((p, i) => <ProjectFeature key={p.id} project={p} accent={ACCENT} first={i === 0} />)}
+                {NETWORKING.map((p) => <ProjectFeature key={p.id} project={p} accent={ACCENT} />)}
             </Chapter>
 
-            <Chapter number="03" eyebrow="Infrastructure" accent={ACCENT} bg="/images/bg3.jpeg" bgPosition="center 40%"
+            <Chapter number="03" eyebrow="Infrastructure" accent={ACCENT}
                 title="Data and cloud infrastructure"
                 intro="Spatial databases, object storage, caching, offline-first clients, and monitoring. These are the pieces that decide whether an app still works at 2 a.m.">
-                {INFRASTRUCTURE.map((p, i) => <ProjectFeature key={p.id} project={p} accent={ACCENT} first={i === 0} />)}
+                {INFRASTRUCTURE.map((p) => <ProjectFeature key={p.id} project={p} accent={ACCENT} />)}
             </Chapter>
 
             <SkillGrid title="Technical Skills" skills={SKILLS} />
 
-            <Reveal style={{ background: '#050c1c' }}>
-                <div className="max-w-7xl mx-auto px-6 py-24">
-                    <h2 className="font-bold" style={{ fontSize: 'clamp(2rem,4vw,3.25rem)', color: 'white', borderBottom: `2px solid ${ACCENT}40`, paddingBottom: '1.25rem', marginBottom: '3.5rem' }}>
-                        Where I'm headed
-                    </h2>
-                    <Glass style={{ padding: '2.5rem', maxWidth: '900px' }}>
+            <Section eyebrow="Where I'm headed" title="Keeping systems reliable is the job.">
+                <div style={{ maxWidth: '760px' }}>
                         <p style={{ fontSize: '1.1rem', lineHeight: 1.85, color: 'var(--off-white)', marginBottom: '1.5rem' }}>
                             Computer Science gave me the foundation, and research gave me the standards. At the Finger Lakes Institute I manage the data behind long-running monitoring programs, including the pipelines, the databases, and the published apps people rely on. That work made me care most about the unglamorous parts: uptime, access control, and systems that keep running when nobody is watching.
                         </p>
@@ -143,9 +139,8 @@ export default function TechTrack() {
                             { label: 'Degrees',      value: 'Computer Science · Psychology', accent: '#0ea5e9' },
                             { label: 'Seeking',      value: 'Systems Admin · Network Engineering · IT Infrastructure', accent: '#f59e0b' },
                         ]} />
-                    </Glass>
                 </div>
-            </Reveal>
+            </Section>
 
             <Contact
                 accent={ACCENT}
