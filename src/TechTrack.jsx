@@ -92,7 +92,7 @@ export default function TechTrack() {
         <TrackShell track="tech" title="Daudi Aden · Systems & Engineering">
             <Hero
                 accent={ACCENT}
-                bg="/images/daudi-working.jpg" bgPosition="center 35%"
+                bg="/images/bg4.jpeg" bgPosition="center 62%"
                 eyebrow="Systems & Engineering"
                 headline="Building systems that stay up, stay secure, and connect people."
             >
