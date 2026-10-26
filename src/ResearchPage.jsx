@@ -174,13 +174,13 @@ function ResearchPage() {
                     Daudi A. Aden &nbsp;&middot;&nbsp; Research Statement
                 </span>
 
-                <a href="mailto:daudi.aden@hws.edu" style={{
+                <a href="mailto:aden@hws.edu" style={{
                     color: 'var(--accent)',
                     textDecoration: 'none',
                     fontSize: '0.78rem',
                     letterSpacing: '0.08em',
                 }}>
-                    daudi.aden@hws.edu
+                    aden@hws.edu
                 </a>
             </header>
 
@@ -553,7 +553,7 @@ function ResearchPage() {
                                 Contact
                             </div>
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
-                                <a href="mailto:daudi.aden@hws.edu" style={{ color: 'var(--accent)', textDecoration: 'none', fontSize: '0.95rem' }}>daudi.aden@hws.edu</a>
+                                <a href="mailto:aden@hws.edu" style={{ color: 'var(--accent)', textDecoration: 'none', fontSize: '0.95rem' }}>aden@hws.edu</a>
                                 <span style={{ color: 'var(--ghost)', fontSize: '0.85rem' }}>(315) 878-9791</span>
                                 <a href="https://github.com/Aden254" target="_blank" rel="noreferrer" style={{ color: 'var(--ghost)', textDecoration: 'none', fontSize: '0.85rem' }}>github.com/Aden254</a>
                                 <a href="https://www.linkedin.com/in/daudi-aden/" target="_blank" rel="noreferrer" style={{ color: 'var(--ghost)', textDecoration: 'none', fontSize: '0.85rem' }}>linkedin.com/in/daudi-aden</a>

@@ -1411,7 +1411,7 @@ function MRITracer3D() {
                         Created by Aden | 2024
                     </p>
                     <p style={{ marginBottom: '5px' }}>
-                        <a href="mailto:daudiaden4@gmail.com" style={{ color: '#667eea', textDecoration: 'none' }}>
+                        <a href="mailto:aden@hws.edu" style={{ color: '#667eea', textDecoration: 'none' }}>
                             Contact
                         </a>
                         {' | '}

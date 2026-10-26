@@ -163,7 +163,7 @@ export default function Hub() {
                         { label: 'Research Statement', to: '/research' },
                         { label: 'GitHub',   href: 'https://github.com/Aden254' },
                         { label: 'LinkedIn', href: 'https://www.linkedin.com/in/daudi-aden/' },
-                        { label: 'Email',    href: 'mailto:daudiaden4@gmail.com' },
+                        { label: 'Email',    href: 'mailto:aden@hws.edu' },
                     ].map(({ label, to, href }) => {
                         const style = { '--c': '#e2e8f0', '--g': 'rgba(226,232,240,0.3)', '--rest': 'rgba(100,116,139,0.8)' };
                         return to

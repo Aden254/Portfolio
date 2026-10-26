@@ -354,7 +354,7 @@ export function Contact({ accent, bg, headline, line }) {
                     <Glass style={{ padding: '2.5rem', minWidth: 'min(300px, 100%)' }}>
                         <div className="sans" style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem' }}>
                             {[
-                                { label: 'Email',    href: 'mailto:daudiaden4@gmail.com',             text: 'daudiaden4@gmail.com' },
+                                { label: 'Email',    href: 'mailto:aden@hws.edu',             text: 'aden@hws.edu' },
                                 { label: 'GitHub',   href: 'https://github.com/Aden254',              text: 'github.com/Aden254' },
                                 { label: 'LinkedIn', href: 'https://www.linkedin.com/in/daudi-aden/', text: 'linkedin.com/in/daudi-aden' },
                             ].map(({ label, href, text }) => (
