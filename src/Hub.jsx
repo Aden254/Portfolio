@@ -72,20 +72,6 @@ const SELECTED = [
 
 const eyebrow = { fontSize: '0.68rem', fontWeight: 700, letterSpacing: '0.24em', textTransform: 'uppercase', color: 'rgba(148,163,184,0.7)' };
 
-function Door({ t }) {
-    return (
-        <Link to={t.path} className="glow-link"
-            style={{ '--c': t.color, '--g': t.glow, '--rest': 'rgba(226,232,240,0.78)', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.6rem', width: '270px', textAlign: 'center' }}>
-            <span style={{ fontSize: 'clamp(1.3rem, 2.6vw, 1.7rem)', fontWeight: 700, lineHeight: 1.2, whiteSpace: 'nowrap' }}>
-                {t.label}
-            </span>
-            <span className="sans" style={{ fontSize: '0.72rem', letterSpacing: '0.04em', color: 'rgba(100,116,139,0.85)', textShadow: 'none' }}>
-                {t.blurb}
-            </span>
-        </Link>
-    );
-}
-
 export default function Hub() {
     useEffect(() => { document.title = 'Daudi Aden'; }, []);
 
@@ -118,16 +104,8 @@ export default function Hub() {
                     I collect, manage, and analyze research data, and I build the systems that keep it reliable and usable, from lake monitoring pipelines to neuroscience tools to secure healthcare platforms.
                 </p>
 
-                <nav aria-label="Choose a portfolio" style={{
-                    display: 'flex', flexWrap: 'wrap', justifyContent: 'center',
-                    gap: 'clamp(3rem, 10vw, 8rem)', margin: 'clamp(3.5rem, 8vh, 5rem) 0',
-                }}>
-                    <Door t={R} />
-                    <Door t={T} />
-                </nav>
-
                 <a href="#journey" className="glow-link sans"
-                    style={{ '--c': '#e2e8f0', '--g': 'rgba(226,232,240,0.3)', '--rest': 'rgba(100,116,139,0.8)', ...eyebrow, color: undefined, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.6rem' }}>
+                    style={{ '--c': '#e2e8f0', '--g': 'rgba(226,232,240,0.3)', '--rest': 'rgba(148,163,184,0.9)', ...eyebrow, color: undefined, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.6rem', marginTop: 'clamp(3.5rem, 9vh, 5.5rem)' }}>
                     The journey so far
                     <span aria-hidden="true" style={{ width: '1px', height: '32px', background: 'linear-gradient(to bottom, rgba(148,163,184,0.6), transparent)' }} />
                 </a>

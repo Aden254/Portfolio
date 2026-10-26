@@ -9,7 +9,6 @@ export const TRACKS = {
         color: '#0ea5e9',
         glow: 'rgba(14,165,233,0.55)',
         Icon: Brain,
-        blurb: 'Psychology · Environment · Neuroscience',
     },
     tech: {
         path: '/work/tech',
@@ -18,7 +17,6 @@ export const TRACKS = {
         color: '#10b981',
         glow: 'rgba(16,185,129,0.55)',
         Icon: Server,
-        blurb: 'Systems · Networking · Full-stack platforms',
     },
 };
 

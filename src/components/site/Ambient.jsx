@@ -1,15 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
-
-const WORDS = [
-    'Measuring', 'Sampling', 'Mulling', 'Querying', 'Calibrating', 'Modeling',
-    'Tracing', 'Indexing', 'Validating', 'Routing', 'Plotting', 'Annotating',
-    'Hypothesizing', 'Observing', 'Reconciling', 'Compiling', 'Mapping', 'Pondering',
-    'Correlating', 'Normalizing', 'Synthesizing', 'Iterating', 'Wondering', 'Deploying',
-];
-const GLYPHS = ['·', '✢', '✳', '✶', '✻', '✽', '✻', '✶', '✳', '✢'];
-const WORD_LIFE_MS = 6500;
-const SPAWN_EVERY_MS = 1500;
-const MAX_WORDS = 7;
+import React, { useEffect, useRef } from 'react';
 
 const prefersReducedMotion = () =>
     typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -89,66 +78,6 @@ function Constellation() {
     return <canvas ref={ref} aria-hidden="true" style={{ position: 'absolute', inset: 0 }} />;
 }
 
-function ThinkingWords() {
-    const [items, setItems] = useState([]);
-    const [tick, setTick] = useState(0);
-
-    useEffect(() => {
-        if (prefersReducedMotion()) return;
-        let nextId = 0;
-        const timers = new Set();
-        const live = [];
-
-        // Keep words in the side gutters when they're wide enough, and never on top of each other.
-        const pickSpot = () => {
-            const vw = window.innerWidth;
-            const vh = window.innerHeight;
-            const gutter = (vw - 760) / 2;
-            for (let tries = 0; tries < 10; tries++) {
-                const x = gutter >= 170
-                    ? (Math.random() < 0.5
-                        ? 16 + Math.random() * (gutter - 160)
-                        : vw - gutter + 12 + Math.random() * (gutter - 160))
-                    : 12 + Math.random() * (vw - 160);
-                const y = vh * 0.06 + Math.random() * vh * 0.86;
-                if (live.every((p) => Math.abs(p.x - x) > 160 || Math.abs(p.y - y) > 44)) return { x, y };
-            }
-            return null;
-        };
-
-        const spawn = () => {
-            if (live.length >= MAX_WORDS) return;
-            const spot = pickSpot();
-            if (!spot) return;
-            const item = { id: nextId++, word: WORDS[Math.floor(Math.random() * WORDS.length)], ...spot };
-            live.push(item);
-            setItems([...live]);
-            const t = setTimeout(() => {
-                live.splice(live.indexOf(item), 1);
-                setItems([...live]);
-                timers.delete(t);
-            }, WORD_LIFE_MS);
-            timers.add(t);
-        };
-
-        spawn();
-        const spawner = setInterval(spawn, SPAWN_EVERY_MS);
-        const glyphs = setInterval(() => setTick((n) => n + 1), 150);
-        return () => {
-            clearInterval(spawner);
-            clearInterval(glyphs);
-            timers.forEach(clearTimeout);
-        };
-    }, []);
-
-    return items.map(({ id, word, x, y }) => (
-        <span key={id} className="amb-word" style={{ left: `${x}px`, top: `${y}px` }}>
-            <span className="amb-glyph">{GLYPHS[(tick + id) % GLYPHS.length]}</span>
-            <span className="amb-shimmer">{word}…</span>
-        </span>
-    ));
-}
-
 const MIST = [
     { left: '-15%', top: '-10%', tint: '148,163,184', dur: 70, delay: 0 },
     { left: '55%',  top: '15%',  tint: '125,170,230', dur: 85, delay: -20 },
@@ -172,26 +101,6 @@ export default function Ambient() {
                     50%  { transform: translate(9vw, -7vh) scale(1.12); }
                     100% { transform: translate(-7vw, 6vh) scale(0.94); }
                 }
-                .amb-word {
-                    position: absolute; display: flex; align-items: center; gap: 0.45em;
-                    font: italic 500 0.88rem ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
-                    letter-spacing: 0.02em; white-space: nowrap;
-                    opacity: 0; animation: amb-life ${WORD_LIFE_MS}ms ease-in-out forwards;
-                }
-                @keyframes amb-life {
-                    0%   { opacity: 0;    transform: translateY(6px); }
-                    18%  { opacity: 0.55; }
-                    78%  { opacity: 0.55; }
-                    100% { opacity: 0;    transform: translateY(-6px); }
-                }
-                .amb-glyph { color: rgba(253,186,140,0.95); font-style: normal; width: 0.9em; text-align: center; }
-                .amb-shimmer {
-                    background: linear-gradient(90deg, rgba(148,163,184,0.5) 0%, rgba(248,250,252,1) 50%, rgba(148,163,184,0.5) 100%);
-                    background-size: 200% 100%;
-                    -webkit-background-clip: text; background-clip: text; color: transparent;
-                    animation: amb-shimmer 2.4s linear infinite;
-                }
-                @keyframes amb-shimmer { from { background-position: 150% 0; } to { background-position: -50% 0; } }
                 @media (prefers-reduced-motion: reduce) { .amb-mist { animation: none; } }
             `}</style>
 
@@ -203,7 +112,6 @@ export default function Ambient() {
                 }} />
             ))}
             <Constellation />
-            <ThinkingWords />
         </div>
     );
 }
