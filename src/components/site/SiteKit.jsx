@@ -22,7 +22,7 @@ export function SiteStyles() {
           --navy-deep:  #050c1c;
         }
 
-        .site-root { font-family: 'Old Standard TT', serif; background: #050c1c; min-height: 100vh; }
+        .site-root { font-family: 'Old Standard TT', serif; min-height: 100vh; }
         .sans { font-family: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif; }
 
         .photo-section { position: relative; overflow: hidden; }

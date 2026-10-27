@@ -76,7 +76,7 @@ export default function Hub() {
     useEffect(() => { document.title = 'Daudi Aden'; }, []);
 
     return (
-        <div className="site-root" style={{ background: '#050c1c' }}>
+        <div className="site-root">
             <SiteStyles />
 
             {/* ── Opening ── */}

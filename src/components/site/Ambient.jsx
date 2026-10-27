@@ -1,30 +1,14 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 
-const ACTIONS = [
-    'sampling buoy data', 'cleaning records', 'flagging outliers', 'joining partner tables',
-    'computing weekly medians', 'rendering boxplots', 'publishing dashboard', 'checking Secchi depth',
-    'querying PostGIS', 'relaying through TURN', 'negotiating WebRTC offer', 'verifying JWT',
-    'running migrations', 'warming cache', 'uploading to S3', 'tracing neural tissue',
-    'stacking MRI slices', 'fetching gene expression', 'annotating slice 42', 'validating schema',
-    'writing audit log', 'syncing offline changes', 'deploying to Railway', 'reconciling site names',
-    'normalizing timestamps', 'reading sensor feed', 'indexing structures', 'checking access roles',
-];
-
 const INDICATORS = ['pulse', 'bounce', 'scan', 'bars', 'orbit', 'breathe', 'ellipse', 'eight', 'ripple'];
-const REVEALS = ['type', 'decode', 'words'];
-const SCRAMBLE = '·:/_-=+*<>01░▒';
 
-const TYPE_MS = 34;
-const WORD_MS = 240;
-const DECODE_TAIL = 6;
-const HOLD_MS = 1800;
+const SOLO_SPAWN_MS = 1400;
+const SOLO_HOLD_MS = 3400;
 const FADE_MS = 600;
-const LINE_SPAWN_MS = 2300;
-const CURVE_SPAWN_MS = 6000;
-const CURVE_LIFE_MS = 10500;
-const MAX_LINES = 4;
-const LINE_H = 36;
-const CHAR_PX = 6.4;
+const MAX_SOLOS = 6;
+const CURVE_SPAWN_MS = 7000;
+const CURVE_LIFE_MS = 14000;
+const CURVE_DRAW_MS = 7000;
 
 const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
 
@@ -33,30 +17,87 @@ const prefersReducedMotion = () =>
 
 /* ── Curves: decorative, generated from their equations ── */
 
-const TAU = Math.PI * 2;
-const sample = (n, tMax, fn) => Array.from({ length: n + 1 }, (_, i) => fn((tMax * i) / n));
-const polar = (n, tMax, r) => sample(n, tMax, (t) => [r(t) * Math.cos(t), r(t) * Math.sin(t)]);
+const PI = Math.PI;
+const TAU = PI * 2;
+const { sin, cos, exp, abs } = Math;
+const sample = (n, from, to, fn) => Array.from({ length: n + 1 }, (_, i) => fn(from + ((to - from) * i) / n));
+const polar = (n, tMax, r) => sample(n, 0, tMax, (t) => { const R = r(t); return [R * cos(t), R * sin(t)]; });
 
 const CURVES = [
-    { label: 'r = cos(5θ/3)', make: () => polar(900, 3 * TAU, (t) => Math.cos((5 * t) / 3)) },
-    { label: 'r = sin(4θ)', make: () => polar(900, TAU, (t) => Math.sin(4 * t)) },
-    { label: 'x = sin 3t,  y = sin 2t', make: () => sample(700, TAU, (t) => [Math.sin(3 * t + Math.PI / 2), Math.sin(2 * t)]) },
-    { label: 'r = 1 − cos θ', make: () => polar(500, TAU, (t) => 1 - Math.cos(t)) },
-    { label: 'r² = cos 2θ', make: () => sample(600, TAU, (t) => { const d = 1 + Math.sin(t) ** 2; return [Math.cos(t) / d, (Math.sin(t) * Math.cos(t)) / d]; }) },
-    { label: 'x = 2cos t + 5cos(2t/3)', make: () => sample(1200, 3 * TAU, (t) => [2 * Math.cos(t) + 5 * Math.cos((2 * t) / 3), 2 * Math.sin(t) - 5 * Math.sin((2 * t) / 3)]) },
-    { label: 'x = 4cos t − cos 4t', make: () => sample(700, TAU, (t) => [4 * Math.cos(t) - Math.cos(4 * t), 4 * Math.sin(t) - Math.sin(4 * t)]) },
     {
-        label: 'Maurer rose · n = 5, d = 97°',
-        thin: true,
-        make: () => sample(360, 360, (k) => {
-            const th = (k * 97 * Math.PI) / 180;
-            const r = Math.sin(5 * th);
-            return [r * Math.cos(th), r * Math.sin(th)];
+        name: 'Farris wheel',
+        eq: ['x = cos t + ½cos 7t + ⅓sin 17t', 'y = sin t + ½sin 7t + ⅓cos 17t'],
+        make: () => sample(2400, 0, TAU, (t) => [cos(t) + cos(7 * t) / 2 + sin(17 * t) / 3, sin(t) + sin(7 * t) / 2 + cos(17 * t) / 3]),
+    },
+    {
+        name: 'Hypotrochoid',
+        eq: ['x = 6cos t + 9cos(6t/7)', 'y = 6sin t − 9sin(6t/7)'],
+        make: () => sample(4000, 0, 7 * TAU, (t) => [6 * cos(t) + 9 * cos((6 * t) / 7), 6 * sin(t) - 9 * sin((6 * t) / 7)]),
+    },
+    {
+        name: 'Epitrochoid',
+        eq: ['x = 8cos t − 5cos(8t/3)', 'y = 8sin t − 5sin(8t/3)'],
+        make: () => sample(2400, 0, 3 * TAU, (t) => [8 * cos(t) - 5 * cos((8 * t) / 3), 8 * sin(t) - 5 * sin((8 * t) / 3)]),
+    },
+    {
+        name: 'Lissajous figure',
+        eq: ['x = sin(9t + π/4)', 'y = sin 8t'],
+        make: () => sample(3000, 0, TAU, (t) => [sin(9 * t + PI / 4), sin(8 * t)]),
+    },
+    {
+        name: 'Rhodonea',
+        eq: ['r = cos(7θ/9)'],
+        make: () => polar(3000, 9 * PI, (t) => cos((7 * t) / 9)),
+    },
+    {
+        name: 'Harmonograph',
+        eq: ['x = e^(−t/160)[sin(2t + π/6) + sin 3.02t]', 'y = e^(−t/160)[sin 3t + sin(2.01t + π/2)]'],
+        make: () => sample(9000, 0, 320, (t) => {
+            const d = exp(-t / 160);
+            return [d * (sin(2 * t + PI / 6) + sin(3.02 * t)), d * (sin(3 * t) + sin(2.01 * t + PI / 2))];
         }),
     },
     {
-        label: 'r = e^sin θ − 2cos 4θ + sin⁵((2θ − π)/24)',
-        make: () => polar(1800, 6 * TAU, (t) => Math.exp(Math.sin(t)) - 2 * Math.cos(4 * t) + Math.sin((2 * t - Math.PI) / 24) ** 5),
+        name: 'Gielis superformula',
+        eq: ['r = (|cos(23φ/20)|^0.8 + |sin(23φ/20)|^0.8)^(−2)'],
+        make: () => polar(6000, 20 * PI, (t) => (abs(cos((23 * t) / 20)) ** 0.8 + abs(sin((23 * t) / 20)) ** 0.8) ** -2),
+    },
+    {
+        name: 'Lorenz attractor',
+        eq: ['dx/dt = 10(y − x)', 'dy/dt = x(28 − z) − y', 'dz/dt = xy − (8/3)z'],
+        make: () => {
+            let x = 0.1, y = 0, z = 0;
+            const pts = [];
+            const dt = 0.006;
+            for (let i = 0; i < 9000; i++) {
+                const dx = 10 * (y - x);
+                const dy = x * (28 - z) - y;
+                const dz = x * y - (8 / 3) * z;
+                x += dx * dt; y += dy * dt; z += dz * dt;
+                if (i > 100) pts.push([x, z]);
+            }
+            return pts;
+        },
+    },
+    {
+        name: 'Chrysanthemum curve',
+        eq: ['r = 5(1 + sin(11θ/5)) − 4sin⁴(17θ/3)·sin⁸(2cos 3θ − 28θ)'],
+        make: () => polar(9000, 21 * PI, (t) => 5 * (1 + sin((11 * t) / 5)) - 4 * sin((17 * t) / 3) ** 4 * sin(2 * cos(3 * t) - 28 * t) ** 8),
+    },
+    {
+        name: 'Butterfly curve',
+        eq: ['r = e^(sin θ) − 2cos 4θ + sin⁵((2θ − π)/24)'],
+        make: () => polar(3000, 6 * TAU, (t) => exp(sin(t)) - 2 * cos(4 * t) + sin((2 * t - PI) / 24) ** 5),
+    },
+    {
+        name: 'Maurer rose',
+        eq: ['r = sin 5θ,  θ = k · 97°,  k = 0…360'],
+        thin: true,
+        make: () => sample(360, 0, 360, (k) => {
+            const th = (k * 97 * PI) / 180;
+            const r = sin(5 * th);
+            return [r * cos(th), r * sin(th)];
+        }),
     },
 ];
 
@@ -83,41 +124,23 @@ function toPath(pts, size) {
     return { d, len: Math.ceil(len) };
 }
 
-/* ── Placement: side gutters when there's room, anywhere (fainter) otherwise ── */
-
-function viewport() {
-    const vw = window.innerWidth;
-    const vh = window.innerHeight;
-    return { vw, vh, gutter: (vw - Math.min(vw - 48, 1024)) / 2 };
-}
+/* ── Placement ── */
 
 const overlaps = (a, b) => a.x < b.x + b.w && b.x < a.x + a.w && a.y < b.y + b.h && b.y < a.y + a.h;
 
-function place(items, w, h, inGutter, { vw, vh, gutter }) {
-    for (let tries = 0; tries < 14; tries++) {
-        const x = inGutter
-            ? (() => {
-                const offset = 14 + Math.random() * Math.max(0, gutter - 28 - w);
-                return Math.random() < 0.5 ? offset : vw - gutter + offset;
-            })()
-            : 16 + Math.random() * Math.max(0, vw - w - 32);
-        const y = vh * 0.06 + Math.random() * Math.max(0, vh * 0.88 - h);
+function place(items, w, h) {
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
+    for (let tries = 0; tries < 16; tries++) {
+        const x = 12 + Math.random() * Math.max(0, vw - w - 24);
+        const y = vh * 0.05 + Math.random() * Math.max(0, vh * 0.9 - h);
         const rect = { x, y, w, h };
         if (items.every((it) => !overlaps(rect, it))) return rect;
     }
     return null;
 }
 
-/* ── Status lines ── */
-
-function makePhrase() {
-    const pool = [...ACTIONS];
-    const picks = [];
-    const n = 3 + Math.floor(Math.random() * 3);
-    while (picks.length < n) picks.push(pool.splice(Math.floor(Math.random() * pool.length), 1)[0]);
-    const text = picks.join(', ');
-    return `${text[0].toUpperCase()}${text.slice(1)}…`;
-}
+/* ── Pieces ── */
 
 function Indicator({ variant }) {
     const dots = (n) => Array.from({ length: n }, (_, i) => <i key={i} className="st-dot" />);
@@ -145,64 +168,20 @@ function Indicator({ variant }) {
     }
 }
 
-function revealPlan(line) {
-    const limit = Math.min(line.text.length, Math.ceil(line.w / CHAR_PX));
-    if (line.reveal === 'words') {
-        const words = [];
-        let used = 0;
-        for (const w of line.text.split(' ')) {
-            if (used > limit) break;
-            words.push(w);
-            used += w.length + 1;
-        }
-        return { limit, words, total: words.length, every: WORD_MS };
-    }
-    if (line.reveal === 'decode') return { limit, total: limit + DECODE_TAIL, every: TYPE_MS };
-    return { limit, total: limit, every: TYPE_MS };
-}
-
-function renderText(line, plan, step) {
-    if (line.reveal === 'words') {
-        return plan.words.slice(0, step).map((w, i) => <span key={i} className="st-word">{w} </span>);
-    }
-    if (line.reveal === 'decode') {
-        const visible = Math.min(step, plan.limit);
-        const resolved = Math.max(0, step - DECODE_TAIL);
-        let noise = '';
-        for (let i = resolved; i < visible; i++) noise += line.text[i] === ' ' ? ' ' : pick(SCRAMBLE);
-        return <>{line.text.slice(0, resolved)}<span className="st-noise">{noise}</span></>;
-    }
-    return line.text.slice(0, step);
-}
-
-function StatusLine({ line, onDone }) {
-    const [step, setStep] = useState(0);
+function Solo({ item, onDone }) {
     const [leaving, setLeaving] = useState(false);
-    const [plan] = useState(() => revealPlan(line));
 
     useEffect(() => {
-        let i = 0;
-        let timer;
-        const advance = () => {
-            i += 1;
-            setStep(i);
-            if (i < plan.total) {
-                timer = setTimeout(advance, plan.every);
-            } else {
-                timer = setTimeout(() => {
-                    setLeaving(true);
-                    timer = setTimeout(() => onDone(line.id), FADE_MS);
-                }, HOLD_MS);
-            }
-        };
-        timer = setTimeout(advance, 350);
+        let timer = setTimeout(() => {
+            setLeaving(true);
+            timer = setTimeout(() => onDone(item.id), FADE_MS);
+        }, SOLO_HOLD_MS);
         return () => clearTimeout(timer);
-    }, [line.id, plan, onDone]);
+    }, [item.id, onDone]);
 
     return (
-        <div className={`st-line${leaving ? ' st-leaving' : ''}`} style={{ left: line.x, top: line.y, maxWidth: line.w, '--peak': line.peak }}>
-            <Indicator variant={line.indicator} />
-            <span className="st-text">{renderText(line, plan, step)}</span>
+        <div className={`st-solo${leaving ? ' st-leaving' : ''}`} style={{ left: item.x, top: item.y }}>
+            <Indicator variant={item.indicator} />
         </div>
     );
 }
@@ -214,11 +193,12 @@ function Curve({ item, onDone }) {
     }, [item.id, onDone]);
 
     return (
-        <div className="cv" style={{ left: item.x, top: item.y, width: item.w, '--peak': item.peak }}>
+        <div className="cv" style={{ left: item.x, top: item.y, width: item.w }}>
             <svg className="cv-svg" width={item.w} height={item.w} viewBox={`0 0 ${item.w} ${item.w}`}>
                 <path d={item.d} className={item.thin ? 'thin' : undefined} style={{ '--len': item.len }} />
             </svg>
-            <p className="cv-eq">{item.label}</p>
+            <p className="cv-name">{item.name}</p>
+            {item.eq.map((line) => <p key={line} className="cv-eq">{line}</p>)}
         </div>
     );
 }
@@ -240,35 +220,31 @@ export default function Ambient() {
             live.current = [...live.current, { id: nextId.current++, ...item }];
             setItems(live.current);
         };
+        const count = (kind) => live.current.filter((it) => it.kind === kind).length;
 
-        const spawnLine = () => {
-            if (live.current.filter((it) => it.kind === 'line').length >= MAX_LINES) return;
-            const vp = viewport();
-            const inGutter = vp.gutter >= 140;
-            const w = inGutter ? Math.min(300, vp.gutter - 28) : Math.min(320, vp.vw - 32);
-            const rect = place(live.current, w, LINE_H, inGutter, vp);
-            if (!rect) return;
-            add({ kind: 'line', ...rect, peak: inGutter ? 0.6 : 0.34, text: makePhrase(), indicator: pick(INDICATORS), reveal: pick(REVEALS) });
+        const spawnSolo = () => {
+            if (count('solo') >= MAX_SOLOS) return;
+            const rect = place(live.current, 34, 26);
+            if (rect) add({ kind: 'solo', ...rect, indicator: pick(INDICATORS) });
         };
 
         const spawnCurve = () => {
-            const vp = viewport();
-            const inGutter = vp.gutter >= 110;
-            const maxCurves = inGutter ? 2 : 1;
-            if (live.current.filter((it) => it.kind === 'curve').length >= maxCurves) return;
-            const w = inGutter ? Math.min(180, vp.gutter - 36) : 150;
-            const rect = place(live.current, w, w + 40, inGutter, vp);
+            const vw = window.innerWidth;
+            const vh = window.innerHeight;
+            if (count('curve') >= (vw >= 900 ? 2 : 1)) return;
+            const w = Math.round(Math.min(220 + Math.random() * 120, vw - 48, vh * 0.55));
+            const rect = place(live.current, w, w + 70);
             if (!rect) return;
             const def = pick(CURVES);
-            add({ kind: 'curve', ...rect, peak: inGutter ? 0.42 : 0.12, label: def.label, thin: !!def.thin, ...toPath(def.make(), w) });
+            add({ kind: 'curve', ...rect, name: def.name, eq: def.eq, thin: !!def.thin, ...toPath(def.make(), w) });
         };
 
-        spawnLine();
-        const lineTimer = setInterval(spawnLine, LINE_SPAWN_MS);
-        const firstCurve = setTimeout(spawnCurve, 1500);
+        spawnSolo();
+        const soloTimer = setInterval(spawnSolo, SOLO_SPAWN_MS);
+        const firstCurve = setTimeout(spawnCurve, 800);
         const curveTimer = setInterval(spawnCurve, CURVE_SPAWN_MS);
         return () => {
-            clearInterval(lineTimer);
+            clearInterval(soloTimer);
             clearTimeout(firstCurve);
             clearInterval(curveTimer);
             live.current = [];
@@ -276,37 +252,24 @@ export default function Ambient() {
         };
     }, []);
 
+    // Sits behind page content (z-index -1); sections are transparent so it shows through gaps.
     return (
-        <div aria-hidden="true" style={{ position: 'fixed', inset: 0, zIndex: 1, pointerEvents: 'none', overflow: 'hidden' }}>
+        <div aria-hidden="true" style={{ position: 'fixed', inset: 0, zIndex: -1, pointerEvents: 'none', overflow: 'hidden' }}>
             <style>{`
-                .st-line, .cv {
+                .st-solo, .cv {
                     --pearl: radial-gradient(circle at 35% 30%, #ffffff 0%, #f1ede6 45%, #d8d2c8 100%);
                     --pearl-glow: 0 0 6px rgba(244,240,232,0.55);
                     position: absolute;
                 }
 
-                /* status lines */
-                .st-line {
-                    display: flex; align-items: center; gap: 0.7rem;
-                    font: 400 0.82rem ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
-                    letter-spacing: 0.01em; color: rgba(240,236,228,0.88);
-                    opacity: 0; animation: st-in 500ms ease-out forwards;
-                }
-                .st-line.st-leaving { animation: st-out ${FADE_MS}ms ease-in forwards; }
-                @keyframes st-in  { from { opacity: 0; transform: translateY(4px); } to { opacity: var(--peak); transform: none; } }
-                @keyframes st-out { from { opacity: var(--peak); } to { opacity: 0; } }
-
-                .st-text {
-                    white-space: nowrap; overflow: hidden; min-width: 0;
-                    -webkit-mask-image: linear-gradient(to right, black 82%, transparent);
-                    mask-image: linear-gradient(to right, black 82%, transparent);
-                }
-                .st-noise { opacity: 0.5; }
-                .st-word { opacity: 0; animation: st-word-in 320ms ease-out forwards; }
-                @keyframes st-word-in { from { opacity: 0; filter: blur(2px); } to { opacity: 1; filter: none; } }
+                .st-solo { opacity: 0; animation: st-in 500ms ease-out forwards; }
+                .st-solo .st-ind { transform: scale(1.3); }
+                .st-solo.st-leaving { animation: st-out ${FADE_MS}ms ease-in forwards; }
+                @keyframes st-in  { from { opacity: 0; } to { opacity: 0.6; } }
+                @keyframes st-out { from { opacity: 0.6; } to { opacity: 0; } }
 
                 /* indicators */
-                .st-ind { position: relative; display: inline-flex; align-items: center; justify-content: center; gap: 3px; flex-shrink: 0; height: 14px; min-width: 22px; }
+                .st-ind { position: relative; display: inline-flex; align-items: center; justify-content: center; gap: 3px; height: 14px; min-width: 22px; }
                 .st-dot { display: block; width: 5px; height: 5px; border-radius: 50%; background: var(--pearl); box-shadow: var(--pearl-glow); }
                 .st-bar { display: block; width: 2px; height: 11px; border-radius: 1px; background: var(--pearl); box-shadow: var(--pearl-glow); }
 
@@ -368,27 +331,31 @@ export default function Ambient() {
 
                 /* equation curves */
                 .cv { opacity: 0; animation: cv-life ${CURVE_LIFE_MS}ms ease-in-out forwards; }
-                @keyframes cv-life { 0% { opacity: 0; } 8% { opacity: var(--peak); } 85% { opacity: var(--peak); } 100% { opacity: 0; } }
-                .cv-svg { display: block; overflow: visible; animation: cv-rot 90s linear infinite; }
+                @keyframes cv-life { 0% { opacity: 0; } 6% { opacity: 0.38; } 86% { opacity: 0.38; } 100% { opacity: 0; } }
+                .cv-svg { display: block; overflow: visible; animation: cv-rot 120s linear infinite; }
                 @keyframes cv-rot { to { transform: rotate(360deg); } }
                 .cv path {
-                    fill: none; stroke: rgba(242,238,230,0.95); stroke-width: 0.8;
+                    fill: none; stroke: rgba(242,238,230,0.95); stroke-width: 0.7;
                     stroke-linecap: round; stroke-linejoin: round;
                     stroke-dasharray: var(--len); stroke-dashoffset: var(--len);
-                    animation: cv-draw 5600ms cubic-bezier(0.45, 0.05, 0.35, 1) 300ms forwards;
-                    filter: drop-shadow(0 0 3px rgba(244,240,232,0.35));
+                    animation: cv-draw ${CURVE_DRAW_MS}ms cubic-bezier(0.45, 0.05, 0.35, 1) 300ms forwards;
                 }
-                .cv path.thin { stroke-width: 0.3; }
+                .cv path.thin { stroke-width: 0.25; }
                 @keyframes cv-draw { to { stroke-dashoffset: 0; } }
+                .cv-name {
+                    margin-top: 14px; text-align: center;
+                    font: 700 0.6rem ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+                    letter-spacing: 0.22em; text-transform: uppercase; color: rgba(240,236,228,0.75);
+                }
                 .cv-eq {
-                    margin-top: 10px; text-align: center; line-height: 1.45;
-                    font: italic 400 0.74rem 'Old Standard TT', Georgia, serif;
-                    color: rgba(240,236,228,0.85); letter-spacing: 0.02em;
+                    margin-top: 4px; text-align: center; line-height: 1.5;
+                    font: italic 400 0.76rem 'Old Standard TT', Georgia, serif;
+                    color: rgba(240,236,228,0.9); letter-spacing: 0.02em;
                 }
             `}</style>
             {items.map((it) => (it.kind === 'curve'
                 ? <Curve key={it.id} item={it} onDone={remove} />
-                : <StatusLine key={it.id} line={it} onDone={remove} />))}
+                : <Solo key={it.id} item={it} onDone={remove} />))}
         </div>
     );
 }
