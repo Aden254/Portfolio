@@ -23,6 +23,16 @@ function integrate(f, start, dt, steps, skip, project) {
     return pts;
 }
 
+// Several trajectories of one system; null entries lift the pen between them (and where project() clips).
+function trajectories(f, starts, dt, steps, project) {
+    const pts = [];
+    starts.forEach((start, i) => {
+        if (i) pts.push(null);
+        for (const p of integrate(f, start, dt, steps, 0, project)) pts.push(p);
+    });
+    return pts;
+}
+
 const frac = (num, den) => (den === 1 ? `${num}t` : `${num}t/${den}`);
 
 function hypotrochoid(R, r, d) {
@@ -265,11 +275,92 @@ export const CURVES = [
     /* ── guilloché ── */
     { name: 'Guilloché rosette', eq: ['r = 3 + cos(31θ/3)'], make: () => polar(10000, 6 * PI, (t) => 3 + cos((31 * t) / 3)) },
     { name: 'Guilloché rosette · modulated', eq: ['r = 2 + sin(17θ/4)·cos 3θ'], make: () => polar(12000, 8 * PI, (t) => 2 + sin((17 * t) / 4) * cos(3 * t)) },
+
+    /* ── more attractors ── */
+    {
+        name: 'Aizawa attractor',
+        eq: ['dx/dt = (z − 0.7)x − 3.5y', 'dy/dt = 3.5x + (z − 0.7)y', 'dz/dt = 0.6 + 0.95z − z³/3 − (x² + y²)(1 + 0.25z) + 0.1zx³'],
+        make: () => integrate(
+            ([x, y, z]) => [(z - 0.7) * x - 3.5 * y, 3.5 * x + (z - 0.7) * y, 0.6 + 0.95 * z - z ** 3 / 3 - (x * x + y * y) * (1 + 0.25 * z) + 0.1 * z * x ** 3],
+            [0.1, 0, 0], 0.01, 14000, 300, ([x, , z]) => [x, z],
+        ),
+    },
+    {
+        name: 'Dadras attractor',
+        eq: ['dx/dt = y − 3x + 2.7yz', 'dy/dt = 1.7y − xz + z', 'dz/dt = 2xy − 9z'],
+        make: () => integrate(([x, y, z]) => [y - 3 * x + 2.7 * y * z, 1.7 * y - x * z + z, 2 * x * y - 9 * z], [1, 1, 0], 0.005, 14000, 300, ([x, y]) => [x, y]),
+    },
+    {
+        name: 'Chen attractor',
+        eq: ['dx/dt = 35(y − x)', 'dy/dt = −7x − xz + 28y', 'dz/dt = xy − 3z'],
+        make: () => integrate(([x, y, z]) => [35 * (y - x), -7 * x - x * z + 28 * y, x * y - 3 * z], [-10, 0, 37], 0.002, 14000, 500, ([x, , z]) => [x, z]),
+    },
+
+    /* ── phase portraits ── */
+    {
+        name: 'Van der Pol oscillator · phase portrait',
+        eq: ['ẍ − 1.5(1 − x²)ẋ + x = 0'],
+        make: () => trajectories(
+            ([x, v]) => [v, 1.5 * (1 - x * x) * v - x],
+            [[0.1, 0], [3.8, 0], [-3.8, 0], [0, 4.5], [0, -4.5], [-0.4, 0.3]], 0.01, 2200, ([x, v]) => [x, v],
+        ),
+    },
+    {
+        name: 'Nonlinear pendulum · phase portrait',
+        eq: ['θ̈ + sin θ = 0'],
+        make: () => trajectories(
+            ([th, w]) => [w, -sin(th)],
+            [[0.4, 0], [0.9, 0], [1.4, 0], [1.9, 0], [2.4, 0], [2.85, 0], [-PI, 2.15], [PI, -2.15], [-PI, 2.6], [PI, -2.6]],
+            0.01, 1600,
+            ([th, w]) => (abs(th) <= PI ? [th, w] : null),
+        ),
+    },
+
+    /* ── physics & spirals ── */
+    {
+        name: 'Precessing orbit',
+        eq: ['r = 1 / (1 + 0.6cos(0.9θ))'],
+        make: () => polar(10000, 20 * PI, (t) => 1 / (1 + 0.6 * cos(0.9 * t))),
+    },
+    {
+        name: "Fermat's spiral",
+        eq: ['r² = θ'],
+        make: () => sample(10000, -40 * PI, 40 * PI, (t) => {
+            const r = Math.sign(t) * Math.sqrt(abs(t));
+            return [r * cos(abs(t)), r * sin(abs(t))];
+        }),
+    },
+    {
+        name: 'Loxodrome · tilted sphere',
+        eq: ['x = cos t·sech(t/10)', 'y = sin t·sech(t/10)', 'z = tanh(t/10)'],
+        make: () => {
+            const tilt = 1;
+            return sample(10000, -60, 60, (t) => {
+                const s = 1 / Math.cosh(t / 10);
+                const x = cos(t) * s;
+                const y = sin(t) * s;
+                const z = Math.tanh(t / 10);
+                return [x, y * cos(tilt) + z * sin(tilt)];
+            });
+        },
+    },
+
+    /* ── Fourier epicycles ── */
+    {
+        name: 'Fourier epicycles · 5-fold',
+        eq: ['z(t) = e^(it) + ½e^(−4it) + ⅓e^(11it) + ¼e^(−19it)'],
+        make: () => sample(9000, 0, TAU, (t) => [
+            cos(t) + cos(4 * t) / 2 + cos(11 * t) / 3 + cos(19 * t) / 4,
+            sin(t) - sin(4 * t) / 2 + sin(11 * t) / 3 - sin(19 * t) / 4,
+        ]),
+    },
 ];
 
 export function toPath(pts, size) {
     let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
-    for (const [x, y] of pts) {
+    for (const p of pts) {
+        if (!p) continue;
+        const [x, y] = p;
         if (x < minX) minX = x; if (x > maxX) maxX = x;
         if (y < minY) minY = y; if (y > maxY) maxY = y;
     }
@@ -280,12 +371,15 @@ export function toPath(pts, size) {
     let d = '';
     let len = 0;
     let px = 0, py = 0;
-    pts.forEach(([x, y], i) => {
-        const X = x * s + ox;
-        const Y = size - (y * s + oy);
-        d += `${i ? 'L' : 'M'}${X.toFixed(1)} ${Y.toFixed(1)}`;
-        if (i) len += Math.hypot(X - px, Y - py);
+    let penDown = false;
+    for (const p of pts) {
+        if (!p) { penDown = false; continue; }
+        const X = p[0] * s + ox;
+        const Y = size - (p[1] * s + oy);
+        d += `${penDown ? 'L' : 'M'}${X.toFixed(1)} ${Y.toFixed(1)}`;
+        if (penDown) len += Math.hypot(X - px, Y - py);
         px = X; py = Y;
-    });
+        penDown = true;
+    }
     return { d, len: Math.ceil(len) };
 }
