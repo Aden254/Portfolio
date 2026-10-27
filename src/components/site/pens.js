@@ -4,14 +4,15 @@ import { CURVES } from './curves';
 // Driven imperatively with requestAnimationFrame so the glowing tip can follow the stroke exactly.
 
 const NS = 'http://www.w3.org/2000/svg';
-const DRAW_MS = 6500;
-const HOLD_MS = 1600;
+const DRAW_MS = 10000;
+const HOLD_MS = 2000;
 const FADE_MS = 3500;
+const LABEL_OPACITY = '0.8';
 
 export const PENS = [
-    { color: '#f2eee6', glow: 'rgba(242,238,230,0.75)', opacity: 0.42 },
-    { color: '#34d399', glow: 'rgba(52,211,153,0.7)', opacity: 0.5 },
-    { color: '#c2566b', glow: 'rgba(194,86,107,0.75)', opacity: 0.62 },
+    { color: '#f2eee6', glow: 'rgba(242,238,230,0.75)', opacity: 0.32 },
+    { color: '#34d399', glow: 'rgba(52,211,153,0.7)', opacity: 0.38 },
+    { color: '#c2566b', glow: 'rgba(194,86,107,0.75)', opacity: 0.47 },
 ];
 
 const ease = (t) => (t < 0.5 ? 4 * t * t * t : 1 - (-2 * t + 2) ** 3 / 2);
@@ -159,7 +160,7 @@ export function startPens(host, { animate }) {
         path.style.transition = `opacity ${FADE_MS}ms ease`;
         strokes.appendChild(path);
         const label = makeLabel(def, rect, pen.style);
-        if (!animate) label.style.opacity = '1';
+        if (!animate) label.style.opacity = LABEL_OPACITY;
         labels.appendChild(label);
         return { def, rect, g, path, label };
     }
@@ -219,7 +220,7 @@ export function startPens(host, { animate }) {
                 pen.cur.path.setAttribute('stroke-dashoffset', (pen.cur.g.len - dist).toFixed(1));
                 moveTip(pen, tipAt(pen.cur.g, dist));
                 if (p >= 1) {
-                    pen.cur.label.style.opacity = '1';
+                    pen.cur.label.style.opacity = LABEL_OPACITY;
                     pen.phase = 'hold';
                     pen.t0 = now;
                 }

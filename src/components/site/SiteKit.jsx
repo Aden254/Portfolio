@@ -23,6 +23,10 @@ export function SiteStyles() {
         }
 
         .site-root { font-family: 'Old Standard TT', serif; min-height: 100vh; }
+        /* Navy halo lifts text off the curves drawn behind it. */
+        .site-root :is(h1, h2, h3, p, li) {
+          text-shadow: 0 0 2px rgba(5,12,28,0.9), 0 0 10px rgba(5,12,28,0.85), 0 0 18px rgba(5,12,28,0.6);
+        }
         .sans { font-family: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif; }
 
         .photo-section { position: relative; overflow: hidden; }
