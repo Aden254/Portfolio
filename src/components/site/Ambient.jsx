@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { CURVES, toPath } from './curves';
 
 const INDICATORS = ['pulse', 'bounce', 'scan', 'bars', 'orbit', 'breathe', 'ellipse', 'eight', 'ripple'];
 
@@ -14,115 +15,6 @@ const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
 
 const prefersReducedMotion = () =>
     typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-/* ── Curves: decorative, generated from their equations ── */
-
-const PI = Math.PI;
-const TAU = PI * 2;
-const { sin, cos, exp, abs } = Math;
-const sample = (n, from, to, fn) => Array.from({ length: n + 1 }, (_, i) => fn(from + ((to - from) * i) / n));
-const polar = (n, tMax, r) => sample(n, 0, tMax, (t) => { const R = r(t); return [R * cos(t), R * sin(t)]; });
-
-const CURVES = [
-    {
-        name: 'Farris wheel',
-        eq: ['x = cos t + ½cos 7t + ⅓sin 17t', 'y = sin t + ½sin 7t + ⅓cos 17t'],
-        make: () => sample(2400, 0, TAU, (t) => [cos(t) + cos(7 * t) / 2 + sin(17 * t) / 3, sin(t) + sin(7 * t) / 2 + cos(17 * t) / 3]),
-    },
-    {
-        name: 'Hypotrochoid',
-        eq: ['x = 6cos t + 9cos(6t/7)', 'y = 6sin t − 9sin(6t/7)'],
-        make: () => sample(4000, 0, 7 * TAU, (t) => [6 * cos(t) + 9 * cos((6 * t) / 7), 6 * sin(t) - 9 * sin((6 * t) / 7)]),
-    },
-    {
-        name: 'Epitrochoid',
-        eq: ['x = 8cos t − 5cos(8t/3)', 'y = 8sin t − 5sin(8t/3)'],
-        make: () => sample(2400, 0, 3 * TAU, (t) => [8 * cos(t) - 5 * cos((8 * t) / 3), 8 * sin(t) - 5 * sin((8 * t) / 3)]),
-    },
-    {
-        name: 'Lissajous figure',
-        eq: ['x = sin(9t + π/4)', 'y = sin 8t'],
-        make: () => sample(3000, 0, TAU, (t) => [sin(9 * t + PI / 4), sin(8 * t)]),
-    },
-    {
-        name: 'Rhodonea',
-        eq: ['r = cos(7θ/9)'],
-        make: () => polar(3000, 9 * PI, (t) => cos((7 * t) / 9)),
-    },
-    {
-        name: 'Harmonograph',
-        eq: ['x = e^(−t/160)[sin(2t + π/6) + sin 3.02t]', 'y = e^(−t/160)[sin 3t + sin(2.01t + π/2)]'],
-        make: () => sample(9000, 0, 320, (t) => {
-            const d = exp(-t / 160);
-            return [d * (sin(2 * t + PI / 6) + sin(3.02 * t)), d * (sin(3 * t) + sin(2.01 * t + PI / 2))];
-        }),
-    },
-    {
-        name: 'Gielis superformula',
-        eq: ['r = (|cos(23φ/20)|^0.8 + |sin(23φ/20)|^0.8)^(−2)'],
-        make: () => polar(6000, 20 * PI, (t) => (abs(cos((23 * t) / 20)) ** 0.8 + abs(sin((23 * t) / 20)) ** 0.8) ** -2),
-    },
-    {
-        name: 'Lorenz attractor',
-        eq: ['dx/dt = 10(y − x)', 'dy/dt = x(28 − z) − y', 'dz/dt = xy − (8/3)z'],
-        make: () => {
-            let x = 0.1, y = 0, z = 0;
-            const pts = [];
-            const dt = 0.006;
-            for (let i = 0; i < 9000; i++) {
-                const dx = 10 * (y - x);
-                const dy = x * (28 - z) - y;
-                const dz = x * y - (8 / 3) * z;
-                x += dx * dt; y += dy * dt; z += dz * dt;
-                if (i > 100) pts.push([x, z]);
-            }
-            return pts;
-        },
-    },
-    {
-        name: 'Chrysanthemum curve',
-        eq: ['r = 5(1 + sin(11θ/5)) − 4sin⁴(17θ/3)·sin⁸(2cos 3θ − 28θ)'],
-        make: () => polar(9000, 21 * PI, (t) => 5 * (1 + sin((11 * t) / 5)) - 4 * sin((17 * t) / 3) ** 4 * sin(2 * cos(3 * t) - 28 * t) ** 8),
-    },
-    {
-        name: 'Butterfly curve',
-        eq: ['r = e^(sin θ) − 2cos 4θ + sin⁵((2θ − π)/24)'],
-        make: () => polar(3000, 6 * TAU, (t) => exp(sin(t)) - 2 * cos(4 * t) + sin((2 * t - PI) / 24) ** 5),
-    },
-    {
-        name: 'Maurer rose',
-        eq: ['r = sin 5θ,  θ = k · 97°,  k = 0…360'],
-        thin: true,
-        make: () => sample(360, 0, 360, (k) => {
-            const th = (k * 97 * PI) / 180;
-            const r = sin(5 * th);
-            return [r * cos(th), r * sin(th)];
-        }),
-    },
-];
-
-function toPath(pts, size) {
-    let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
-    for (const [x, y] of pts) {
-        if (x < minX) minX = x; if (x > maxX) maxX = x;
-        if (y < minY) minY = y; if (y > maxY) maxY = y;
-    }
-    // Fit the bounding-box diagonal so the curve stays inside its circle while it rotates.
-    const s = (size - 8) / Math.hypot(maxX - minX, maxY - minY);
-    const ox = (size - (maxX - minX) * s) / 2 - minX * s;
-    const oy = (size - (maxY - minY) * s) / 2 - minY * s;
-    let d = '';
-    let len = 0;
-    let px = 0, py = 0;
-    pts.forEach(([x, y], i) => {
-        const X = x * s + ox;
-        const Y = size - (y * s + oy);
-        d += `${i ? 'L' : 'M'}${X.toFixed(1)} ${Y.toFixed(1)}`;
-        if (i) len += Math.hypot(X - px, Y - py);
-        px = X; py = Y;
-    });
-    return { d, len: Math.ceil(len) };
-}
 
 /* ── Placement ── */
 
@@ -187,6 +79,9 @@ function Solo({ item, onDone }) {
 }
 
 function Curve({ item, onDone }) {
+    // Parameters after " · " keep their case (r ≠ R), so only the title is set in small caps.
+    const [title, params] = item.name.split(' · ');
+
     useEffect(() => {
         const t = setTimeout(() => onDone(item.id), CURVE_LIFE_MS);
         return () => clearTimeout(t);
@@ -197,7 +92,7 @@ function Curve({ item, onDone }) {
             <svg className="cv-svg" width={item.w} height={item.w} viewBox={`0 0 ${item.w} ${item.w}`}>
                 <path d={item.d} className={item.thin ? 'thin' : undefined} style={{ '--len': item.len }} />
             </svg>
-            <p className="cv-name">{item.name}</p>
+            <p className="cv-name">{title}{params && <span className="cv-param"> · {params}</span>}</p>
             {item.eq.map((line) => <p key={line} className="cv-eq">{line}</p>)}
         </div>
     );
@@ -346,6 +241,9 @@ export default function Ambient() {
                     margin-top: 14px; text-align: center;
                     font: 700 0.6rem ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
                     letter-spacing: 0.22em; text-transform: uppercase; color: rgba(240,236,228,0.75);
+                }
+                .cv-param {
+                    text-transform: none; letter-spacing: 0.03em; font: italic 400 0.72rem 'Old Standard TT', Georgia, serif;
                 }
                 .cv-eq {
                     margin-top: 4px; text-align: center; line-height: 1.5;
