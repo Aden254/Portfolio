@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { CURVES, toPath } from './curves';
+import { startPens } from './pens';
 
 const INDICATORS = ['pulse', 'bounce', 'scan', 'bars', 'orbit', 'breathe', 'ellipse', 'eight', 'ripple'];
 
@@ -7,9 +7,6 @@ const SOLO_SPAWN_MS = 1400;
 const SOLO_HOLD_MS = 3400;
 const FADE_MS = 600;
 const MAX_SOLOS = 6;
-const CURVE_SPAWN_MS = 7000;
-const CURVE_LIFE_MS = 14000;
-const CURVE_DRAW_MS = 7000;
 
 const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
 
@@ -78,35 +75,18 @@ function Solo({ item, onDone }) {
     );
 }
 
-function Curve({ item, onDone }) {
-    // Parameters after " · " keep their case (r ≠ R), so only the title is set in small caps.
-    const [title, params] = item.name.split(' · ');
-
-    useEffect(() => {
-        const t = setTimeout(() => onDone(item.id), CURVE_LIFE_MS);
-        return () => clearTimeout(t);
-    }, [item.id, onDone]);
-
-    return (
-        <div className="cv" style={{ left: item.x, top: item.y, width: item.w }}>
-            <svg className="cv-svg" width={item.w} height={item.w} viewBox={`0 0 ${item.w} ${item.w}`}>
-                <path d={item.d} className={item.thin ? 'thin' : undefined} style={{ '--len': item.len }} />
-            </svg>
-            <p className="cv-name">{title}{params && <span className="cv-param"> · {params}</span>}</p>
-            {item.eq.map((line) => <p key={line} className="cv-eq">{line}</p>)}
-        </div>
-    );
-}
-
 export default function Ambient() {
     const [items, setItems] = useState([]);
     const live = useRef([]);
     const nextId = useRef(0);
+    const penHost = useRef(null);
 
     const remove = useCallback((id) => {
         live.current = live.current.filter((it) => it.id !== id);
         setItems(live.current);
     }, []);
+
+    useEffect(() => startPens(penHost.current, { animate: !prefersReducedMotion() }), []);
 
     useEffect(() => {
         if (prefersReducedMotion()) return;
@@ -123,25 +103,10 @@ export default function Ambient() {
             if (rect) add({ kind: 'solo', ...rect, indicator: pick(INDICATORS) });
         };
 
-        const spawnCurve = () => {
-            const vw = window.innerWidth;
-            const vh = window.innerHeight;
-            if (count('curve') >= (vw >= 900 ? 2 : 1)) return;
-            const w = Math.round(Math.min(220 + Math.random() * 120, vw - 48, vh * 0.55));
-            const rect = place(live.current, w, w + 70);
-            if (!rect) return;
-            const def = pick(CURVES);
-            add({ kind: 'curve', ...rect, name: def.name, eq: def.eq, thin: !!def.thin, ...toPath(def.make(), w) });
-        };
-
         spawnSolo();
         const soloTimer = setInterval(spawnSolo, SOLO_SPAWN_MS);
-        const firstCurve = setTimeout(spawnCurve, 800);
-        const curveTimer = setInterval(spawnCurve, CURVE_SPAWN_MS);
         return () => {
             clearInterval(soloTimer);
-            clearTimeout(firstCurve);
-            clearInterval(curveTimer);
             live.current = [];
             setItems([]);
         };
@@ -151,7 +116,7 @@ export default function Ambient() {
     return (
         <div aria-hidden="true" style={{ position: 'fixed', inset: 0, zIndex: -1, pointerEvents: 'none', overflow: 'hidden' }}>
             <style>{`
-                .st-solo, .cv {
+                .st-solo {
                     --pearl: radial-gradient(circle at 35% 30%, #ffffff 0%, #f1ede6 45%, #d8d2c8 100%);
                     --pearl-glow: 0 0 6px rgba(244,240,232,0.55);
                     position: absolute;
@@ -224,23 +189,12 @@ export default function Ambient() {
                 .v-eight .ey2 { animation-delay: -1s; }
                 @keyframes st-ey { from { transform: translateY(-3.5px); } to { transform: translateY(3.5px); } }
 
-                /* equation curves */
-                .cv { opacity: 0; animation: cv-life ${CURVE_LIFE_MS}ms ease-in-out forwards; }
-                @keyframes cv-life { 0% { opacity: 0; } 6% { opacity: 0.38; } 86% { opacity: 0.38; } 100% { opacity: 0; } }
-                .cv-svg { display: block; overflow: visible; animation: cv-rot 120s linear infinite; }
-                @keyframes cv-rot { to { transform: rotate(360deg); } }
-                .cv path {
-                    fill: none; stroke: rgba(242,238,230,0.95); stroke-width: 0.7;
-                    stroke-linecap: round; stroke-linejoin: round;
-                    stroke-dasharray: var(--len); stroke-dashoffset: var(--len);
-                    animation: cv-draw ${CURVE_DRAW_MS}ms cubic-bezier(0.45, 0.05, 0.35, 1) 300ms forwards;
-                }
-                .cv path.thin { stroke-width: 0.25; }
-                @keyframes cv-draw { to { stroke-dashoffset: 0; } }
+                /* pen labels */
+                .pen-label { position: absolute; opacity: 0; transition: opacity 1200ms ease; }
                 .cv-name {
                     margin-top: 14px; text-align: center;
                     font: 700 0.6rem ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
-                    letter-spacing: 0.22em; text-transform: uppercase; color: rgba(240,236,228,0.75);
+                    letter-spacing: 0.22em; text-transform: uppercase;
                 }
                 .cv-param {
                     text-transform: none; letter-spacing: 0.03em; font: italic 400 0.72rem 'Old Standard TT', Georgia, serif;
@@ -251,9 +205,8 @@ export default function Ambient() {
                     color: rgba(240,236,228,0.9); letter-spacing: 0.02em;
                 }
             `}</style>
-            {items.map((it) => (it.kind === 'curve'
-                ? <Curve key={it.id} item={it} onDone={remove} />
-                : <Solo key={it.id} item={it} onDone={remove} />))}
+            <div ref={penHost} style={{ position: 'absolute', inset: 0 }} />
+            {items.map((it) => <Solo key={it.id} item={it} onDone={remove} />)}
         </div>
     );
 }

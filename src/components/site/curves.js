@@ -355,31 +355,3 @@ export const CURVES = [
         ]),
     },
 ];
-
-export function toPath(pts, size) {
-    let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
-    for (const p of pts) {
-        if (!p) continue;
-        const [x, y] = p;
-        if (x < minX) minX = x; if (x > maxX) maxX = x;
-        if (y < minY) minY = y; if (y > maxY) maxY = y;
-    }
-    // Fit the bounding-box diagonal so the curve stays inside its circle while it rotates.
-    const s = (size - 8) / Math.hypot(maxX - minX, maxY - minY);
-    const ox = (size - (maxX - minX) * s) / 2 - minX * s;
-    const oy = (size - (maxY - minY) * s) / 2 - minY * s;
-    let d = '';
-    let len = 0;
-    let px = 0, py = 0;
-    let penDown = false;
-    for (const p of pts) {
-        if (!p) { penDown = false; continue; }
-        const X = p[0] * s + ox;
-        const Y = size - (p[1] * s + oy);
-        d += `${penDown ? 'L' : 'M'}${X.toFixed(1)} ${Y.toFixed(1)}`;
-        if (penDown) len += Math.hypot(X - px, Y - py);
-        px = X; py = Y;
-        penDown = true;
-    }
-    return { d, len: Math.ceil(len) };
-}
