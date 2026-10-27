@@ -1,117 +1,153 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+
+const ACTIONS = [
+    'sampling buoy data', 'cleaning records', 'flagging outliers', 'joining partner tables',
+    'computing weekly medians', 'rendering boxplots', 'publishing dashboard', 'checking Secchi depth',
+    'querying PostGIS', 'relaying through TURN', 'negotiating WebRTC offer', 'verifying JWT',
+    'running migrations', 'warming cache', 'uploading to S3', 'tracing neural tissue',
+    'stacking MRI slices', 'fetching gene expression', 'annotating slice 42', 'validating schema',
+    'writing audit log', 'syncing offline changes', 'deploying to Railway', 'reconciling site names',
+    'normalizing timestamps', 'reading sensor feed', 'indexing structures', 'checking access roles',
+];
+
+const TYPE_MS = 34;
+const HOLD_MS = 1800;
+const FADE_MS = 600;
+const SPAWN_MS = 2300;
+const MAX_LINES = 4;
+const LINE_H = 36;
 
 const prefersReducedMotion = () =>
     typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-function Constellation() {
-    const ref = useRef(null);
+function makePhrase() {
+    const pool = [...ACTIONS];
+    const picks = [];
+    const n = 3 + Math.floor(Math.random() * 3);
+    while (picks.length < n) picks.push(pool.splice(Math.floor(Math.random() * pool.length), 1)[0]);
+    const text = picks.join(', ');
+    return `${text[0].toUpperCase()}${text.slice(1)}…`;
+}
+
+// Prefer the side gutters beside the content column; fall back to anywhere on narrow screens.
+function pickSpot(live) {
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
+    const gutter = (vw - Math.min(vw - 48, 1024)) / 2;
+
+    const inGutter = gutter >= 140;
+
+    for (let tries = 0; tries < 12; tries++) {
+        let x, width;
+        if (inGutter) {
+            width = Math.min(300, gutter - 28);
+            const offset = 14 + Math.random() * Math.max(0, gutter - 28 - width);
+            x = Math.random() < 0.5 ? offset : vw - gutter + offset;
+        } else {
+            width = Math.min(320, vw - 32);
+            x = 16 + Math.random() * Math.max(0, vw - width - 32);
+        }
+        const y = vh * 0.08 + Math.random() * vh * 0.84;
+        const clear = live.every((l) => x + width < l.x || l.x + l.width < x || Math.abs(l.y - y) > LINE_H);
+        if (clear) return { x, y, width, peak: inGutter ? 0.55 : 0.32 };
+    }
+    return null;
+}
+
+function StatusLine({ line, onDone }) {
+    const [shown, setShown] = useState(0);
+    const [leaving, setLeaving] = useState(false);
 
     useEffect(() => {
-        const canvas = ref.current;
-        const ctx = canvas.getContext('2d');
-        const reduce = prefersReducedMotion();
-        const LINK = 140;
-        let w = 0, h = 0, raf = 0;
-
-        const resize = () => {
-            const dpr = Math.min(window.devicePixelRatio || 1, 2);
-            w = window.innerWidth;
-            h = window.innerHeight;
-            canvas.width = w * dpr;
-            canvas.height = h * dpr;
-            canvas.style.width = `${w}px`;
-            canvas.style.height = `${h}px`;
-            ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-        };
-        resize();
-
-        const count = Math.round(Math.min(70, Math.max(24, (w * h) / 22000)));
-        const nodes = Array.from({ length: count }, () => ({
-            x: Math.random() * w,
-            y: Math.random() * h,
-            vx: (Math.random() - 0.5) * 0.18,
-            vy: (Math.random() - 0.5) * 0.18,
-        }));
-
-        const draw = () => {
-            ctx.clearRect(0, 0, w, h);
-            for (const n of nodes) {
-                n.x += n.vx;
-                n.y += n.vy;
-                if (n.x < 0 || n.x > w) n.vx *= -1;
-                if (n.y < 0 || n.y > h) n.vy *= -1;
-            }
-            ctx.lineWidth = 0.6;
-            for (let i = 0; i < nodes.length; i++) {
-                for (let j = i + 1; j < nodes.length; j++) {
-                    const dx = nodes[i].x - nodes[j].x;
-                    const dy = nodes[i].y - nodes[j].y;
-                    const d2 = dx * dx + dy * dy;
-                    if (d2 < LINK * LINK) {
-                        ctx.strokeStyle = `rgba(148,197,255,${(1 - Math.sqrt(d2) / LINK) * 0.16})`;
-                        ctx.beginPath();
-                        ctx.moveTo(nodes[i].x, nodes[i].y);
-                        ctx.lineTo(nodes[j].x, nodes[j].y);
-                        ctx.stroke();
-                    }
-                }
-            }
-            ctx.fillStyle = 'rgba(203,213,225,0.4)';
-            for (const n of nodes) {
-                ctx.beginPath();
-                ctx.arc(n.x, n.y, 1.1, 0, Math.PI * 2);
-                ctx.fill();
+        // ~6.4px per character at this font size; stop once the visible width is filled.
+        const limit = Math.min(line.text.length, Math.ceil(line.width / 6.4));
+        let i = 0;
+        let timer;
+        const step = () => {
+            i += 1;
+            setShown(i);
+            if (i < limit) {
+                timer = setTimeout(step, TYPE_MS);
+            } else {
+                timer = setTimeout(() => {
+                    setLeaving(true);
+                    timer = setTimeout(() => onDone(line.id), FADE_MS);
+                }, HOLD_MS);
             }
         };
+        timer = setTimeout(step, 350);
+        return () => clearTimeout(timer);
+    }, [line, onDone]);
 
-        const loop = () => { draw(); raf = requestAnimationFrame(loop); };
-        const onResize = () => { resize(); if (reduce) draw(); };
+    return (
+        <div className={`st-line${leaving ? ' st-leaving' : ''}`} style={{ left: line.x, top: line.y, maxWidth: line.width, '--peak': line.peak }}>
+            <span className="st-dots"><i /><i /><i /></span>
+            <span className="st-text">{line.text.slice(0, shown)}</span>
+        </div>
+    );
+}
 
-        if (reduce) draw(); else loop();
-        window.addEventListener('resize', onResize);
+export default function Ambient() {
+    const [lines, setLines] = useState([]);
+    const live = useRef([]);
+    const nextId = useRef(0);
+
+    const remove = useCallback((id) => {
+        live.current = live.current.filter((l) => l.id !== id);
+        setLines(live.current);
+    }, []);
+
+    useEffect(() => {
+        if (prefersReducedMotion()) return;
+        const spawn = () => {
+            if (live.current.length >= MAX_LINES) return;
+            const spot = pickSpot(live.current);
+            if (!spot) return;
+            live.current = [...live.current, { id: nextId.current++, text: makePhrase(), ...spot }];
+            setLines(live.current);
+        };
+        spawn();
+        const interval = setInterval(spawn, SPAWN_MS);
         return () => {
-            cancelAnimationFrame(raf);
-            window.removeEventListener('resize', onResize);
+            clearInterval(interval);
+            live.current = [];
+            setLines([]);
         };
     }, []);
 
-    return <canvas ref={ref} aria-hidden="true" style={{ position: 'absolute', inset: 0 }} />;
-}
-
-const MIST = [
-    { left: '-15%', top: '-10%', tint: '148,163,184', dur: 42, delay: 0 },
-    { left: '55%',  top: '15%',  tint: '125,170,230', dur: 50, delay: -14 },
-    { left: '10%',  top: '55%',  tint: '160,150,190', dur: 58, delay: -30 },
-    { left: '60%',  top: '70%',  tint: '200,170,140', dur: 46, delay: -8 },
-];
-
-export default function Ambient() {
     return (
-        <div aria-hidden="true" style={{
-            position: 'fixed', inset: 0, zIndex: 1, pointerEvents: 'none', overflow: 'hidden',
-            mixBlendMode: 'screen',
-        }}>
+        <div aria-hidden="true" style={{ position: 'fixed', inset: 0, zIndex: 1, pointerEvents: 'none', overflow: 'hidden' }}>
             <style>{`
-                .amb-mist {
-                    position: absolute; width: 65vmax; height: 65vmax; border-radius: 50%;
-                    animation: amb-drift ease-in-out infinite alternate;
+                .st-line {
+                    position: absolute; display: flex; align-items: center; gap: 0.7rem;
+                    font: 400 0.82rem ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+                    letter-spacing: 0.01em; color: rgba(148,163,184,0.85);
+                    opacity: 0; animation: st-in 500ms ease-out forwards;
                 }
-                @keyframes amb-drift {
-                    0%   { transform: translate(0, 0) scale(1); }
-                    50%  { transform: translate(9vw, -7vh) scale(1.12); }
-                    100% { transform: translate(-7vw, 6vh) scale(0.94); }
-                }
-                @media (prefers-reduced-motion: reduce) { .amb-mist { animation: none; } }
-            `}</style>
+                .st-line.st-leaving { animation: st-out ${FADE_MS}ms ease-in forwards; }
+                @keyframes st-in  { from { opacity: 0; transform: translateY(4px); } to { opacity: var(--peak); transform: none; } }
+                @keyframes st-out { from { opacity: var(--peak); } to { opacity: 0; } }
 
-            {MIST.map((m) => (
-                <div key={m.left + m.top} className="amb-mist" style={{
-                    left: m.left, top: m.top,
-                    background: `radial-gradient(circle, rgba(${m.tint},0.26) 0%, rgba(${m.tint},0.1) 35%, transparent 65%)`,
-                    animationDuration: `${m.dur}s`, animationDelay: `${m.delay}s`,
-                }} />
-            ))}
-            <Constellation />
+                .st-dots { display: inline-flex; gap: 3px; flex-shrink: 0; }
+                .st-dots i {
+                    width: 5px; height: 5px; border-radius: 50%;
+                    background: rgb(240,150,112);
+                    animation: st-pulse 1.2s ease-in-out infinite;
+                }
+                .st-dots i:nth-child(2) { animation-delay: 0.15s; }
+                .st-dots i:nth-child(3) { animation-delay: 0.3s; }
+                @keyframes st-pulse {
+                    0%, 80%, 100% { opacity: 0.25; transform: scale(0.8); }
+                    40%           { opacity: 1;    transform: scale(1); }
+                }
+
+                .st-text {
+                    white-space: nowrap; overflow: hidden; min-width: 0;
+                    -webkit-mask-image: linear-gradient(to right, black 82%, transparent);
+                    mask-image: linear-gradient(to right, black 82%, transparent);
+                }
+            `}</style>
+            {lines.map((line) => <StatusLine key={line.id} line={line} onDone={remove} />)}
         </div>
     );
 }
